@@ -1,0 +1,3 @@
+data/eviction/opa_properties_assessments.csv !text !filter !merge !diff
+data/eviction/311_2020.csv !text !filter !merge !diff
+data/eviction/311_2021.csv !text !filter !merge !diff
