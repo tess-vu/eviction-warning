@@ -10,8 +10,6 @@ Monday, December 8, 2025
 ### FORMAT
 In-class presentation with live Q&A (judges will grill you!)
 
----
-
 ## Overview
 
 Welcome to the ultimate data science showdown! Your team will compete to build the most compelling predictive model that serves a real public policy need. Like Iron Chef, you'll work with a "secret ingredient" (your chosen dataset). Like Shark Tank, you'll pitch your model's value to city decision-makers. And like Kaggle, you'll be evaluated on both technical rigor and real-world applicability.
@@ -19,8 +17,6 @@ Welcome to the ultimate data science showdown! Your team will compete to build t
 **The Challenge:** Build a predictive model that city officials would actually want to use, using only the techniques we've covered this semester.
 
 **The Stakes:** Your presentation will be evaluated by a panel of judges (your professor + a surprise guest) who will grill you on your methods, assumptions, and recommendations. You need to demonstrate not just technical competence, but deep understanding of what you've built and why it matters.
-
----
 
 ## The Secret Ingredient: Dataset Options
 
@@ -42,25 +38,17 @@ Like Iron Chef's mystery ingredient, you must choose ONE of the following as you
 - **Primary Source:** [Eviction Lab Philadelphia Tracking](https://evictionlab.org/eviction-tracking/philadelphia-pa/)
 - **Description:** Eviction filing data for Philadelphia
 
----
-
 ### Option 2: Property Tax Delinquency
 - **Primary Source:** [Real Estate Tax Balances](https://opendataphilly.org/datasets/real-estate-tax-balances/)
 - **Description:** Outstanding real estate tax balances for Philadelphia properties
-
----
 
 ### Option 3: Transit Ridership
 - **Primary Source:** [SEPTA Ridership Statistics](https://opendataphilly.org/datasets/septa-ridership-statistics/)
 - **Description:** Ridership data by route, line, station, time period, and mode
 
----
-
 ### Option 4: Building Inspections
 - **Primary Source:** [L&I Building Certifications](https://opendataphilly.org/datasets/licenses-and-inspections-building-certifications/)
 - **Description:** Required periodic inspections for certain buildings - certification status (pass/fail/deficient)
-
----
 
 ## Technical Requirements
 
@@ -135,8 +123,6 @@ Like Iron Chef's mystery ingredient, you must choose ONE of the following as you
    - Must consider equity implications and potential for bias (but if this is just generic verbatim what AI says, the sharks will not be happy)
    - Must include actionable recommendations
 
----
-
 ## The Shark Tank Pitch: What to "Sell"
 
 Your presentation should answer:
@@ -166,8 +152,6 @@ Your presentation should answer:
 - What data would they need to collect?
 - What are the costs/benefits?
 - What safeguards are needed?
-
----
 
 ## Deliverables
 
@@ -210,8 +194,6 @@ Your presentation should answer:
 
 **THIS IS YOUR LAST ASSIGNMENT OF THE SEMESTER! 🎉**
 
----
-
 ## Evaluation Criteria
 
 Your project will be evaluated on:
@@ -244,8 +226,6 @@ Your project will be evaluated on:
 - Professional documentation
 - Ability to explain technical concepts to non-technical audience
 
----
-
 ## The Grilling: What to Expect
 
 During your presentation, judges will ask probing questions such as:
@@ -269,8 +249,6 @@ During your presentation, judges will ask probing questions such as:
 - "What safeguards would you build in?"
 
 **Be prepared to defend every decision you made.**
-
----
 
 ## Time Management & Team Workflow
 
@@ -309,7 +287,6 @@ This is a **tight timeline**, so strategy matters more than ambition:
 - Post repo BEFORE Monday morning!
 
 ### Team Roles & Collaboration
-
 
 **Consider defining roles within your team:**
 
