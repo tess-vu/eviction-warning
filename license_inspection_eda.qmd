@@ -32,6 +32,16 @@ editor:
     wrap: 72
 ---
 
+# Potential Project?
+
+**Research Question:** What is the probability that a building will be classified as High-Risk/Deficient within the next 12 months?
+
+**Method:** The question I posed has a binary outcome so a logistic classification regression is ideal.
+
+**Data Scope:** From 2002 onward, but there are gaps until 2010, and sparseness between 2010 and 2020.
+
+# Setup and Initial Data Loading
+
 ```{r}
 library(dplyr)
 library(stringr)
@@ -40,8 +50,6 @@ library(tidyr)
 library(lubridate)
 library(sf)
 ```
-
-# LOAD AND INITIAL CLEANING
 
 ```{r load-and-shape}
 # Load longitudinal certification data for time-based analysis.
@@ -65,7 +73,7 @@ print(lapply(certs_data, class))
 certs_data
 ```
 
-# EDA ON CERTIFICATION TYPES
+# Certification Types
 
 ```{r cert-types}
 # Calculate frequency of different certification types.
@@ -89,7 +97,7 @@ cert_type_plot <- ggplot(cert_type_counts[1:10,], aes(x = reorder(buildingcertty
 cert_type_plot
 ```
 
-# EDA ON INSPECTION RESULTS (RISK ASSESSMENT)
+# Inspection Results
 
 ```{r inspection-results}
 # Clean result column by grouping similar failure statuses.
@@ -119,7 +127,7 @@ result_plot <- ggplot(result_counts, aes(x = result_clean, y = count, fill = res
 result_plot
 ```
 
-# EDA ON TEMPORAL COVERAGE
+# Temporal Coverage
 
 ```{r temporal-coverage}
 # Historical trend of certifications over time.
@@ -136,7 +144,7 @@ year_plot <- ggplot(certs_data, aes(x = inspection_year)) +
 year_plot
 ```
 
-# EDA FOR POTENTIAL TARGET VARIABLE PROXY (TIME REMAINING)
+# Potential Target Variable
 
 ```{r}
 # Calculate duration in days between inspection and expiration date.
@@ -156,7 +164,7 @@ duration_plot <- ggplot(certs_data, aes( x = days_until_expiration)) +
 duration_plot
 ```
 
-# SPATIAL EXPLORATION
+# Spatial Analysis
 
 ```{r innter-join}
 opa_parcels <- st_read("data/DOR_Parcel/DOR_Parcel.shp") %>%

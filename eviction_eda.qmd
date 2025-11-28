@@ -48,9 +48,7 @@ editor:
 - Racial majority strongly predicts filing intensity suggesting equity concerns.
 - High-frequency weekly data captures volatility but monthly data better for forecasting.
 
-# Setup and Core Data Preparation
-
-# Setup and Library Loading
+# Setup and Initial Data Loading
 
 ```{r setup}
 # Load libraries.
@@ -72,8 +70,6 @@ options(scipen = 999)
 # Consistent theme.
 theme_set(theme_minimal(base_size = 12))
 ```
-
-# Data Loading and Initial Exploration
 
 ## Monthly Tract-Level Data
 
@@ -110,7 +106,7 @@ head(df_weekly_raw, 10) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
-## Claims Data (Aggregated System-Level)
+## Claims Data
 
 ```{r load-claims-data}
 # Load aggregated monthly claims data showing financial severity.
@@ -252,7 +248,7 @@ summary(df_claims %>% select(median_claim, median_claim_baseline, claim_ratio)) 
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-# Distribution Analysis: Zero-Inflation Assessment
+# Distribution Analysis
 
 ## Monthly Filing Distribution
 
@@ -407,7 +403,7 @@ quantile_stats_monthly %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-# Temporal Analysis: System-Wide Trends
+# Temporal Analysis
 
 ## Monthly Aggregate Trend with Policy Markers
 
@@ -482,7 +478,7 @@ monthly_aggregate %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-## Weekly Aggregate Trend (High-Frequency View)
+## Weekly Aggregate Trend
 
 ```{r weekly-system-trend}
 #| fig-dpi: 300
@@ -853,7 +849,7 @@ weekly_baseline_ratio %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-# Spatial
+# Spatial Analysis
 
 ```{r spatial-setup}
 # Tracts data.
@@ -889,7 +885,7 @@ tract_map_weekly <- tract_geo %>%
   left_join(df_weekly_agg, by = "GEOID")
 ```
 
-# Choropleths
+## Choropleths
 
 ```{r choropleth}
 #| fig-width: 12
