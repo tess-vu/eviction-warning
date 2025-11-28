@@ -58,6 +58,8 @@ doing and what limitations we face with real-world data! :D
 -   Weekday recovery differs substantially from weekend patterns.
 -   County-level heterogeneity suggests fixed effects are required.
 
+**Note:** I am realizing now that we will need to also include Camden and Gloucester counties in New Jersey, and New Castle county in Delaware to reduce the edge effect, and also some stations are in Delaware.
+
 # Setup and Initial Data Loading
 
 ```{r setup}
