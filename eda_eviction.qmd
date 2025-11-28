@@ -1,0 +1,343 @@
+---
+title: Licenses and Inspections
+subtitle: Exploratory Data Analysis
+date: today
+author:
+  - name: Angel Rutherford
+  - name: Ixchel Ramirez
+  - name: Tess Vu
+    email:
+      - tessavu@proton.me
+      - tessavu@upenn.edu
+affiliation:
+  - name: University of Pennsylvania
+    department: Urban Spatial Analytics (MUSA)
+    city: Philadelphia
+    state: PA
+    url: https://www.design.upenn.edu/urban-spatial-analytics
+format:
+  html:
+    code-fold: show
+    toc: true
+    toc_float: true
+    toc-expand: true
+    smooth-scroll: true
+    embed-resources: true
+    title-block-style: default
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+# Setup and Core Data Preparation
+
+```{r setup}
+# Load essential R language libraries for data manipulation and visualization.
+library(tidyverse)
+library(lubridate)
+library(scales)
+library(dplyr)
+library(stringr)
+library(sf)
+library(patchwork)
+
+# Suppress scientific notation for cleaner output.
+options(scipen = 999)
+```
+
+```{r load-clean}
+# Tracts of PA, filtered for Philly (Conceptual step, assumes pa_tracts.shp is loaded).
+tract_geo <- read_sf("data/pa_tracts/pa_tracts.shp")
+tract_geo <- tract_geo %>%
+  filter(`COUNTYFP` == "101")
+
+# Load core monthly and weekly eviction data files.
+df_eviction <- read.csv("data/eviction/philadelphia_monthly_2020_2021.csv")
+df_monthly <- read.csv("data/eviction/philadelphia_monthly_2020_2021.csv")
+df_weekly_full <- read.csv("data/eviction/philadelphia_weekly_2020_2021.csv")
+
+# Clean column names in monthly data.
+df_eviction <- df_eviction %>%
+  rename(
+    filings_count = filings_2020,
+    GEOID = GEOID
+  )
+
+# Convert month column to a proper date format for time series analysis.
+df_eviction <- df_eviction %>%
+  mutate(
+    date = as.Date(paste0("01/", month), format = "%d/%m/%Y"),
+    year = year(date)
+  ) %>%
+  filter(!is.na(date))
+
+# Filter out low-volume months (early 2020 shutdown) for distribution stability.
+df_eviction_clean <- df_eviction %>%
+  filter(filings_count > 0)
+
+# Summarize cleaned data structure.
+summary(df_eviction)
+```
+
+# Temporal Trends
+
+```{r temporal-trends}
+# Calculate total filings aggregated by month to show system-wide trend.
+monthly_trend <- df_eviction %>%
+  group_by(date) %>%
+  summarise(Total_Filings = sum(filings_count),.groups = "drop")
+
+# Visualize total monthly filings over time.
+trend_plot <- ggplot(monthly_trend, aes(x = date, y = Total_Filings)) +
+  geom_line(color = "#b30000", linewidth = 1.1) +
+  geom_point(color = "#b30000", size = 2) +
+  geom_vline(xintercept = as.Date("2020-03-01"), linetype = "dashed", color = "gray50") +
+  geom_vline(xintercept = as.Date("2021-09-01"), linetype = "dashed", color = "gray50") +
+  labs(
+    title = "Total Monthly Eviction Filings (2020 - 2023)",
+    subtitle = "Vertical lines mark pandemic shutdown and partial moratorium lift.",
+    x = "Date",
+    y = "Total Filings"
+  ) +
+  scale_y_continuous(labels = comma)
+
+# Plot shows system-wide temporal trend of eviction filings.
+trend_plot
+```
+
+```{r count-distribution}
+# Create log(Count + 1) transformation for comparison.
+df_hist_data <- df_eviction_clean %>%
+  mutate(
+    Log_Count = log10(filings_count + 1),
+    Scale = factor("Raw Count", levels = c("Raw Count", "Log10(Count + 1)"))
+  )
+
+# Duplicate data for faceted plotting.
+df_log_data <- df_hist_data %>%
+  mutate(
+    filings_count = Log_Count,
+    Scale = factor("Log10(Count + 1)", levels = c("Raw Count", "Log10(Count + 1)"))
+  )
+
+# Combine datasets for 1x2 faceted visualization.
+df_final_hist <- bind_rows(df_hist_data, df_log_data)
+
+# Visualize distributions of raw and log-transformed counts.
+dist_plot <- ggplot(df_final_hist, aes(x = filings_count)) +
+  geom_histogram(bins = 30, fill = "#045a8d", color = "white", alpha = 0.8) +
+  scale_x_continuous(labels = comma) +
+  labs(
+    title = "Distribution of Monthly Eviction Filings per Tract",
+    subtitle = "Extreme skewness justifies use of Negative Binomial regression.",
+    x = "Filings Count",
+    y = "Frequency (Number of Tracts)"
+  ) +
+  facet_wrap(~ Scale, scales = "free") +
+  theme_minimal()
+
+# Plot shows comparison of raw and log-transformed distributions.
+dist_plot
+```
+
+# Spatial Racial Disparity
+
+```{r disparity}
+# Summarize total filings by the tract's racial majority group.
+racial_filings <- df_eviction %>%
+  filter(!is.na(racial_majority)) %>%
+  group_by(racial_majority) %>%
+  summarize(Total_Filings = sum(filings_count),.groups = "drop") %>%
+  arrange(desc(Total_Filings))
+
+# Visualize total filings by group.
+racial_plot <- ggplot(racial_filings, aes(x = reorder(racial_majority, Total_Filings), y = Total_Filings)) +
+  geom_bar(stat = "identity", fill = "#3182bd") +
+  coord_flip() +
+  labs(
+    title = "Total Eviction Filings by Census Tract Racial Majority",
+    subtitle = "Highlights major structural disparities in risk exposure.",
+    x = "Census Tract Racial Majority",
+    y = "Total Eviction Filings (2020 - 2023)"
+  ) +
+  scale_y_continuous(labels = comma)
+
+# Bar plot shows disparity in eviction filings by neighborhood demography.
+racial_plot
+```
+
+# Eviction Claim Numbers
+
+```{r claim-numbers}
+# Load contextual data on financial claims.
+df_claims <- read.csv("data/eviction/philadelphia_claims_monthly.csv")
+
+# Convert month_date to a proper date format.
+df_claims <- df_claims %>%
+  mutate(date = as.Date(month_date))
+
+# Visualize the trend of median claim amounts.
+claims_plot <- ggplot(df_claims, aes(x = date, y = median_claim)) +
+  geom_line(color = "#74c476", linewidth = 1.1) +
+  geom_hline(aes(yintercept = median_claim_baseline), linetype = "dashed", color = "gray50") +
+  labs(
+    title = "Median Eviction Claim Amount Over Time",
+    subtitle = "Dashed line shows the median claim baseline (pre-pandemic average).",
+    x = "Date",
+    y = "Median Claim Amount (USD)"
+  ) +
+  scale_y_continuous(labels = dollar)
+
+# Plot shows financial severity of eviction claims over time.
+claims_plot
+```
+
+# Weekly Filings vs. Pre-Pandemic Baseline
+
+```{r weekly-pre-pandemic}
+# Load weekly eviction filings data.
+df_weekly <- read.csv("data/eviction/philadelphia_weekly_2020_2021.csv")
+
+# Clean column names and convert date.
+df_weekly <- df_weekly %>%
+  rename(filings_count = filings_2020) %>%
+  mutate(date = as.Date(week_date)) %>%
+  filter(!is.na(date))
+
+# Calculate the average weekly filing ratio aggregated across all tracts.
+weekly_ratio_trend <- df_weekly %>%
+  group_by(date) %>%
+  summarise(
+    Total_Filings = sum(filings_count),
+    Total_Baseline = sum(filings_avg_prepandemic_baseline),
+    Ratio_to_Baseline = Total_Filings / Total_Baseline,
+    .groups = "drop"
+  ) %>%
+  filter(Total_Baseline > 0)
+
+# Visualize normalized weekly filings trend.
+ratio_plot <- ggplot(weekly_ratio_trend, aes(x = date, y = Ratio_to_Baseline)) +
+  geom_line(color = "#006d2c", linewidth = 0.7) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
+  geom_smooth(method = "loess", se = FALSE, color = "orange", linewidth = 1.2) +
+  labs(
+    title = "Weekly Filings Normalized to Pre-Pandemic Baseline",
+    subtitle = "Ratio > 1 indicates system overload compared to historical averages.",
+    x = "Date (Week Ending)",
+    y = "Weekly Filings / Pre-Pandemic Avg Ratio"
+  )
+
+# Plot shows ratio of current filings against historical norm.
+ratio_plot
+```
+
+# Weekly Filings by Racial Majority
+
+```{r weekly-filing-race}
+#| fig-width: 12
+#| fig-height: 4
+#| fig-dpi: 300
+
+# Aggregate total filings by week and racial majority group.
+weekly_racial_trend <- df_weekly %>%
+  group_by(date, racial_majority) %>%
+  summarise(Total_Filings = sum(filings_count),.groups = "drop")
+
+# Visualize total filings by group using a stacked area plot.
+equity_plot <- ggplot(weekly_racial_trend, aes(x = date, y = Total_Filings, fill = racial_majority)) +
+  geom_area(linewidth = 0.5, color = "white", alpha = 0.8) +
+  labs(
+    title = "Weekly Eviction Filings by Census Tract Racial Majority",
+    subtitle = "Stacked area plot shows differential weekly responses to policy changes.",
+    x = "Date (Week Ending)",
+    y = "Total Filings",
+    fill = "Racial Majority"
+  ) +
+  scale_y_continuous(labels = comma)
+
+# Plot shows weekly equity disparity in filing totals.
+equity_plot
+```
+
+# Spatial
+
+```{r spatial-setup}
+# Calculate total filings per tract across the entire study period.
+df_monthly_agg <- df_monthly %>%
+  rename(filings_count = filings_2020) %>%
+  group_by(GEOID) %>%
+  summarise(
+    Total_Filings = sum(filings_count, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  # Convert GEOID to character to ensure successful join with geometry.
+  mutate(GEOID = as.character(GEOID))
+
+# Perform spatial join for long-term risk.
+tract_map_monthly <- tract_geo %>%
+  left_join(df_monthly_agg, by = "GEOID")
+```
+
+```{r weekly-filings}
+# Calculate the average weekly filings per tract across the study period.
+df_weekly_agg <- df_weekly_full %>%
+  rename(filings_count = filings_2020) %>%
+  group_by(GEOID) %>%
+  summarise(
+    Avg_Weekly_Filings = mean(filings_count, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  # Convert GEOID to character to ensure successful join with geometry.
+  mutate(GEOID = as.character(GEOID))
+
+# Average weekly filings per tract calculated for short-term risk map.
+tract_map_weekly <- tract_geo %>%
+  left_join(df_weekly_agg, by = "GEOID")
+```
+
+# Choropleths
+
+```{r choropleth}
+#| fig-width: 12
+#| fig-height: 8
+#| fig-dpi: 300
+
+# Define a common color scale for visual consistency.
+common_fill_scale <- scale_fill_viridis_c(
+  trans = "log10",
+  labels = comma,
+  na.value = "gray70",
+  direction = -1,
+  name = "Count (Log)"  # Add explicit shared legend name
+)
+
+# Total Long-Term Filings (Overall Risk)
+map_total_risk <- ggplot(tract_map_monthly) +
+  geom_sf(aes(fill = Total_Filings + 1), color = "white", linewidth = 0.1) +
+  common_fill_scale +
+  labs(
+    title = "Total Eviction Filings (2020-2023)",
+    subtitle = "Long-term risk and structural disparity."
+  ) +
+  coord_sf(datum = NA) +
+  theme_void()
+
+# Average Weekly Filings (Volatility/Short-Term Risk)
+map_weekly_avg <- ggplot(tract_map_weekly) +
+  geom_sf(aes(fill = Avg_Weekly_Filings + 1), color = "white", linewidth = 0.1) +
+  common_fill_scale +
+  labs(
+    title = "Average Weekly Filings",
+    subtitle = "Normalized view of short-term filing activity."
+  ) +
+  coord_sf(datum = NA) +
+  theme_void()
+
+# Map showing average monthly and weekly eviction filings.
+(map_total_risk | map_weekly_avg) +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom", legend.direction = "horizontal")
+```
