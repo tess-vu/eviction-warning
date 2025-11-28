@@ -1,0 +1,240 @@
+---
+title: Licenses and Inspections
+subtitle: Exploratory Data Analysis
+date: today
+author:
+  - name: Angel Rutherford
+  - name: Ixchel Ramirez
+  - name: Tess Vu
+    email:
+      - tessavu@proton.me
+      - tessavu@upenn.edu
+affiliation:
+  - name: University of Pennsylvania
+    department: Urban Spatial Analytics (MUSA)
+    city: Philadelphia
+    state: PA
+    url: https://www.design.upenn.edu/urban-spatial-analytics
+format:
+  html:
+    code-fold: show
+    toc: true
+    toc_float: true
+    toc-expand: true
+    smooth-scroll: true
+    embed-resources: true
+    title-block-style: default
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+```{r}
+library(dplyr)
+library(stringr)
+library(tidyverse)
+library(tidyr)
+library(lubridate)
+library(sf)
+```
+
+# LOAD AND INITIAL CLEANING
+
+```{r load-and-shape}
+# Load longitudinal certification data for time-based analysis.
+certs_data <- read.csv("data/license_inspection/BUILDING_CERTS.csv")
+
+# Convert inspection date column to date object.
+certs_data$inspectiondate <- ymd_hms(certs_data$inspectiondate)
+
+# Convert expiration date column to date object.
+certs_data$expirationdate <- ymd_hms(certs_data$expirationdate)
+
+# Create year variable for historical distribution analysis.
+certs_data$inspection_year <- year(certs_data$inspectiondate)
+
+cat("\nBUILDING_CERTS Dimension:", dim(certs_data))
+cat("\n\nBUILDING_CERTS Columns:\n\n")
+print(lapply(certs_data, class))
+```
+
+```{r table-view}
+certs_data
+```
+
+# EDA ON CERTIFICATION TYPES
+
+```{r cert-types}
+# Calculate frequency of different certification types.
+cert_type_counts <- certs_data %>%
+  group_by(buildingcerttype) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+# Top 10 certification types.
+cert_type_plot <- ggplot(cert_type_counts[1:10,], aes(x = reorder(buildingcerttype, count), y = count)) +
+  geom_bar(stat = "identity", fill = "skyblue") +
+  coord_flip() +
+  labs(
+    title = "Top Ten Building Certification Types",
+    x = "Certification Type",
+    y = "Count of Certifications"
+  ) +
+  theme_minimal()
+
+# Distribution of different certification types.
+cert_type_plot
+```
+
+# EDA ON INSPECTION RESULTS (RISK ASSESSMENT)
+
+```{r inspection-results}
+# Clean result column by grouping similar failure statuses.
+certs_data$result_clean <- recode(certs_data$inspectionresult,
+                                   "Certified" = "Safe",
+                                   "Unsafe" = "Failure",
+                                   "Deficient" = "Failure",
+                                   "Safe with Repair" = "Safe"
+                                  )
+
+# Frequency of inspection results.
+result_counts <- certs_data %>%
+  group_by(result_clean) %>%
+  summarise(count = n())
+
+# Distribution of final inspection results.
+result_plot <- ggplot(result_counts, aes(x = result_clean, y = count, fill = result_clean)) +
+  geom_bar(stat = "identity") +
+  labs(
+    title = "Distribution of Final Inspection Results",
+    x = "Inspection Result",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Count of final inspection outcomes.
+result_plot
+```
+
+# EDA ON TEMPORAL COVERAGE
+
+```{r temporal-coverage}
+# Historical trend of certifications over time.
+year_plot <- ggplot(certs_data, aes(x = inspection_year)) +
+  geom_histogram(binwidth = 1, fill = "darkblue", color = "white") +
+  labs(
+    title = "Number of Certifications by Inspection Year",
+    x = "Inspection Year",
+    y = "Count of Certifications"
+  ) +
+  theme_minimal()
+
+# Histogram shows volume of inspections per year.
+year_plot
+```
+
+# EDA FOR POTENTIAL TARGET VARIABLE PROXY (TIME REMAINING)
+
+```{r}
+# Calculate duration in days between inspection and expiration date.
+certs_data$days_until_expiration <- as.numeric(difftime(certs_data$expirationdate, certs_data$inspectiondate, units = "days"))
+
+# Visualize distribution of certification duration.
+duration_plot <- ggplot(certs_data, aes( x = days_until_expiration)) +
+  geom_histogram(bins = 30, fill = "darkgreen", color = "white") +
+  labs(
+    title = "Distribution of Certification Duration in Days",
+    x = "Certification Duration (Days)",
+    y = "Count"
+  ) +
+  theme_minimal()
+
+# Length of certification period.
+duration_plot
+```
+
+# SPATIAL EXPLORATION
+
+```{r innter-join}
+opa_parcels <- st_read("data/DOR_Parcel/DOR_Parcel.shp") %>%
+  drop_na(c(addr_sourc, addr_std)) %>%
+  select(c(addr_sourc, addr_std, parcel))
+
+certs_data <- certs_data %>%
+  drop_na(address)
+
+# # Check for exact matches and create a new logical column
+# opa_parcels$match <- opa_parcels$addr_sourc == opa_parcels$addr_std
+# 
+# print(sum(!opa_parcels$match))
+# 
+# # Print the data frame with the new column
+# print(df)
+
+certs_data$addr_std <- certs_data$address
+
+merged_by_addr_std <- inner_join(opa_parcels, certs_data, by = "addr_std", relationship = "many-to-many")
+```
+
+```{r spatial-viz}
+# Calculate Failure Rate by Council District.
+district_risk <- merged_by_addr_std %>%
+  group_by(council_district) %>%
+  summarise(
+    total_certs = n(),
+    failure_count = sum(result_clean == "Failure"),
+    failure_rate = failure_count / total_certs
+  ) %>%
+  arrange(desc(failure_rate))
+# Failure rate calculated for each council district.
+
+# Visualize Failure Rate by Council District (Spatial-Proxy).
+district_risk_plot <- ggplot(district_risk, aes(x = reorder(council_district, failure_rate), y = failure_rate)) +
+  geom_bar(stat = "identity", fill = "firebrick") +
+  labs(
+    title = "Failure Rate by City Council District",
+    x = "Council District",
+    y = "Failure Rate (Proportion of Total Certs)"
+  ) +
+  theme_minimal()
+
+# Bar plot shows distribution of failure risk across political boundaries.
+district_risk_plot
+```
+
+```{r spatial-viz}
+# Analyze contractor performance by filtering top contractors.
+top_contractors <- merged_by_addr_std %>%
+  count(contractorname) %>%
+  arrange(desc(n)) %>%
+  head(10) %>%
+  pull(contractorname)
+
+# Top 10 contractors identified by volume.
+# Filter data for only top contractors and remove missing duration values.
+contractor_data <- merged_by_addr_std %>%
+  filter(contractorname %in% top_contractors) %>%
+  filter(!is.na(days_until_expiration))
+
+# Data subsetted to include only high-volume contractors.
+
+# Visualize duration by contractor (potential bias check).
+contractor_duration_plot <- ggplot(contractor_data, aes(x = reorder(contractorname,
+                                                                    days_until_expiration,
+                                                                    FUN = median),
+                                                        y = days_until_expiration)) +
+  geom_boxplot(fill = "gold") +
+  coord_flip() +
+  labs(
+    title = "Certification Duration by Top 10 Contractors",
+    x = "Contractor Name",
+    y = "Certification Duration (Days)"
+  ) +
+  theme_minimal()
+
+# Box plot compares median certification duration across inspection companies.
+contractor_duration_plot
+```

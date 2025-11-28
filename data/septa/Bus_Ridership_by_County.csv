@@ -1,0 +1,148 @@
+﻿County_Name,Mode,Season,Day_of_Week,On_,Off_,ObjectId
+Montgomery County,Bus,Fall 2019,Saturday,14109,14995,1
+New Castle County,Bus,Fall 2019,Saturday,152,139,2
+Philadelphia County,Bus,Fall 2019,Saturday,202787,203013,3
+Bucks County,Bus,Fall 2019,Sunday,2169,2240,4
+Chester County,Bus,Fall 2019,Sunday,571,565,5
+Delaware County,Bus,Fall 2019,Sunday,15204,14730,6
+Mercer County,Bus,Fall 2019,Sunday,0,0,7
+Montgomery County,Bus,Fall 2019,Sunday,9300,9864,8
+New Castle County,Bus,Fall 2019,Sunday,103,91,9
+Philadelphia County,Bus,Fall 2019,Sunday,144398,144808,10
+Bucks County,Bus,Fall 2021,Weekday,1764,1825,11
+Chester County,Bus,Fall 2021,Weekday,1491,1473,12
+Delaware County,Bus,Fall 2021,Weekday,21917,21545,13
+Mercer County,Bus,Fall 2021,Weekday,34,26,14
+Montgomery County,Bus,Fall 2021,Weekday,10947,11740,15
+New Castle County,Bus,Fall 2021,Weekday,119,86,16
+Philadelphia County,Bus,Fall 2021,Weekday,202569,201041,17
+Bucks County,Bus,Fall 2021,Saturday,1208,1245,18
+Chester County,Bus,Fall 2021,Saturday,891,866,19
+Delaware County,Bus,Fall 2021,Saturday,12465,12161,20
+Mercer County,Bus,Fall 2021,Saturday,29,23,21
+Montgomery County,Bus,Fall 2021,Saturday,7391,7659,22
+New Castle County,Bus,Fall 2021,Saturday,79,62,23
+Philadelphia County,Bus,Fall 2021,Saturday,98980,97923,24
+Bucks County,Bus,Fall 2021,Sunday,512,537,25
+Chester County,Bus,Fall 2021,Sunday,499,491,26
+Delaware County,Bus,Fall 2021,Sunday,8728,8543,27
+Mercer County,Bus,Fall 2021,Sunday,0,0,28
+Montgomery County,Bus,Fall 2021,Sunday,4809,4959,29
+New Castle County,Bus,Fall 2021,Sunday,75,41,30
+Philadelphia County,Bus,Fall 2021,Sunday,71465,70765,31
+Bucks County,Bus,Fall 2022,Weekday,3125,3261,32
+Chester County,Bus,Fall 2022,Weekday,1887,1872,33
+Delaware County,Bus,Fall 2022,Weekday,26510,25830,34
+Mercer County,Bus,Fall 2022,Weekday,39,36,35
+Montgomery County,Bus,Fall 2022,Weekday,14677,15769,36
+New Castle County,Bus,Fall 2022,Weekday,125,124,37
+Philadelphia County,Bus,Fall 2022,Weekday,303673,301151,38
+Bucks County,Bus,Fall 2022,Saturday,2176,2185,39
+Chester County,Bus,Fall 2022,Saturday,1117,1092,40
+Delaware County,Bus,Fall 2022,Saturday,15820,15317,41
+Mercer County,Bus,Fall 2022,Saturday,27,26,42
+Montgomery County,Bus,Fall 2022,Saturday,9955,10364,43
+New Castle County,Bus,Fall 2022,Saturday,100,99,44
+Philadelphia County,Bus,Fall 2022,Saturday,154807,153559,45
+Bucks County,Bus,Fall 2022,Sunday,1184,1198,46
+Chester County,Bus,Fall 2022,Sunday,592,595,47
+Delaware County,Bus,Fall 2022,Sunday,10453,10037,48
+Mercer County,Bus,Fall 2022,Sunday,0,0,49
+Montgomery County,Bus,Fall 2022,Sunday,6288,6544,50
+New Castle County,Bus,Fall 2022,Sunday,59,62,51
+Philadelphia County,Bus,Fall 2022,Sunday,107486,106625,52
+Bucks County,Bus,Fall 2023,Weekday,3294,3411,53
+Chester County,Bus,Fall 2023,Weekday,2096,2078,54
+Delaware County,Bus,Fall 2023,Weekday,28727,28028,55
+Mercer County,Bus,Fall 2023,Weekday,47,28,56
+Montgomery County,Bus,Fall 2023,Weekday,15407,16104,57
+New Castle County,Bus,Fall 2023,Weekday,130,133,58
+Philadelphia County,Bus,Fall 2023,Weekday,327898,325601,59
+Bucks County,Bus,Fall 2023,Saturday,2245,2243,60
+Chester County,Bus,Fall 2023,Saturday,1182,1178,61
+Delaware County,Bus,Fall 2023,Saturday,16645,16122,62
+Mercer County,Bus,Fall 2023,Saturday,36,22,63
+Montgomery County,Bus,Fall 2023,Saturday,9991,10294,64
+New Castle County,Bus,Fall 2023,Saturday,115,108,65
+Philadelphia County,Bus,Fall 2023,Saturday,157813,156822,66
+Bucks County,Bus,Fall 2023,Sunday,1268,1248,67
+Chester County,Bus,Fall 2023,Sunday,715,741,68
+Delaware County,Bus,Fall 2023,Sunday,11537,11137,69
+Mercer County,Bus,Fall 2023,Sunday,0,0,70
+Montgomery County,Bus,Fall 2023,Sunday,6666,6812,71
+New Castle County,Bus,Fall 2023,Sunday,78,67,72
+Bucks County,Bus,Fall 2014,Weekday,5541,6218,73
+Philadelphia County,Bus,Fall 2023,Sunday,114476,113960,74
+Chester County,Bus,Fall 2014,Weekday,2642,2784,75
+Delaware County,Bus,Fall 2014,Weekday,46667,47527,76
+Mercer County,Bus,Fall 2014,Weekday,110,101,77
+Montgomery County,Bus,Fall 2014,Weekday,26418,29977,78
+New Castle County,Bus,Fall 2014,Weekday,173,302,79
+Philadelphia County,Bus,Fall 2014,Weekday,505004,502410,80
+Bucks County,Bus,Fall 2015,Weekday,5594,6139,81
+Chester County,Bus,Fall 2015,Weekday,2360,2624,82
+Delaware County,Bus,Fall 2015,Weekday,45304,44977,83
+Mercer County,Bus,Fall 2015,Weekday,102,94,84
+Montgomery County,Bus,Fall 2015,Weekday,27076,30275,85
+New Castle County,Bus,Fall 2015,Weekday,163,276,86
+Philadelphia County,Bus,Fall 2015,Weekday,499884,499519,87
+Bucks County,Bus,Fall 2016,Weekday,5437,5401,88
+Chester County,Bus,Fall 2016,Weekday,2190,2467,89
+Delaware County,Bus,Fall 2016,Weekday,43205,43224,90
+Mercer County,Bus,Fall 2016,Weekday,76,77,91
+Montgomery County,Bus,Fall 2016,Weekday,25546,27679,92
+New Castle County,Bus,Fall 2016,Weekday,195,250,93
+Philadelphia County,Bus,Fall 2016,Weekday,447211,447198,94
+Bucks County,Bus,Fall 2017,Weekday,5802,6214,95
+Chester County,Bus,Fall 2017,Weekday,2430,2745,96
+Delaware County,Bus,Fall 2017,Weekday,42580,42233,97
+Mercer County,Bus,Fall 2017,Weekday,94,90,98
+Montgomery County,Bus,Fall 2017,Weekday,25514,28191,99
+New Castle County,Bus,Fall 2017,Weekday,228,230,100
+Philadelphia County,Bus,Fall 2017,Weekday,440963,440702,101
+Bucks County,Bus,Fall 2017,Saturday,3933,4175,102
+Chester County,Bus,Fall 2017,Saturday,1183,1336,103
+Delaware County,Bus,Fall 2017,Saturday,23502,22868,104
+Mercer County,Bus,Fall 2017,Saturday,36,42,105
+Montgomery County,Bus,Fall 2017,Saturday,15177,16488,106
+New Castle County,Bus,Fall 2017,Saturday,137,128,107
+Philadelphia County,Bus,Fall 2017,Saturday,207120,206449,108
+Bucks County,Bus,Fall 2017,Sunday,2134,2269,109
+Chester County,Bus,Fall 2017,Sunday,644,692,110
+Delaware County,Bus,Fall 2017,Sunday,15506,15392,111
+Mercer County,Bus,Fall 2017,Sunday,0,0,112
+Montgomery County,Bus,Fall 2017,Sunday,9953,10570,113
+New Castle County,Bus,Fall 2017,Sunday,78,98,114
+Philadelphia County,Bus,Fall 2017,Sunday,147404,147265,115
+Bucks County,Bus,Fall 2018,Weekday,5485,5820,116
+Chester County,Bus,Fall 2018,Weekday,2158,2292,117
+Delaware County,Bus,Fall 2018,Weekday,47166,46380,118
+Mercer County,Bus,Fall 2018,Weekday,79,68,119
+Montgomery County,Bus,Fall 2018,Weekday,24537,26704,120
+New Castle County,Bus,Fall 2018,Weekday,180,168,121
+Philadelphia County,Bus,Fall 2018,Weekday,426148,425120,122
+Bucks County,Bus,Fall 2018,Saturday,4079,4284,123
+Chester County,Bus,Fall 2018,Saturday,991,1030,124
+Delaware County,Bus,Fall 2018,Saturday,25848,25060,125
+Mercer County,Bus,Fall 2018,Saturday,36,42,126
+Montgomery County,Bus,Fall 2018,Saturday,14523,15716,127
+New Castle County,Bus,Fall 2018,Saturday,137,128,128
+Philadelphia County,Bus,Fall 2018,Saturday,195907,195442,129
+Bucks County,Bus,Fall 2018,Sunday,2344,2502,130
+Chester County,Bus,Fall 2018,Sunday,570,665,131
+Delaware County,Bus,Fall 2018,Sunday,18380,18140,132
+Mercer County,Bus,Fall 2018,Sunday,0,0,133
+Montgomery County,Bus,Fall 2018,Sunday,9896,10464,134
+New Castle County,Bus,Fall 2018,Sunday,101,85,135
+Philadelphia County,Bus,Fall 2018,Sunday,141502,141376,136
+Bucks County,Bus,Fall 2019,Weekday,4897,5092,137
+Chester County,Bus,Fall 2019,Weekday,2088,2125,138
+Delaware County,Bus,Fall 2019,Weekday,39958,39319,139
+Mercer County,Bus,Fall 2019,Weekday,54,48,140
+Montgomery County,Bus,Fall 2019,Weekday,22767,24546,141
+New Castle County,Bus,Fall 2019,Weekday,195,182,142
+Philadelphia County,Bus,Fall 2019,Weekday,436109,436762,143
+Bucks County,Bus,Fall 2019,Saturday,3520,3688,144
+Chester County,Bus,Fall 2019,Saturday,993,1052,145
+Delaware County,Bus,Fall 2019,Saturday,22795,22273,146
+Mercer County,Bus,Fall 2019,Saturday,38,38,147

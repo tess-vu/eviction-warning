@@ -1,0 +1,15 @@
+﻿Field Name,Alias,Description,Type
+ADDRESS,,Base address of property where certification was performed.  ,Text
+BIN,,Unique ID of building structure where certification was applied,Text
+BUILDINGCERTNUMBER,,Unique ID for certification filed with L&I,Text
+BUILDINGCERTTYPE,,Type of certification approved,Text
+CONTRACTORADDRESS,,Mailing address of contractor performing certification,Text
+CONTRACTORNAME,,Name of 3rd party contractor performing certification,Text
+COUNCIL_DIST,,City Council District,Text
+EXPIRATIONDATE,,Certification expire x number of years from inspection date.  The number of years is determined based of the type of certification.  ,Date
+INSPECTIONDATE,,Date inspection was performed by 3rd party inspection agency,Date
+INSPECTIONRESULT,,Pass/fail status of certification,Text
+POSSE_JOBID,,Objectid and join field for related records,Text
+UNIT_NUM,,Unit number in address (where applicable).,Text
+UNIT_TYPE,,Unit prefix for unit number in property address (only exists where applicable).,Text
+ZIP,,Zip code for property<br />,Text

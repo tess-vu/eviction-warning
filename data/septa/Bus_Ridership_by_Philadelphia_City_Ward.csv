@@ -1,0 +1,1387 @@
+﻿Philadelphia_City_Ward,Mode,Season,Day_of_Week,On_,Off_,ObjectId
+35,Bus,Fall 2015,Weekday,8443,8064,1
+36,Bus,Fall 2015,Weekday,7885,8908,2
+37,Bus,Fall 2015,Weekday,6426,5626,3
+38,Bus,Fall 2015,Weekday,8752,8521,4
+39,Bus,Fall 2015,Weekday,15219,14916,5
+40,Bus,Fall 2015,Weekday,8395,8102,6
+41,Bus,Fall 2015,Weekday,5233,5567,7
+42,Bus,Fall 2015,Weekday,5653,6323,8
+43,Bus,Fall 2015,Weekday,10404,9485,9
+44,Bus,Fall 2015,Weekday,5362,5131,10
+45,Bus,Fall 2015,Weekday,9537,6988,11
+46,Bus,Fall 2015,Weekday,3209,2959,12
+47,Bus,Fall 2015,Weekday,3943,4692,13
+48,Bus,Fall 2015,Weekday,5942,5590,14
+49,Bus,Fall 2015,Weekday,26757,25072,15
+50,Bus,Fall 2015,Weekday,5666,5787,16
+51,Bus,Fall 2015,Weekday,4116,4033,17
+52,Bus,Fall 2015,Weekday,11311,11696,18
+53,Bus,Fall 2015,Weekday,2987,2919,19
+54,Bus,Fall 2015,Weekday,3592,3191,20
+55,Bus,Fall 2015,Weekday,928,1354,21
+56,Bus,Fall 2015,Weekday,8316,6684,22
+57,Bus,Fall 2015,Weekday,2023,3158,23
+58,Bus,Fall 2015,Weekday,5548,4578,24
+59,Bus,Fall 2015,Weekday,13173,13993,25
+60,Bus,Fall 2015,Weekday,12747,11904,26
+61,Bus,Fall 2015,Weekday,10276,10547,27
+62,Bus,Fall 2015,Weekday,25484,26703,28
+63,Bus,Fall 2015,Weekday,2095,2072,29
+64,Bus,Fall 2015,Weekday,3425,3270,30
+65,Bus,Fall 2015,Weekday,1889,1875,31
+66,Bus,Fall 2015,Weekday,5077,7075,32
+1,Bus,Fall 2016,Weekday,5594,5402,33
+2,Bus,Fall 2016,Weekday,4265,3750,34
+3,Bus,Fall 2016,Weekday,4850,4803,35
+4,Bus,Fall 2016,Weekday,4193,4278,36
+5,Bus,Fall 2016,Weekday,34424,32720,37
+6,Bus,Fall 2016,Weekday,3545,4222,38
+7,Bus,Fall 2016,Weekday,6110,6122,39
+8,Bus,Fall 2016,Weekday,28950,28585,40
+9,Bus,Fall 2016,Weekday,2944,2926,41
+10,Bus,Fall 2016,Weekday,3697,3952,42
+11,Bus,Fall 2016,Weekday,4699,5384,43
+12,Bus,Fall 2016,Weekday,10789,9512,44
+13,Bus,Fall 2016,Weekday,15022,13384,45
+14,Bus,Fall 2016,Weekday,3130,2773,46
+15,Bus,Fall 2016,Weekday,2062,2115,47
+16,Bus,Fall 2016,Weekday,3916,4431,48
+17,Bus,Fall 2016,Weekday,6242,7774,49
+18,Bus,Fall 2016,Weekday,2109,1926,50
+51,Bus,Fall 2014,Weekday,4212,4038,51
+52,Bus,Fall 2014,Weekday,11252,11582,52
+53,Bus,Fall 2014,Weekday,3226,3003,53
+54,Bus,Fall 2014,Weekday,3664,3036,54
+55,Bus,Fall 2014,Weekday,947,1326,55
+56,Bus,Fall 2014,Weekday,8456,6719,56
+57,Bus,Fall 2014,Weekday,2125,3044,57
+58,Bus,Fall 2014,Weekday,5922,4818,58
+59,Bus,Fall 2014,Weekday,12815,13623,59
+60,Bus,Fall 2014,Weekday,12985,12134,60
+61,Bus,Fall 2014,Weekday,10244,10548,61
+62,Bus,Fall 2014,Weekday,25856,28080,62
+63,Bus,Fall 2014,Weekday,2176,2118,63
+64,Bus,Fall 2014,Weekday,3458,3306,64
+65,Bus,Fall 2014,Weekday,2060,1918,65
+66,Bus,Fall 2014,Weekday,5216,7379,66
+1,Bus,Fall 2015,Weekday,5573,5615,67
+2,Bus,Fall 2015,Weekday,5298,4524,68
+3,Bus,Fall 2015,Weekday,5486,5393,69
+4,Bus,Fall 2015,Weekday,4542,4672,70
+5,Bus,Fall 2015,Weekday,38683,37216,71
+6,Bus,Fall 2015,Weekday,3852,4422,72
+7,Bus,Fall 2015,Weekday,6004,6046,73
+8,Bus,Fall 2015,Weekday,32564,31392,74
+9,Bus,Fall 2015,Weekday,3471,3652,75
+10,Bus,Fall 2015,Weekday,4468,5039,76
+11,Bus,Fall 2015,Weekday,5334,5799,77
+12,Bus,Fall 2015,Weekday,11985,10323,78
+13,Bus,Fall 2015,Weekday,17126,14951,79
+14,Bus,Fall 2015,Weekday,3462,2995,80
+15,Bus,Fall 2015,Weekday,2246,2540,81
+16,Bus,Fall 2015,Weekday,3671,4425,82
+17,Bus,Fall 2015,Weekday,6746,8693,83
+18,Bus,Fall 2015,Weekday,2116,2280,84
+19,Bus,Fall 2015,Weekday,4399,4631,85
+20,Bus,Fall 2015,Weekday,4029,3374,86
+21,Bus,Fall 2015,Weekday,9748,9654,87
+22,Bus,Fall 2015,Weekday,5089,5182,88
+23,Bus,Fall 2015,Weekday,6905,7371,89
+24,Bus,Fall 2015,Weekday,3438,3080,90
+25,Bus,Fall 2015,Weekday,3345,4771,91
+26,Bus,Fall 2015,Weekday,9460,10608,92
+27,Bus,Fall 2015,Weekday,8208,8806,93
+28,Bus,Fall 2015,Weekday,4522,4518,94
+29,Bus,Fall 2015,Weekday,2844,2635,95
+30,Bus,Fall 2015,Weekday,3650,4178,96
+31,Bus,Fall 2015,Weekday,3074,2809,97
+32,Bus,Fall 2015,Weekday,5179,5664,98
+33,Bus,Fall 2015,Weekday,4908,6020,99
+34,Bus,Fall 2015,Weekday,8646,9458,100
+37,Bus,Fall 2017,Saturday,2484,2530,101
+38,Bus,Fall 2017,Saturday,3478,3285,102
+39,Bus,Fall 2017,Saturday,7324,6658,103
+40,Bus,Fall 2017,Saturday,4263,4340,104
+41,Bus,Fall 2017,Saturday,2044,1980,105
+42,Bus,Fall 2017,Saturday,1892,2681,106
+43,Bus,Fall 2017,Saturday,4176,3902,107
+44,Bus,Fall 2017,Saturday,2651,2549,108
+45,Bus,Fall 2017,Saturday,4428,3229,109
+46,Bus,Fall 2017,Saturday,1486,1421,110
+47,Bus,Fall 2017,Saturday,1819,2482,111
+48,Bus,Fall 2017,Saturday,1875,2166,112
+49,Bus,Fall 2017,Saturday,10786,9549,113
+50,Bus,Fall 2017,Saturday,2174,2231,114
+51,Bus,Fall 2017,Saturday,1792,1720,115
+52,Bus,Fall 2017,Saturday,4438,4710,116
+53,Bus,Fall 2017,Saturday,1040,766,117
+54,Bus,Fall 2017,Saturday,1382,1395,118
+55,Bus,Fall 2017,Saturday,322,445,119
+56,Bus,Fall 2017,Saturday,3687,2909,120
+57,Bus,Fall 2017,Saturday,780,1317,121
+58,Bus,Fall 2017,Saturday,1919,1386,122
+59,Bus,Fall 2017,Saturday,4743,5326,123
+60,Bus,Fall 2017,Saturday,5349,5294,124
+61,Bus,Fall 2017,Saturday,4710,4555,125
+62,Bus,Fall 2017,Saturday,10983,10508,126
+63,Bus,Fall 2017,Saturday,782,744,127
+64,Bus,Fall 2017,Saturday,1854,1640,128
+65,Bus,Fall 2017,Saturday,641,654,129
+66,Bus,Fall 2017,Saturday,2482,3656,130
+1,Bus,Fall 2017,Sunday,2424,2383,131
+2,Bus,Fall 2017,Sunday,1451,1301,132
+3,Bus,Fall 2017,Sunday,1364,1480,133
+4,Bus,Fall 2017,Sunday,1136,1143,134
+5,Bus,Fall 2017,Sunday,10610,9906,135
+6,Bus,Fall 2017,Sunday,1024,1204,136
+7,Bus,Fall 2017,Sunday,1466,1755,137
+8,Bus,Fall 2017,Sunday,7640,7659,138
+9,Bus,Fall 2017,Sunday,1108,1141,139
+10,Bus,Fall 2017,Sunday,1236,1334,140
+11,Bus,Fall 2017,Sunday,1798,1926,141
+12,Bus,Fall 2017,Sunday,3964,3572,142
+13,Bus,Fall 2017,Sunday,4866,4372,143
+14,Bus,Fall 2017,Sunday,1153,972,144
+15,Bus,Fall 2017,Sunday,602,633,145
+16,Bus,Fall 2017,Sunday,1192,1459,146
+17,Bus,Fall 2017,Sunday,2124,2722,147
+18,Bus,Fall 2017,Sunday,614,682,148
+19,Bus,Fall 2017,Sunday,1152,1258,149
+20,Bus,Fall 2017,Sunday,1393,1161,150
+1,Bus,Fall 2014,Weekday,5807,5781,151
+2,Bus,Fall 2014,Weekday,5368,4595,152
+3,Bus,Fall 2014,Weekday,5314,5355,153
+4,Bus,Fall 2014,Weekday,4618,4752,154
+5,Bus,Fall 2014,Weekday,38846,37901,155
+6,Bus,Fall 2014,Weekday,3844,4588,156
+7,Bus,Fall 2014,Weekday,6224,6124,157
+8,Bus,Fall 2014,Weekday,32443,31495,158
+9,Bus,Fall 2014,Weekday,3380,3490,159
+10,Bus,Fall 2014,Weekday,4436,4768,160
+11,Bus,Fall 2014,Weekday,5793,6298,161
+12,Bus,Fall 2014,Weekday,12135,10273,162
+13,Bus,Fall 2014,Weekday,15935,14970,163
+14,Bus,Fall 2014,Weekday,3509,3005,164
+15,Bus,Fall 2014,Weekday,2334,2496,165
+16,Bus,Fall 2014,Weekday,4340,4942,166
+17,Bus,Fall 2014,Weekday,7078,8629,167
+18,Bus,Fall 2014,Weekday,2052,2353,168
+19,Bus,Fall 2014,Weekday,4434,4748,169
+20,Bus,Fall 2014,Weekday,4081,3371,170
+21,Bus,Fall 2014,Weekday,9941,9792,171
+22,Bus,Fall 2014,Weekday,4959,4800,172
+23,Bus,Fall 2014,Weekday,6994,7383,173
+24,Bus,Fall 2014,Weekday,3279,3163,174
+25,Bus,Fall 2014,Weekday,3904,4753,175
+26,Bus,Fall 2014,Weekday,8196,9279,176
+27,Bus,Fall 2014,Weekday,8567,9143,177
+28,Bus,Fall 2014,Weekday,5080,5002,178
+29,Bus,Fall 2014,Weekday,2987,2526,179
+30,Bus,Fall 2014,Weekday,3728,4167,180
+31,Bus,Fall 2014,Weekday,2626,2853,181
+32,Bus,Fall 2014,Weekday,5319,5395,182
+33,Bus,Fall 2014,Weekday,4851,5899,183
+34,Bus,Fall 2014,Weekday,8832,8954,184
+35,Bus,Fall 2014,Weekday,8611,8033,185
+36,Bus,Fall 2014,Weekday,8088,9224,186
+37,Bus,Fall 2014,Weekday,6587,5842,187
+38,Bus,Fall 2014,Weekday,8359,8119,188
+39,Bus,Fall 2014,Weekday,16309,15772,189
+40,Bus,Fall 2014,Weekday,8498,7997,190
+41,Bus,Fall 2014,Weekday,5173,5661,191
+42,Bus,Fall 2014,Weekday,5834,6420,192
+43,Bus,Fall 2014,Weekday,10513,9499,193
+44,Bus,Fall 2014,Weekday,5545,5244,194
+45,Bus,Fall 2014,Weekday,9886,6909,195
+46,Bus,Fall 2014,Weekday,3418,3066,196
+47,Bus,Fall 2014,Weekday,4052,4894,197
+48,Bus,Fall 2014,Weekday,5670,4890,198
+49,Bus,Fall 2014,Weekday,27133,25553,199
+50,Bus,Fall 2014,Weekday,5480,5572,200
+19,Bus,Fall 2016,Weekday,4304,4712,201
+20,Bus,Fall 2016,Weekday,3649,3176,202
+21,Bus,Fall 2016,Weekday,8600,8221,203
+22,Bus,Fall 2016,Weekday,4535,4374,204
+23,Bus,Fall 2016,Weekday,6165,7308,205
+24,Bus,Fall 2016,Weekday,3151,2842,206
+25,Bus,Fall 2016,Weekday,3751,4118,207
+26,Bus,Fall 2016,Weekday,7545,7949,208
+27,Bus,Fall 2016,Weekday,7692,8215,209
+28,Bus,Fall 2016,Weekday,4411,4265,210
+29,Bus,Fall 2016,Weekday,2656,2677,211
+30,Bus,Fall 2016,Weekday,3368,3878,212
+31,Bus,Fall 2016,Weekday,2065,1941,213
+32,Bus,Fall 2016,Weekday,4715,4924,214
+33,Bus,Fall 2016,Weekday,4213,4780,215
+34,Bus,Fall 2016,Weekday,7477,7804,216
+35,Bus,Fall 2016,Weekday,7044,7124,217
+36,Bus,Fall 2016,Weekday,6706,7952,218
+37,Bus,Fall 2016,Weekday,5444,4940,219
+38,Bus,Fall 2016,Weekday,7128,7357,220
+39,Bus,Fall 2016,Weekday,14387,14332,221
+40,Bus,Fall 2016,Weekday,7555,7367,222
+41,Bus,Fall 2016,Weekday,5089,5021,223
+42,Bus,Fall 2016,Weekday,4974,5966,224
+43,Bus,Fall 2016,Weekday,9308,9170,225
+44,Bus,Fall 2016,Weekday,5270,5006,226
+45,Bus,Fall 2016,Weekday,9082,6594,227
+46,Bus,Fall 2016,Weekday,3002,2796,228
+47,Bus,Fall 2016,Weekday,3471,4113,229
+48,Bus,Fall 2016,Weekday,4296,4030,230
+49,Bus,Fall 2016,Weekday,24340,22589,231
+50,Bus,Fall 2016,Weekday,5050,5046,232
+51,Bus,Fall 2016,Weekday,4012,3738,233
+52,Bus,Fall 2016,Weekday,10108,10326,234
+53,Bus,Fall 2016,Weekday,2766,2660,235
+54,Bus,Fall 2016,Weekday,3031,2945,236
+55,Bus,Fall 2016,Weekday,738,1198,237
+56,Bus,Fall 2016,Weekday,7699,7158,238
+57,Bus,Fall 2016,Weekday,2115,2689,239
+58,Bus,Fall 2016,Weekday,5328,3953,240
+59,Bus,Fall 2016,Weekday,9997,11182,241
+60,Bus,Fall 2016,Weekday,11829,11170,242
+61,Bus,Fall 2016,Weekday,9634,9730,243
+62,Bus,Fall 2016,Weekday,20921,22717,244
+63,Bus,Fall 2016,Weekday,2025,2066,245
+64,Bus,Fall 2016,Weekday,3129,3174,246
+65,Bus,Fall 2016,Weekday,1842,1648,247
+66,Bus,Fall 2016,Weekday,5053,6198,248
+1,Bus,Fall 2017,Weekday,5678,5305,249
+2,Bus,Fall 2017,Weekday,4229,3546,250
+53,Bus,Fall 2017,Weekday,2750,2712,251
+54,Bus,Fall 2017,Weekday,2942,2649,252
+55,Bus,Fall 2017,Weekday,796,1164,253
+56,Bus,Fall 2017,Weekday,7659,5954,254
+57,Bus,Fall 2017,Weekday,1837,2583,255
+58,Bus,Fall 2017,Weekday,4589,3901,256
+59,Bus,Fall 2017,Weekday,9852,10945,257
+60,Bus,Fall 2017,Weekday,11321,10745,258
+61,Bus,Fall 2017,Weekday,9556,9689,259
+62,Bus,Fall 2017,Weekday,23112,23504,260
+63,Bus,Fall 2017,Weekday,1977,2074,261
+64,Bus,Fall 2017,Weekday,3501,3267,262
+65,Bus,Fall 2017,Weekday,1984,1934,263
+66,Bus,Fall 2017,Weekday,4864,6974,264
+1,Bus,Fall 2017,Saturday,3249,3219,265
+2,Bus,Fall 2017,Saturday,2213,2143,266
+3,Bus,Fall 2017,Saturday,2107,2245,267
+4,Bus,Fall 2017,Saturday,1629,1586,268
+5,Bus,Fall 2017,Saturday,16115,15057,269
+6,Bus,Fall 2017,Saturday,1439,1702,270
+7,Bus,Fall 2017,Saturday,2323,2611,271
+8,Bus,Fall 2017,Saturday,11507,11539,272
+9,Bus,Fall 2017,Saturday,1547,1484,273
+10,Bus,Fall 2017,Saturday,1813,1824,274
+11,Bus,Fall 2017,Saturday,2838,2889,275
+12,Bus,Fall 2017,Saturday,5137,4656,276
+13,Bus,Fall 2017,Saturday,6715,6268,277
+14,Bus,Fall 2017,Saturday,1558,1317,278
+15,Bus,Fall 2017,Saturday,891,988,279
+16,Bus,Fall 2017,Saturday,1592,1872,280
+17,Bus,Fall 2017,Saturday,2635,3730,281
+18,Bus,Fall 2017,Saturday,815,926,282
+19,Bus,Fall 2017,Saturday,1754,1932,283
+20,Bus,Fall 2017,Saturday,1931,1508,284
+21,Bus,Fall 2017,Saturday,4446,4158,285
+22,Bus,Fall 2017,Saturday,2136,2022,286
+23,Bus,Fall 2017,Saturday,2958,3227,287
+24,Bus,Fall 2017,Saturday,1341,1153,288
+25,Bus,Fall 2017,Saturday,1616,2076,289
+26,Bus,Fall 2017,Saturday,3467,3597,290
+27,Bus,Fall 2017,Saturday,2842,3223,291
+28,Bus,Fall 2017,Saturday,2453,2168,292
+29,Bus,Fall 2017,Saturday,1344,1384,293
+30,Bus,Fall 2017,Saturday,1287,1521,294
+31,Bus,Fall 2017,Saturday,781,772,295
+32,Bus,Fall 2017,Saturday,2481,2575,296
+33,Bus,Fall 2017,Saturday,1938,2453,297
+34,Bus,Fall 2017,Saturday,3568,3502,298
+35,Bus,Fall 2017,Saturday,3538,3690,299
+36,Bus,Fall 2017,Saturday,3332,3404,300
+21,Bus,Fall 2017,Sunday,2863,2538,301
+22,Bus,Fall 2017,Sunday,1450,1353,302
+23,Bus,Fall 2017,Sunday,2580,2711,303
+24,Bus,Fall 2017,Sunday,940,882,304
+25,Bus,Fall 2017,Sunday,1094,1345,305
+26,Bus,Fall 2017,Sunday,2559,2699,306
+27,Bus,Fall 2017,Sunday,2188,2356,307
+28,Bus,Fall 2017,Sunday,1695,1533,308
+29,Bus,Fall 2017,Sunday,977,974,309
+30,Bus,Fall 2017,Sunday,944,1061,310
+31,Bus,Fall 2017,Sunday,599,537,311
+32,Bus,Fall 2017,Sunday,1807,1859,312
+33,Bus,Fall 2017,Sunday,1270,1564,313
+34,Bus,Fall 2017,Sunday,2427,2409,314
+35,Bus,Fall 2017,Sunday,2496,2567,315
+36,Bus,Fall 2017,Sunday,2555,2640,316
+37,Bus,Fall 2017,Sunday,1713,1798,317
+38,Bus,Fall 2017,Sunday,2422,2300,318
+39,Bus,Fall 2017,Sunday,5100,4776,319
+40,Bus,Fall 2017,Sunday,3263,3297,320
+41,Bus,Fall 2017,Sunday,1449,1415,321
+42,Bus,Fall 2017,Sunday,1507,2080,322
+43,Bus,Fall 2017,Sunday,2818,2623,323
+44,Bus,Fall 2017,Sunday,1899,1972,324
+45,Bus,Fall 2017,Sunday,2948,2046,325
+46,Bus,Fall 2017,Sunday,1096,1128,326
+47,Bus,Fall 2017,Sunday,1321,1771,327
+48,Bus,Fall 2017,Sunday,1338,1445,328
+49,Bus,Fall 2017,Sunday,8063,7107,329
+50,Bus,Fall 2017,Sunday,1402,1546,330
+51,Bus,Fall 2017,Sunday,1427,1233,331
+52,Bus,Fall 2017,Sunday,3443,3647,332
+53,Bus,Fall 2017,Sunday,726,600,333
+54,Bus,Fall 2017,Sunday,939,963,334
+55,Bus,Fall 2017,Sunday,224,378,335
+56,Bus,Fall 2017,Sunday,2558,2065,336
+57,Bus,Fall 2017,Sunday,514,899,337
+58,Bus,Fall 2017,Sunday,1257,1022,338
+59,Bus,Fall 2017,Sunday,3313,4056,339
+60,Bus,Fall 2017,Sunday,3640,3651,340
+61,Bus,Fall 2017,Sunday,3335,3356,341
+62,Bus,Fall 2017,Sunday,8768,8150,342
+63,Bus,Fall 2017,Sunday,543,535,343
+64,Bus,Fall 2017,Sunday,1313,1126,344
+65,Bus,Fall 2017,Sunday,433,457,345
+66,Bus,Fall 2017,Sunday,1871,2732,346
+1,Bus,Fall 2018,Weekday,4582,4951,347
+2,Bus,Fall 2018,Weekday,4826,4543,348
+3,Bus,Fall 2018,Weekday,3795,4060,349
+4,Bus,Fall 2018,Weekday,4044,4329,350
+3,Bus,Fall 2017,Weekday,4495,4432,351
+4,Bus,Fall 2017,Weekday,4072,4016,352
+5,Bus,Fall 2017,Weekday,33524,32212,353
+6,Bus,Fall 2017,Weekday,3399,3924,354
+7,Bus,Fall 2017,Weekday,5974,6122,355
+8,Bus,Fall 2017,Weekday,28034,27470,356
+9,Bus,Fall 2017,Weekday,2896,2900,357
+10,Bus,Fall 2017,Weekday,3670,3910,358
+11,Bus,Fall 2017,Weekday,5329,5640,359
+12,Bus,Fall 2017,Weekday,10251,8822,360
+13,Bus,Fall 2017,Weekday,13832,12937,361
+14,Bus,Fall 2017,Weekday,3107,2816,362
+15,Bus,Fall 2017,Weekday,2063,2259,363
+16,Bus,Fall 2017,Weekday,3580,4287,364
+17,Bus,Fall 2017,Weekday,6507,8180,365
+18,Bus,Fall 2017,Weekday,1965,1978,366
+19,Bus,Fall 2017,Weekday,3752,4088,367
+20,Bus,Fall 2017,Weekday,3757,2979,368
+21,Bus,Fall 2017,Weekday,8761,8253,369
+22,Bus,Fall 2017,Weekday,4574,4195,370
+23,Bus,Fall 2017,Weekday,6190,6646,371
+24,Bus,Fall 2017,Weekday,4512,3939,372
+25,Bus,Fall 2017,Weekday,3317,3906,373
+26,Bus,Fall 2017,Weekday,7111,7707,374
+27,Bus,Fall 2017,Weekday,8691,9664,375
+28,Bus,Fall 2017,Weekday,4304,4167,376
+29,Bus,Fall 2017,Weekday,2620,2606,377
+30,Bus,Fall 2017,Weekday,3475,3782,378
+31,Bus,Fall 2017,Weekday,1944,1668,379
+32,Bus,Fall 2017,Weekday,4498,4969,380
+33,Bus,Fall 2017,Weekday,3984,5033,381
+34,Bus,Fall 2017,Weekday,7806,7868,382
+35,Bus,Fall 2017,Weekday,7226,7510,383
+36,Bus,Fall 2017,Weekday,6797,7562,384
+37,Bus,Fall 2017,Weekday,5328,5150,385
+38,Bus,Fall 2017,Weekday,7057,6822,386
+39,Bus,Fall 2017,Weekday,14193,14234,387
+40,Bus,Fall 2017,Weekday,7324,7317,388
+41,Bus,Fall 2017,Weekday,5021,4800,389
+42,Bus,Fall 2017,Weekday,4693,5487,390
+43,Bus,Fall 2017,Weekday,8834,8596,391
+44,Bus,Fall 2017,Weekday,4947,4689,392
+45,Bus,Fall 2017,Weekday,8928,6838,393
+46,Bus,Fall 2017,Weekday,3265,2861,394
+47,Bus,Fall 2017,Weekday,3167,3872,395
+48,Bus,Fall 2017,Weekday,4302,4329,396
+49,Bus,Fall 2017,Weekday,23451,22012,397
+50,Bus,Fall 2017,Weekday,4693,4714,398
+51,Bus,Fall 2017,Weekday,3475,3479,399
+52,Bus,Fall 2017,Weekday,9621,10109,400
+7,Bus,Fall 2019,Weekday,5311,5606,401
+8,Bus,Fall 2019,Weekday,25877,26662,402
+9,Bus,Fall 2019,Weekday,2622,2350,403
+10,Bus,Fall 2019,Weekday,3609,3861,404
+11,Bus,Fall 2019,Weekday,5421,5689,405
+12,Bus,Fall 2019,Weekday,10729,9214,406
+13,Bus,Fall 2019,Weekday,13329,13283,407
+14,Bus,Fall 2019,Weekday,3254,3257,408
+15,Bus,Fall 2019,Weekday,2980,2880,409
+16,Bus,Fall 2019,Weekday,3347,4227,410
+17,Bus,Fall 2019,Weekday,6463,8169,411
+18,Bus,Fall 2019,Weekday,1890,2149,412
+19,Bus,Fall 2019,Weekday,3856,4088,413
+39,Bus,Fall 2018,Saturday,7517,7039,414
+20,Bus,Fall 2019,Weekday,3733,3355,415
+21,Bus,Fall 2019,Weekday,9308,8917,416
+22,Bus,Fall 2019,Weekday,4381,3887,417
+23,Bus,Fall 2019,Weekday,5864,6296,418
+24,Bus,Fall 2019,Weekday,4222,3780,419
+25,Bus,Fall 2019,Weekday,3955,3588,420
+26,Bus,Fall 2019,Weekday,6326,6680,421
+40,Bus,Fall 2018,Saturday,4173,4102,422
+5,Bus,Fall 2018,Weekday,33283,29432,423
+27,Bus,Fall 2019,Weekday,10009,11488,424
+41,Bus,Fall 2018,Saturday,2099,2056,425
+28,Bus,Fall 2019,Weekday,4178,4037,426
+6,Bus,Fall 2018,Weekday,3516,4060,427
+42,Bus,Fall 2018,Saturday,1754,2387,428
+29,Bus,Fall 2019,Weekday,2626,2884,429
+7,Bus,Fall 2018,Weekday,5567,5833,430
+43,Bus,Fall 2018,Saturday,3731,3534,431
+30,Bus,Fall 2019,Weekday,3047,4537,432
+8,Bus,Fall 2018,Weekday,26926,26464,433
+44,Bus,Fall 2018,Saturday,2524,2700,434
+31,Bus,Fall 2019,Weekday,1763,1929,435
+9,Bus,Fall 2018,Weekday,2803,2846,436
+45,Bus,Fall 2018,Saturday,4055,2795,437
+32,Bus,Fall 2019,Weekday,4213,4380,438
+10,Bus,Fall 2018,Weekday,3403,3635,439
+46,Bus,Fall 2018,Saturday,1366,1421,440
+33,Bus,Fall 2019,Weekday,3639,4766,441
+11,Bus,Fall 2018,Weekday,4974,5442,442
+47,Bus,Fall 2018,Saturday,1423,1864,443
+34,Bus,Fall 2019,Weekday,7604,7099,444
+12,Bus,Fall 2018,Weekday,9808,8603,445
+48,Bus,Fall 2018,Saturday,2028,2008,446
+35,Bus,Fall 2019,Weekday,7498,7259,447
+13,Bus,Fall 2018,Weekday,14026,12699,448
+49,Bus,Fall 2018,Saturday,10466,9139,449
+36,Bus,Fall 2019,Weekday,6631,7722,450
+14,Bus,Fall 2018,Weekday,3014,2742,451
+50,Bus,Fall 2018,Saturday,2335,2304,452
+37,Bus,Fall 2019,Weekday,5478,5368,453
+15,Bus,Fall 2018,Weekday,2049,2334,454
+51,Bus,Fall 2018,Saturday,1906,1715,455
+38,Bus,Fall 2019,Weekday,6584,6417,456
+16,Bus,Fall 2018,Weekday,3478,4034,457
+52,Bus,Fall 2018,Saturday,4059,4042,458
+39,Bus,Fall 2019,Weekday,15924,13303,459
+17,Bus,Fall 2018,Weekday,6186,8048,460
+53,Bus,Fall 2018,Saturday,909,888,461
+40,Bus,Fall 2019,Weekday,7093,7227,462
+18,Bus,Fall 2018,Weekday,1847,1729,463
+54,Bus,Fall 2018,Saturday,1157,1159,464
+41,Bus,Fall 2019,Weekday,4824,4640,465
+19,Bus,Fall 2018,Weekday,3557,3832,466
+55,Bus,Fall 2018,Saturday,304,513,467
+42,Bus,Fall 2019,Weekday,4908,6163,468
+20,Bus,Fall 2018,Weekday,3301,2862,469
+56,Bus,Fall 2018,Saturday,3555,3038,470
+43,Bus,Fall 2019,Weekday,8890,8662,471
+21,Bus,Fall 2018,Weekday,8530,8661,472
+57,Bus,Fall 2018,Saturday,855,1298,473
+44,Bus,Fall 2019,Weekday,5138,5165,474
+22,Bus,Fall 2018,Weekday,4478,4178,475
+58,Bus,Fall 2018,Saturday,1837,1267,476
+45,Bus,Fall 2019,Weekday,6912,5898,477
+46,Bus,Fall 2019,Weekday,3360,3234,478
+47,Bus,Fall 2019,Weekday,3413,4374,479
+48,Bus,Fall 2019,Weekday,4338,4089,480
+49,Bus,Fall 2019,Weekday,22041,20018,481
+50,Bus,Fall 2019,Weekday,4435,4526,482
+51,Bus,Fall 2019,Weekday,3561,3409,483
+52,Bus,Fall 2019,Weekday,9536,8572,484
+53,Bus,Fall 2019,Weekday,2183,2739,485
+54,Bus,Fall 2019,Weekday,3054,3095,486
+55,Bus,Fall 2019,Weekday,801,1296,487
+56,Bus,Fall 2019,Weekday,7829,6954,488
+23,Bus,Fall 2018,Weekday,6038,6396,489
+59,Bus,Fall 2018,Saturday,4357,4972,490
+24,Bus,Fall 2018,Weekday,4066,3678,491
+25,Bus,Fall 2018,Weekday,3058,3707,492
+60,Bus,Fall 2018,Saturday,5138,5372,493
+26,Bus,Fall 2018,Weekday,7015,7264,494
+61,Bus,Fall 2018,Saturday,4225,4187,495
+27,Bus,Fall 2018,Weekday,8678,9924,496
+62,Bus,Fall 2018,Saturday,10439,10228,497
+28,Bus,Fall 2018,Weekday,4119,4016,498
+63,Bus,Fall 2018,Saturday,724,742,499
+29,Bus,Fall 2018,Weekday,2594,2617,500
+64,Bus,Fall 2018,Saturday,1832,1620,501
+30,Bus,Fall 2018,Weekday,3229,4236,502
+65,Bus,Fall 2018,Saturday,615,613,503
+31,Bus,Fall 2018,Weekday,1938,1630,504
+66,Bus,Fall 2018,Saturday,2551,3546,505
+32,Bus,Fall 2018,Weekday,4001,4585,506
+1,Bus,Fall 2018,Sunday,2095,2219,507
+33,Bus,Fall 2018,Weekday,3827,4801,508
+2,Bus,Fall 2018,Sunday,1394,1372,509
+34,Bus,Fall 2018,Weekday,7351,7049,510
+3,Bus,Fall 2018,Sunday,1145,1237,511
+35,Bus,Fall 2018,Weekday,6959,6953,512
+4,Bus,Fall 2018,Sunday,1352,1435,513
+36,Bus,Fall 2018,Weekday,6654,6919,514
+5,Bus,Fall 2018,Sunday,10874,9741,515
+37,Bus,Fall 2018,Weekday,5226,4857,516
+6,Bus,Fall 2018,Sunday,978,1104,517
+38,Bus,Fall 2018,Weekday,6888,6619,518
+7,Bus,Fall 2018,Sunday,1485,1705,519
+39,Bus,Fall 2018,Weekday,14643,14306,520
+8,Bus,Fall 2018,Sunday,7581,7697,521
+40,Bus,Fall 2018,Weekday,7080,6723,522
+9,Bus,Fall 2018,Sunday,1106,1102,523
+41,Bus,Fall 2018,Weekday,4967,4858,524
+10,Bus,Fall 2018,Sunday,1125,1172,525
+42,Bus,Fall 2018,Weekday,4687,5475,526
+11,Bus,Fall 2018,Sunday,1782,1903,527
+43,Bus,Fall 2018,Weekday,8328,8006,528
+12,Bus,Fall 2018,Sunday,3343,3114,529
+44,Bus,Fall 2018,Weekday,4905,5059,530
+13,Bus,Fall 2018,Sunday,4832,4512,531
+45,Bus,Fall 2018,Weekday,8736,6240,532
+14,Bus,Fall 2018,Sunday,1053,981,533
+46,Bus,Fall 2018,Weekday,3397,3076,534
+15,Bus,Fall 2018,Sunday,618,675,535
+47,Bus,Fall 2018,Weekday,3143,3760,536
+16,Bus,Fall 2018,Sunday,1139,1457,537
+48,Bus,Fall 2018,Weekday,4232,4451,538
+17,Bus,Fall 2018,Sunday,1854,2518,539
+49,Bus,Fall 2018,Weekday,22572,20744,540
+18,Bus,Fall 2018,Sunday,587,549,541
+50,Bus,Fall 2018,Weekday,4685,4576,542
+19,Bus,Fall 2018,Sunday,1042,1250,543
+51,Bus,Fall 2018,Weekday,3698,3411,544
+20,Bus,Fall 2018,Sunday,1196,1048,545
+52,Bus,Fall 2018,Weekday,9531,8682,546
+21,Bus,Fall 2018,Sunday,2947,2822,547
+53,Bus,Fall 2018,Weekday,2652,2608,548
+22,Bus,Fall 2018,Sunday,1511,1519,549
+54,Bus,Fall 2018,Weekday,2742,2565,550
+41,Bus,Fall 2019,Saturday,1988,2004,551
+42,Bus,Fall 2019,Saturday,1934,2611,552
+43,Bus,Fall 2019,Saturday,3957,3829,553
+44,Bus,Fall 2019,Saturday,2580,2780,554
+45,Bus,Fall 2019,Saturday,3041,2669,555
+46,Bus,Fall 2019,Saturday,1436,1550,556
+47,Bus,Fall 2019,Saturday,1587,2187,557
+48,Bus,Fall 2019,Saturday,1998,1953,558
+49,Bus,Fall 2019,Saturday,9836,8293,559
+50,Bus,Fall 2019,Saturday,2212,2288,560
+51,Bus,Fall 2019,Saturday,1932,1732,561
+52,Bus,Fall 2019,Saturday,4342,4168,562
+53,Bus,Fall 2019,Saturday,787,900,563
+54,Bus,Fall 2019,Saturday,1392,1428,564
+55,Bus,Fall 2019,Saturday,293,519,565
+56,Bus,Fall 2019,Saturday,3807,3343,566
+57,Bus,Fall 2019,Saturday,738,1130,567
+58,Bus,Fall 2019,Saturday,1931,1377,568
+59,Bus,Fall 2019,Saturday,4841,5409,569
+25,Bus,Fall 2019,Sunday,1442,1319,570
+60,Bus,Fall 2019,Saturday,5468,5608,571
+61,Bus,Fall 2019,Saturday,4407,4285,572
+62,Bus,Fall 2019,Saturday,10460,10085,573
+63,Bus,Fall 2019,Saturday,665,720,574
+64,Bus,Fall 2019,Saturday,1670,1564,575
+65,Bus,Fall 2019,Saturday,486,441,576
+66,Bus,Fall 2019,Saturday,2374,3419,577
+1,Bus,Fall 2019,Sunday,2132,2090,578
+2,Bus,Fall 2019,Sunday,1689,1864,579
+3,Bus,Fall 2019,Sunday,1175,1298,580
+4,Bus,Fall 2019,Sunday,1191,1291,581
+5,Bus,Fall 2019,Sunday,12782,10798,582
+6,Bus,Fall 2019,Sunday,953,1167,583
+7,Bus,Fall 2019,Sunday,1412,1582,584
+8,Bus,Fall 2019,Sunday,7506,8223,585
+9,Bus,Fall 2019,Sunday,1012,922,586
+10,Bus,Fall 2019,Sunday,1352,1197,587
+11,Bus,Fall 2019,Sunday,1944,1989,588
+12,Bus,Fall 2019,Sunday,3447,3169,589
+13,Bus,Fall 2019,Sunday,4682,4600,590
+14,Bus,Fall 2019,Sunday,1047,1073,591
+15,Bus,Fall 2019,Sunday,854,900,592
+16,Bus,Fall 2019,Sunday,1226,1469,593
+17,Bus,Fall 2019,Sunday,1822,2481,594
+18,Bus,Fall 2019,Sunday,594,670,595
+19,Bus,Fall 2019,Sunday,1246,1399,596
+20,Bus,Fall 2019,Sunday,1266,1102,597
+21,Bus,Fall 2019,Sunday,3162,2933,598
+22,Bus,Fall 2019,Sunday,1483,1446,599
+23,Bus,Fall 2019,Sunday,1826,2069,600
+24,Bus,Fall 2019,Sunday,961,852,601
+23,Bus,Fall 2018,Sunday,2027,2092,602
+55,Bus,Fall 2018,Weekday,757,1186,603
+26,Bus,Fall 2019,Sunday,2238,2365,604
+24,Bus,Fall 2018,Sunday,924,862,605
+56,Bus,Fall 2018,Weekday,7399,6215,606
+27,Bus,Fall 2019,Sunday,2253,2608,607
+25,Bus,Fall 2018,Sunday,1088,1302,608
+57,Bus,Fall 2018,Weekday,1822,2436,609
+28,Bus,Fall 2019,Sunday,1838,1742,610
+26,Bus,Fall 2018,Sunday,2705,2837,611
+58,Bus,Fall 2018,Weekday,4522,3721,612
+29,Bus,Fall 2019,Sunday,1025,1141,613
+27,Bus,Fall 2018,Sunday,1984,2341,614
+59,Bus,Fall 2018,Weekday,9235,10448,615
+30,Bus,Fall 2019,Sunday,851,1138,616
+28,Bus,Fall 2018,Sunday,1622,1476,617
+60,Bus,Fall 2018,Weekday,11044,11106,618
+31,Bus,Fall 2019,Sunday,501,539,619
+29,Bus,Fall 2018,Sunday,1033,1021,620
+61,Bus,Fall 2018,Weekday,8544,8659,621
+32,Bus,Fall 2019,Sunday,1610,1697,622
+30,Bus,Fall 2018,Sunday,877,927,623
+62,Bus,Fall 2018,Weekday,21185,22514,624
+33,Bus,Fall 2019,Sunday,1151,1583,625
+31,Bus,Fall 2018,Sunday,502,484,626
+63,Bus,Fall 2018,Weekday,1967,2054,627
+34,Bus,Fall 2019,Sunday,2206,2176,628
+32,Bus,Fall 2018,Sunday,1611,1759,629
+64,Bus,Fall 2018,Weekday,3498,3187,630
+35,Bus,Fall 2019,Sunday,2429,2224,631
+33,Bus,Fall 2018,Sunday,1200,1581,632
+65,Bus,Fall 2018,Weekday,1828,1786,633
+36,Bus,Fall 2019,Sunday,2155,2435,634
+34,Bus,Fall 2018,Sunday,1956,2006,635
+66,Bus,Fall 2018,Weekday,4715,6700,636
+37,Bus,Fall 2019,Sunday,1931,1921,637
+35,Bus,Fall 2018,Sunday,2277,2277,638
+1,Bus,Fall 2018,Saturday,2862,3006,639
+38,Bus,Fall 2019,Sunday,2184,2109,640
+36,Bus,Fall 2018,Sunday,2280,2368,641
+2,Bus,Fall 2018,Saturday,2151,1953,642
+39,Bus,Fall 2019,Sunday,5746,4847,643
+37,Bus,Fall 2018,Sunday,1713,1611,644
+3,Bus,Fall 2018,Saturday,1700,1810,645
+40,Bus,Fall 2019,Sunday,3295,3338,646
+38,Bus,Fall 2018,Sunday,2218,2095,647
+4,Bus,Fall 2018,Saturday,1619,1676,648
+41,Bus,Fall 2019,Sunday,1496,1544,649
+39,Bus,Fall 2018,Sunday,5305,4997,650
+5,Bus,Fall 2018,Saturday,16101,14575,651
+42,Bus,Fall 2019,Sunday,1447,2030,652
+40,Bus,Fall 2018,Sunday,3486,3337,653
+6,Bus,Fall 2018,Saturday,1221,1382,654
+43,Bus,Fall 2019,Sunday,2903,2632,655
+41,Bus,Fall 2018,Sunday,1489,1431,656
+7,Bus,Fall 2018,Saturday,2106,2435,657
+44,Bus,Fall 2019,Sunday,1885,1881,658
+42,Bus,Fall 2018,Sunday,1315,1800,659
+8,Bus,Fall 2018,Saturday,11288,11075,660
+45,Bus,Fall 2019,Sunday,2180,1923,661
+43,Bus,Fall 2018,Sunday,2728,2470,662
+9,Bus,Fall 2018,Saturday,1516,1569,663
+46,Bus,Fall 2019,Sunday,954,1049,664
+44,Bus,Fall 2018,Sunday,1798,1955,665
+10,Bus,Fall 2018,Saturday,1709,1904,666
+47,Bus,Fall 2019,Sunday,1184,1596,667
+45,Bus,Fall 2018,Sunday,2897,2053,668
+46,Bus,Fall 2018,Sunday,1057,1119,669
+47,Bus,Fall 2018,Sunday,1149,1510,670
+48,Bus,Fall 2018,Sunday,1333,1399,671
+49,Bus,Fall 2018,Sunday,7247,6554,672
+50,Bus,Fall 2018,Sunday,1531,1525,673
+51,Bus,Fall 2018,Sunday,1484,1214,674
+52,Bus,Fall 2018,Sunday,3138,3111,675
+53,Bus,Fall 2018,Sunday,604,559,676
+54,Bus,Fall 2018,Sunday,799,813,677
+55,Bus,Fall 2018,Sunday,168,336,678
+56,Bus,Fall 2018,Sunday,2616,2111,679
+57,Bus,Fall 2018,Sunday,547,936,680
+58,Bus,Fall 2018,Sunday,1268,909,681
+59,Bus,Fall 2018,Sunday,3004,3406,682
+60,Bus,Fall 2018,Sunday,3768,3773,683
+61,Bus,Fall 2018,Sunday,2892,2722,684
+62,Bus,Fall 2018,Sunday,8663,8351,685
+63,Bus,Fall 2018,Sunday,535,484,686
+64,Bus,Fall 2018,Sunday,1332,1195,687
+65,Bus,Fall 2018,Sunday,367,419,688
+66,Bus,Fall 2018,Sunday,1926,2716,689
+1,Bus,Fall 2019,Weekday,5235,5020,690
+2,Bus,Fall 2019,Weekday,5313,5680,691
+3,Bus,Fall 2019,Weekday,3970,4316,692
+4,Bus,Fall 2019,Weekday,4022,4390,693
+5,Bus,Fall 2019,Weekday,36047,31509,694
+6,Bus,Fall 2019,Weekday,3604,4458,695
+11,Bus,Fall 2018,Saturday,2548,2680,696
+48,Bus,Fall 2019,Sunday,1447,1398,697
+12,Bus,Fall 2018,Saturday,4824,4461,698
+13,Bus,Fall 2018,Saturday,6675,6079,699
+49,Bus,Fall 2019,Sunday,7200,6279,700
+14,Bus,Fall 2018,Saturday,1349,1228,701
+50,Bus,Fall 2019,Sunday,1525,1604,702
+15,Bus,Fall 2018,Saturday,933,1058,703
+51,Bus,Fall 2019,Sunday,1405,1193,704
+16,Bus,Fall 2018,Saturday,1513,1799,705
+52,Bus,Fall 2019,Sunday,3090,3045,706
+17,Bus,Fall 2018,Saturday,2766,3743,707
+53,Bus,Fall 2019,Sunday,529,617,708
+18,Bus,Fall 2018,Saturday,664,685,709
+54,Bus,Fall 2019,Sunday,885,951,710
+19,Bus,Fall 2018,Saturday,1534,1716,711
+55,Bus,Fall 2019,Sunday,190,343,712
+20,Bus,Fall 2018,Saturday,1531,1260,713
+56,Bus,Fall 2019,Sunday,2644,2361,714
+21,Bus,Fall 2018,Saturday,4093,3723,715
+57,Bus,Fall 2019,Sunday,494,841,716
+22,Bus,Fall 2018,Saturday,2103,2063,717
+58,Bus,Fall 2019,Sunday,1339,949,718
+23,Bus,Fall 2018,Saturday,2798,2972,719
+59,Bus,Fall 2019,Sunday,3315,3824,720
+24,Bus,Fall 2018,Saturday,1178,1149,721
+60,Bus,Fall 2019,Sunday,3564,3695,722
+25,Bus,Fall 2018,Saturday,1433,1717,723
+61,Bus,Fall 2019,Sunday,3102,2982,724
+26,Bus,Fall 2018,Saturday,3187,3372,725
+62,Bus,Fall 2019,Sunday,8268,7845,726
+27,Bus,Fall 2018,Saturday,2573,2983,727
+63,Bus,Fall 2019,Sunday,460,484,728
+28,Bus,Fall 2018,Saturday,2161,2081,729
+64,Bus,Fall 2019,Sunday,1248,1159,730
+29,Bus,Fall 2018,Saturday,1461,1461,731
+65,Bus,Fall 2019,Sunday,341,304,732
+30,Bus,Fall 2018,Saturday,1117,1459,733
+66,Bus,Fall 2019,Sunday,1684,2513,734
+31,Bus,Fall 2018,Saturday,638,550,735
+1,Bus,Fall 2021,Weekday,3293,2985,736
+32,Bus,Fall 2018,Saturday,2140,2337,737
+2,Bus,Fall 2021,Weekday,3279,3314,738
+33,Bus,Fall 2018,Saturday,1703,2287,739
+3,Bus,Fall 2021,Weekday,2346,2497,740
+34,Bus,Fall 2018,Saturday,2976,2851,741
+4,Bus,Fall 2021,Weekday,2143,2357,742
+35,Bus,Fall 2018,Saturday,3479,3387,743
+5,Bus,Fall 2021,Weekday,16614,14309,744
+36,Bus,Fall 2018,Saturday,2831,2953,745
+6,Bus,Fall 2021,Weekday,2196,2644,746
+37,Bus,Fall 2018,Saturday,2339,2289,747
+7,Bus,Fall 2021,Weekday,1374,1510,748
+38,Bus,Fall 2018,Saturday,3153,3165,749
+8,Bus,Fall 2021,Weekday,10177,10578,750
+57,Bus,Fall 2019,Weekday,1746,2383,751
+58,Bus,Fall 2019,Weekday,4902,3792,752
+59,Bus,Fall 2019,Weekday,9925,11414,753
+60,Bus,Fall 2019,Weekday,11350,11473,754
+61,Bus,Fall 2019,Weekday,8877,8668,755
+62,Bus,Fall 2019,Weekday,21302,20886,756
+63,Bus,Fall 2019,Weekday,1946,2168,757
+64,Bus,Fall 2019,Weekday,3523,3402,758
+65,Bus,Fall 2019,Weekday,1775,1627,759
+66,Bus,Fall 2019,Weekday,4585,6388,760
+1,Bus,Fall 2019,Saturday,3127,2897,761
+2,Bus,Fall 2019,Saturday,2446,2686,762
+3,Bus,Fall 2019,Saturday,1758,1888,763
+4,Bus,Fall 2019,Saturday,1688,1798,764
+5,Bus,Fall 2019,Saturday,18560,16029,765
+6,Bus,Fall 2019,Saturday,1353,1610,766
+7,Bus,Fall 2019,Saturday,2124,2303,767
+8,Bus,Fall 2019,Saturday,11023,11849,768
+9,Bus,Fall 2019,Saturday,1507,1373,769
+10,Bus,Fall 2019,Saturday,1719,1770,770
+11,Bus,Fall 2019,Saturday,2948,2992,771
+12,Bus,Fall 2019,Saturday,4994,4447,772
+13,Bus,Fall 2019,Saturday,6112,6093,773
+14,Bus,Fall 2019,Saturday,1472,1418,774
+15,Bus,Fall 2019,Saturday,1272,1325,775
+16,Bus,Fall 2019,Saturday,1666,2013,776
+17,Bus,Fall 2019,Saturday,2570,3602,777
+18,Bus,Fall 2019,Saturday,824,926,778
+19,Bus,Fall 2019,Saturday,1786,1923,779
+20,Bus,Fall 2019,Saturday,1713,1475,780
+21,Bus,Fall 2019,Saturday,4405,4214,781
+22,Bus,Fall 2019,Saturday,2079,2075,782
+23,Bus,Fall 2019,Saturday,2570,2842,783
+24,Bus,Fall 2019,Saturday,1304,1237,784
+25,Bus,Fall 2019,Saturday,2107,1757,785
+26,Bus,Fall 2019,Saturday,2890,3104,786
+27,Bus,Fall 2019,Saturday,3086,3529,787
+28,Bus,Fall 2019,Saturday,2458,2231,788
+29,Bus,Fall 2019,Saturday,1451,1537,789
+30,Bus,Fall 2019,Saturday,1201,1621,790
+31,Bus,Fall 2019,Saturday,625,748,791
+32,Bus,Fall 2019,Saturday,2293,2377,792
+33,Bus,Fall 2019,Saturday,1683,2321,793
+34,Bus,Fall 2019,Saturday,3225,3102,794
+35,Bus,Fall 2019,Saturday,3617,3388,795
+36,Bus,Fall 2019,Saturday,2991,3469,796
+37,Bus,Fall 2019,Saturday,2770,2705,797
+38,Bus,Fall 2019,Saturday,3181,3138,798
+39,Bus,Fall 2019,Saturday,7783,6592,799
+40,Bus,Fall 2019,Saturday,4244,4317,800
+11,Bus,Fall 2022,Weekday,4490,4308,801
+12,Bus,Fall 2022,Weekday,7377,6328,802
+13,Bus,Fall 2022,Weekday,8704,8648,803
+14,Bus,Fall 2022,Weekday,2599,2297,804
+15,Bus,Fall 2022,Weekday,2177,2373,805
+16,Bus,Fall 2022,Weekday,2931,3131,806
+17,Bus,Fall 2022,Weekday,5281,6081,807
+18,Bus,Fall 2022,Weekday,1450,1521,808
+19,Bus,Fall 2022,Weekday,2762,2978,809
+20,Bus,Fall 2022,Weekday,2993,2771,810
+21,Bus,Fall 2022,Weekday,6444,6275,811
+22,Bus,Fall 2022,Weekday,2782,2630,812
+23,Bus,Fall 2022,Weekday,3928,4362,813
+24,Bus,Fall 2022,Weekday,2668,2419,814
+25,Bus,Fall 2022,Weekday,2026,2979,815
+26,Bus,Fall 2022,Weekday,3976,4337,816
+27,Bus,Fall 2022,Weekday,8412,9214,817
+28,Bus,Fall 2022,Weekday,2973,2680,818
+29,Bus,Fall 2022,Weekday,2296,2155,819
+30,Bus,Fall 2022,Weekday,2128,3471,820
+31,Bus,Fall 2022,Weekday,1082,1352,821
+32,Bus,Fall 2022,Weekday,3202,3340,822
+33,Bus,Fall 2022,Weekday,2573,3224,823
+34,Bus,Fall 2022,Weekday,4974,4691,824
+35,Bus,Fall 2022,Weekday,5495,5344,825
+36,Bus,Fall 2022,Weekday,4570,5347,826
+37,Bus,Fall 2022,Weekday,3982,3847,827
+38,Bus,Fall 2022,Weekday,4676,4549,828
+39,Bus,Fall 2022,Weekday,10562,9330,829
+40,Bus,Fall 2022,Weekday,4966,5128,830
+41,Bus,Fall 2022,Weekday,3439,3091,831
+42,Bus,Fall 2022,Weekday,3394,4555,832
+43,Bus,Fall 2022,Weekday,5956,5917,833
+44,Bus,Fall 2022,Weekday,3095,3117,834
+45,Bus,Fall 2022,Weekday,5137,3514,835
+46,Bus,Fall 2022,Weekday,2265,2176,836
+47,Bus,Fall 2022,Weekday,2716,3533,837
+48,Bus,Fall 2022,Weekday,3268,2863,838
+59,Bus,Fall 2021,Weekday,5303,5896,839
+49,Bus,Fall 2022,Weekday,13348,11919,840
+50,Bus,Fall 2022,Weekday,2844,2804,841
+51,Bus,Fall 2022,Weekday,2240,2134,842
+52,Bus,Fall 2022,Weekday,6114,5335,843
+53,Bus,Fall 2022,Weekday,1485,1781,844
+54,Bus,Fall 2022,Weekday,2112,2191,845
+55,Bus,Fall 2022,Weekday,540,916,846
+60,Bus,Fall 2021,Weekday,6423,6417,847
+56,Bus,Fall 2022,Weekday,5807,5144,848
+61,Bus,Fall 2021,Weekday,4051,3792,849
+57,Bus,Fall 2022,Weekday,1176,1712,850
+58,Bus,Fall 2022,Weekday,4118,2987,851
+62,Bus,Fall 2021,Weekday,9117,8432,852
+59,Bus,Fall 2022,Weekday,7021,7746,853
+60,Bus,Fall 2022,Weekday,7186,7455,854
+63,Bus,Fall 2021,Weekday,749,1000,855
+64,Bus,Fall 2021,Weekday,1441,1443,856
+65,Bus,Fall 2021,Weekday,967,858,857
+66,Bus,Fall 2021,Weekday,2315,2666,858
+1,Bus,Fall 2021,Saturday,2003,1887,859
+2,Bus,Fall 2021,Saturday,1605,1539,860
+3,Bus,Fall 2021,Saturday,1098,1131,861
+4,Bus,Fall 2021,Saturday,967,1044,862
+5,Bus,Fall 2021,Saturday,9146,7937,863
+6,Bus,Fall 2021,Saturday,860,1016,864
+7,Bus,Fall 2021,Saturday,560,663,865
+8,Bus,Fall 2021,Saturday,5280,5691,866
+9,Bus,Fall 2021,Saturday,954,798,867
+10,Bus,Fall 2021,Saturday,962,969,868
+11,Bus,Fall 2021,Saturday,340,250,869
+12,Bus,Fall 2021,Saturday,2927,2596,870
+13,Bus,Fall 2021,Saturday,2745,2918,871
+14,Bus,Fall 2021,Saturday,1159,1042,872
+15,Bus,Fall 2021,Saturday,398,498,873
+16,Bus,Fall 2021,Saturday,403,423,874
+17,Bus,Fall 2021,Saturday,1269,1380,875
+18,Bus,Fall 2021,Saturday,612,602,876
+19,Bus,Fall 2021,Saturday,753,769,877
+20,Bus,Fall 2021,Saturday,1164,1145,878
+21,Bus,Fall 2021,Saturday,2584,2462,879
+22,Bus,Fall 2021,Saturday,900,898,880
+23,Bus,Fall 2021,Saturday,1379,1536,881
+24,Bus,Fall 2021,Saturday,865,852,882
+25,Bus,Fall 2021,Saturday,529,525,883
+26,Bus,Fall 2021,Saturday,1443,1661,884
+27,Bus,Fall 2021,Saturday,2333,2521,885
+28,Bus,Fall 2021,Saturday,520,466,886
+29,Bus,Fall 2021,Saturday,605,548,887
+30,Bus,Fall 2021,Saturday,521,735,888
+31,Bus,Fall 2021,Saturday,403,387,889
+32,Bus,Fall 2021,Saturday,894,841,890
+33,Bus,Fall 2021,Saturday,368,280,891
+34,Bus,Fall 2021,Saturday,1850,1850,892
+35,Bus,Fall 2021,Saturday,1394,1064,893
+36,Bus,Fall 2021,Saturday,1357,1553,894
+37,Bus,Fall 2021,Saturday,1119,1240,895
+38,Bus,Fall 2021,Saturday,991,982,896
+39,Bus,Fall 2021,Saturday,5128,4398,897
+40,Bus,Fall 2021,Saturday,2667,2680,898
+41,Bus,Fall 2021,Saturday,375,353,899
+42,Bus,Fall 2021,Saturday,1058,1631,900
+45,Bus,Fall 2022,Saturday,2495,1614,901
+46,Bus,Fall 2022,Saturday,1065,1104,902
+47,Bus,Fall 2022,Saturday,1411,1877,903
+48,Bus,Fall 2022,Saturday,1601,1417,904
+49,Bus,Fall 2022,Saturday,6528,5850,905
+50,Bus,Fall 2022,Saturday,1500,1462,906
+51,Bus,Fall 2022,Saturday,1249,1155,907
+52,Bus,Fall 2022,Saturday,2972,2852,908
+53,Bus,Fall 2022,Saturday,564,611,909
+54,Bus,Fall 2022,Saturday,977,1025,910
+55,Bus,Fall 2022,Saturday,195,347,911
+56,Bus,Fall 2022,Saturday,2887,2516,912
+57,Bus,Fall 2022,Saturday,597,866,913
+58,Bus,Fall 2022,Saturday,1558,1038,914
+59,Bus,Fall 2022,Saturday,3724,4049,915
+60,Bus,Fall 2022,Saturday,3890,4105,916
+61,Bus,Fall 2022,Saturday,3098,2717,917
+62,Bus,Fall 2022,Saturday,6765,6210,918
+63,Bus,Fall 2022,Saturday,472,466,919
+64,Bus,Fall 2022,Saturday,1183,1067,920
+65,Bus,Fall 2022,Saturday,344,351,921
+66,Bus,Fall 2022,Saturday,1497,2319,922
+1,Bus,Fall 2022,Sunday,1681,1557,923
+2,Bus,Fall 2022,Sunday,1230,1237,924
+3,Bus,Fall 2022,Sunday,872,919,925
+4,Bus,Fall 2022,Sunday,813,873,926
+5,Bus,Fall 2022,Sunday,10182,8479,927
+6,Bus,Fall 2022,Sunday,713,807,928
+7,Bus,Fall 2022,Sunday,1162,1255,929
+8,Bus,Fall 2022,Sunday,6800,7227,930
+9,Bus,Fall 2022,Sunday,738,608,931
+10,Bus,Fall 2022,Sunday,892,942,932
+11,Bus,Fall 2022,Sunday,1788,1534,933
+12,Bus,Fall 2022,Sunday,2640,2336,934
+13,Bus,Fall 2022,Sunday,3168,3181,935
+14,Bus,Fall 2022,Sunday,1020,891,936
+15,Bus,Fall 2022,Sunday,758,938,937
+16,Bus,Fall 2022,Sunday,972,1045,938
+17,Bus,Fall 2022,Sunday,1497,1704,939
+18,Bus,Fall 2022,Sunday,563,608,940
+19,Bus,Fall 2022,Sunday,1050,1125,941
+20,Bus,Fall 2022,Sunday,1128,1043,942
+21,Bus,Fall 2022,Sunday,2002,1965,943
+22,Bus,Fall 2022,Sunday,1020,1014,944
+23,Bus,Fall 2022,Sunday,1391,1616,945
+24,Bus,Fall 2022,Sunday,702,741,946
+25,Bus,Fall 2022,Sunday,800,1152,947
+26,Bus,Fall 2022,Sunday,1425,1605,948
+27,Bus,Fall 2022,Sunday,2276,2436,949
+28,Bus,Fall 2022,Sunday,1199,1023,950
+43,Bus,Fall 2021,Saturday,1819,1533,951
+9,Bus,Fall 2021,Weekday,1463,1283,952
+44,Bus,Fall 2021,Saturday,1585,1727,953
+10,Bus,Fall 2021,Weekday,2039,2010,954
+45,Bus,Fall 2021,Saturday,1056,1200,955
+11,Bus,Fall 2021,Weekday,791,585,956
+46,Bus,Fall 2021,Saturday,906,994,957
+12,Bus,Fall 2021,Weekday,5828,4921,958
+47,Bus,Fall 2021,Saturday,858,1114,959
+13,Bus,Fall 2021,Weekday,5552,6024,960
+48,Bus,Fall 2021,Saturday,1027,847,961
+14,Bus,Fall 2021,Weekday,2209,1968,962
+49,Bus,Fall 2021,Saturday,3721,3493,963
+15,Bus,Fall 2021,Weekday,885,934,964
+50,Bus,Fall 2021,Saturday,892,854,965
+16,Bus,Fall 2021,Weekday,859,1002,966
+51,Bus,Fall 2021,Saturday,1126,1016,967
+17,Bus,Fall 2021,Weekday,2910,3081,968
+52,Bus,Fall 2021,Saturday,2715,2568,969
+18,Bus,Fall 2021,Weekday,1167,1218,970
+53,Bus,Fall 2021,Saturday,433,472,971
+19,Bus,Fall 2021,Weekday,1481,1514,972
+54,Bus,Fall 2021,Saturday,730,766,973
+20,Bus,Fall 2021,Weekday,2373,2236,974
+55,Bus,Fall 2021,Saturday,114,270,975
+21,Bus,Fall 2021,Weekday,5468,5349,976
+56,Bus,Fall 2021,Saturday,1578,1593,977
+22,Bus,Fall 2021,Weekday,1725,1546,978
+57,Bus,Fall 2021,Saturday,384,396,979
+23,Bus,Fall 2021,Weekday,2778,3070,980
+58,Bus,Fall 2021,Saturday,772,771,981
+24,Bus,Fall 2021,Weekday,2090,1860,982
+59,Bus,Fall 2021,Saturday,2679,2961,983
+25,Bus,Fall 2021,Weekday,1001,1008,984
+60,Bus,Fall 2021,Saturday,3354,3448,985
+26,Bus,Fall 2021,Weekday,2948,3291,986
+61,Bus,Fall 2021,Saturday,1976,1744,987
+27,Bus,Fall 2021,Weekday,6616,7284,988
+62,Bus,Fall 2021,Saturday,4472,3947,989
+28,Bus,Fall 2021,Weekday,946,835,990
+63,Bus,Fall 2021,Saturday,252,281,991
+29,Bus,Fall 2021,Weekday,893,831,992
+64,Bus,Fall 2021,Saturday,616,600,993
+30,Bus,Fall 2021,Weekday,1307,2360,994
+65,Bus,Fall 2021,Saturday,301,268,995
+31,Bus,Fall 2021,Weekday,927,898,996
+29,Bus,Fall 2022,Sunday,931,895,997
+66,Bus,Fall 2021,Saturday,1126,1299,998
+1,Bus,Fall 2021,Sunday,1510,1447,999
+2,Bus,Fall 2021,Sunday,1079,1063,1000
+3,Bus,Fall 2021,Sunday,729,766,1001
+4,Bus,Fall 2021,Sunday,656,716,1002
+5,Bus,Fall 2021,Sunday,6397,5440,1003
+6,Bus,Fall 2021,Sunday,627,705,1004
+7,Bus,Fall 2021,Sunday,430,509,1005
+8,Bus,Fall 2021,Sunday,3770,3984,1006
+9,Bus,Fall 2021,Sunday,600,523,1007
+10,Bus,Fall 2021,Sunday,704,669,1008
+11,Bus,Fall 2021,Sunday,236,175,1009
+12,Bus,Fall 2021,Sunday,2050,1813,1010
+13,Bus,Fall 2021,Sunday,2007,2148,1011
+14,Bus,Fall 2021,Sunday,827,740,1012
+15,Bus,Fall 2021,Sunday,299,375,1013
+16,Bus,Fall 2021,Sunday,293,332,1014
+17,Bus,Fall 2021,Sunday,832,935,1015
+18,Bus,Fall 2021,Sunday,466,449,1016
+19,Bus,Fall 2021,Sunday,532,601,1017
+20,Bus,Fall 2021,Sunday,902,823,1018
+21,Bus,Fall 2021,Sunday,1714,1695,1019
+22,Bus,Fall 2021,Sunday,597,577,1020
+23,Bus,Fall 2021,Sunday,1012,1128,1021
+24,Bus,Fall 2021,Sunday,606,595,1022
+25,Bus,Fall 2021,Sunday,400,387,1023
+26,Bus,Fall 2021,Sunday,1114,1216,1024
+61,Bus,Fall 2022,Weekday,5854,5296,1025
+62,Bus,Fall 2022,Weekday,13193,12148,1026
+30,Bus,Fall 2022,Sunday,653,853,1027
+32,Bus,Fall 2021,Weekday,1680,1622,1028
+63,Bus,Fall 2022,Weekday,1371,1479,1029
+31,Bus,Fall 2022,Sunday,364,409,1030
+33,Bus,Fall 2021,Weekday,701,549,1031
+64,Bus,Fall 2022,Weekday,2732,2364,1032
+32,Bus,Fall 2022,Sunday,1366,1413,1033
+34,Bus,Fall 2021,Weekday,4355,4137,1034
+65,Bus,Fall 2022,Weekday,1163,1073,1035
+33,Bus,Fall 2022,Sunday,933,1262,1036
+35,Bus,Fall 2021,Weekday,2838,2349,1037
+66,Bus,Fall 2022,Weekday,3252,4863,1038
+34,Bus,Fall 2022,Sunday,1395,1408,1039
+36,Bus,Fall 2021,Weekday,3018,3615,1040
+1,Bus,Fall 2022,Saturday,2394,2286,1041
+35,Bus,Fall 2022,Sunday,1883,1714,1042
+37,Bus,Fall 2021,Weekday,2118,2268,1043
+2,Bus,Fall 2022,Saturday,1913,1856,1044
+36,Bus,Fall 2022,Sunday,1505,1808,1045
+38,Bus,Fall 2021,Weekday,2288,2380,1046
+3,Bus,Fall 2022,Saturday,1324,1341,1047
+37,Bus,Fall 2022,Sunday,1400,1474,1048
+39,Bus,Fall 2021,Weekday,9390,8252,1049
+4,Bus,Fall 2022,Saturday,1188,1290,1050
+38,Bus,Fall 2022,Sunday,1496,1466,1051
+40,Bus,Fall 2021,Weekday,4272,4392,1052
+5,Bus,Fall 2022,Saturday,15687,13451,1053
+39,Bus,Fall 2022,Sunday,4093,3642,1054
+41,Bus,Fall 2021,Weekday,940,829,1055
+6,Bus,Fall 2022,Saturday,1054,1179,1056
+40,Bus,Fall 2022,Sunday,2379,2411,1057
+42,Bus,Fall 2021,Weekday,2565,3473,1058
+7,Bus,Fall 2022,Saturday,1679,1818,1059
+41,Bus,Fall 2022,Sunday,1070,1006,1060
+43,Bus,Fall 2021,Weekday,3600,2958,1061
+8,Bus,Fall 2022,Saturday,9898,10874,1062
+42,Bus,Fall 2022,Sunday,1074,1681,1063
+44,Bus,Fall 2021,Weekday,2871,2945,1064
+9,Bus,Fall 2022,Saturday,1111,946,1065
+43,Bus,Fall 2022,Sunday,2144,2172,1066
+45,Bus,Fall 2021,Weekday,2543,2511,1067
+10,Bus,Fall 2022,Saturday,1331,1371,1068
+44,Bus,Fall 2022,Sunday,1229,1320,1069
+46,Bus,Fall 2021,Weekday,1891,1923,1070
+11,Bus,Fall 2022,Saturday,2455,2202,1071
+45,Bus,Fall 2022,Sunday,1806,1156,1072
+47,Bus,Fall 2021,Weekday,1691,2243,1073
+12,Bus,Fall 2022,Saturday,3777,3381,1074
+46,Bus,Fall 2022,Sunday,732,756,1075
+48,Bus,Fall 2021,Weekday,2173,1846,1076
+13,Bus,Fall 2022,Saturday,4403,4345,1077
+47,Bus,Fall 2022,Sunday,1038,1354,1078
+49,Bus,Fall 2021,Weekday,8636,8195,1079
+14,Bus,Fall 2022,Saturday,1414,1287,1080
+48,Bus,Fall 2022,Sunday,1139,1013,1081
+50,Bus,Fall 2021,Weekday,1558,1584,1082
+15,Bus,Fall 2022,Saturday,1117,1306,1083
+49,Bus,Fall 2022,Sunday,4671,4026,1084
+51,Bus,Fall 2021,Weekday,2046,1950,1085
+16,Bus,Fall 2022,Saturday,1415,1517,1086
+50,Bus,Fall 2022,Sunday,954,948,1087
+52,Bus,Fall 2021,Weekday,5471,4918,1088
+17,Bus,Fall 2022,Saturday,2239,2597,1089
+51,Bus,Fall 2022,Sunday,898,788,1090
+53,Bus,Fall 2021,Weekday,1193,1395,1091
+18,Bus,Fall 2022,Saturday,773,807,1092
+52,Bus,Fall 2022,Sunday,2056,2034,1093
+53,Bus,Fall 2022,Sunday,414,428,1094
+54,Bus,Fall 2022,Sunday,671,736,1095
+55,Bus,Fall 2022,Sunday,146,268,1096
+56,Bus,Fall 2022,Sunday,2042,1773,1097
+57,Bus,Fall 2022,Sunday,414,632,1098
+58,Bus,Fall 2022,Sunday,1082,680,1099
+59,Bus,Fall 2022,Sunday,2422,2745,1100
+60,Bus,Fall 2022,Sunday,2618,2723,1101
+61,Bus,Fall 2022,Sunday,2080,1797,1102
+62,Bus,Fall 2022,Sunday,5328,4828,1103
+63,Bus,Fall 2022,Sunday,368,368,1104
+64,Bus,Fall 2022,Sunday,895,774,1105
+65,Bus,Fall 2022,Sunday,239,223,1106
+66,Bus,Fall 2022,Sunday,1076,1780,1107
+1, Bus ,Fall 2023,Weekday,3918,3656,1108
+2, Bus ,Fall 2023,Weekday,4136,3913,1109
+3, Bus ,Fall 2023,Weekday,3024,3237,1110
+4, Bus ,Fall 2023,Weekday,2756,3040,1111
+5, Bus ,Fall 2023,Weekday,28819,24680,1112
+6, Bus ,Fall 2023,Weekday,2911,3409,1113
+7, Bus ,Fall 2023,Weekday,4223,4334,1114
+8, Bus ,Fall 2023,Weekday,20897,22133,1115
+9, Bus ,Fall 2023,Weekday,1758,1541,1116
+10, Bus ,Fall 2023,Weekday,2766,2998,1117
+11, Bus ,Fall 2023,Weekday,4767,4634,1118
+12, Bus ,Fall 2023,Weekday,8069,6719,1119
+54,Bus,Fall 2021,Weekday,1670,1639,1120
+19,Bus,Fall 2022,Saturday,1456,1553,1121
+55,Bus,Fall 2021,Weekday,335,616,1122
+20,Bus,Fall 2022,Saturday,1599,1489,1123
+56,Bus,Fall 2021,Weekday,3447,3436,1124
+21,Bus,Fall 2022,Saturday,3048,3018,1125
+57,Bus,Fall 2021,Weekday,826,933,1126
+22,Bus,Fall 2022,Saturday,1470,1462,1127
+58,Bus,Fall 2021,Weekday,2409,2277,1128
+23,Bus,Fall 2022,Saturday,1840,2109,1129
+24,Bus,Fall 2022,Saturday,1027,1040,1130
+25,Bus,Fall 2022,Saturday,1051,1486,1131
+26,Bus,Fall 2022,Saturday,2060,2328,1132
+27,Bus,Fall 2022,Saturday,3123,3295,1133
+28,Bus,Fall 2022,Saturday,1677,1504,1134
+29,Bus,Fall 2022,Saturday,1345,1258,1135
+30,Bus,Fall 2022,Saturday,980,1272,1136
+31,Bus,Fall 2022,Saturday,469,614,1137
+32,Bus,Fall 2022,Saturday,1884,1912,1138
+33,Bus,Fall 2022,Saturday,1312,1748,1139
+34,Bus,Fall 2022,Saturday,2194,2196,1140
+35,Bus,Fall 2022,Saturday,2809,2563,1141
+36,Bus,Fall 2022,Saturday,2197,2550,1142
+37,Bus,Fall 2022,Saturday,2168,2094,1143
+38,Bus,Fall 2022,Saturday,2120,2035,1144
+39,Bus,Fall 2022,Saturday,6118,5201,1145
+40,Bus,Fall 2022,Saturday,3282,3295,1146
+41,Bus,Fall 2022,Saturday,1494,1314,1147
+42,Bus,Fall 2022,Saturday,1545,2338,1148
+43,Bus,Fall 2022,Saturday,3001,3110,1149
+44,Bus,Fall 2022,Saturday,1794,1903,1150
+27,Bus,Fall 2021,Sunday,1791,1962,1151
+28,Bus,Fall 2021,Sunday,444,377,1152
+29,Bus,Fall 2021,Sunday,419,394,1153
+30,Bus,Fall 2021,Sunday,385,570,1154
+31,Bus,Fall 2021,Sunday,307,310,1155
+32,Bus,Fall 2021,Sunday,725,665,1156
+33,Bus,Fall 2021,Sunday,303,200,1157
+34,Bus,Fall 2021,Sunday,1272,1261,1158
+35,Bus,Fall 2021,Sunday,1006,749,1159
+36,Bus,Fall 2021,Sunday,1012,1151,1160
+37,Bus,Fall 2021,Sunday,779,853,1161
+38,Bus,Fall 2021,Sunday,642,669,1162
+39,Bus,Fall 2021,Sunday,3530,3229,1163
+40,Bus,Fall 2021,Sunday,2095,2089,1164
+41,Bus,Fall 2021,Sunday,284,275,1165
+42,Bus,Fall 2021,Sunday,790,1250,1166
+43,Bus,Fall 2021,Sunday,1361,1102,1167
+44,Bus,Fall 2021,Sunday,1093,1228,1168
+45,Bus,Fall 2021,Sunday,817,938,1169
+46,Bus,Fall 2021,Sunday,608,661,1170
+47,Bus,Fall 2021,Sunday,644,846,1171
+48,Bus,Fall 2021,Sunday,744,629,1172
+49,Bus,Fall 2021,Sunday,2969,2705,1173
+50,Bus,Fall 2021,Sunday,551,544,1174
+51,Bus,Fall 2021,Sunday,809,719,1175
+52,Bus,Fall 2021,Sunday,1940,1904,1176
+53,Bus,Fall 2021,Sunday,307,342,1177
+54,Bus,Fall 2021,Sunday,531,539,1178
+55,Bus,Fall 2021,Sunday,70,174,1179
+56,Bus,Fall 2021,Sunday,1103,1199,1180
+57,Bus,Fall 2021,Sunday,258,262,1181
+58,Bus,Fall 2021,Sunday,528,547,1182
+59,Bus,Fall 2021,Sunday,1783,2066,1183
+60,Bus,Fall 2021,Sunday,2352,2357,1184
+61,Bus,Fall 2021,Sunday,1434,1230,1185
+62,Bus,Fall 2021,Sunday,3720,3253,1186
+63,Bus,Fall 2021,Sunday,177,196,1187
+64,Bus,Fall 2021,Sunday,430,409,1188
+65,Bus,Fall 2021,Sunday,191,177,1189
+66,Bus,Fall 2021,Sunday,872,923,1190
+1,Bus,Fall 2022,Weekday,3702,3345,1191
+2,Bus,Fall 2022,Weekday,3724,3675,1192
+3,Bus,Fall 2022,Weekday,2716,2897,1193
+4,Bus,Fall 2022,Weekday,2502,2662,1194
+5,Bus,Fall 2022,Weekday,26543,22352,1195
+6,Bus,Fall 2022,Weekday,2579,2935,1196
+7,Bus,Fall 2022,Weekday,3828,3984,1197
+8,Bus,Fall 2022,Weekday,18462,19785,1198
+9,Bus,Fall 2022,Weekday,1727,1464,1199
+10,Bus,Fall 2022,Weekday,2585,2829,1200
+5, Bus ,Fall 2023,Sunday,10947,9384,1201
+6, Bus ,Fall 2023,Sunday,757,906,1202
+7, Bus ,Fall 2023,Sunday,1252,1295,1203
+8, Bus ,Fall 2023,Sunday,7462,7888,1204
+9, Bus ,Fall 2023,Sunday,752,644,1205
+10, Bus ,Fall 2023,Sunday,913,973,1206
+11, Bus ,Fall 2023,Sunday,1861,1664,1207
+12, Bus ,Fall 2023,Sunday,2701,2327,1208
+13, Bus ,Fall 2023,Sunday,3322,3328,1209
+14, Bus ,Fall 2023,Sunday,980,900,1210
+15, Bus ,Fall 2023,Sunday,826,935,1211
+16, Bus ,Fall 2023,Sunday,1170,1228,1212
+17, Bus ,Fall 2023,Sunday,1558,1812,1213
+18, Bus ,Fall 2023,Sunday,646,652,1214
+19, Bus ,Fall 2023,Sunday,1122,1219,1215
+20, Bus ,Fall 2023,Sunday,1084,1018,1216
+21, Bus ,Fall 2023,Sunday,2093,2017,1217
+22, Bus ,Fall 2023,Sunday,957,996,1218
+23, Bus ,Fall 2023,Sunday,1472,1631,1219
+24, Bus ,Fall 2023,Sunday,779,757,1220
+25, Bus ,Fall 2023,Sunday,915,1262,1221
+26, Bus ,Fall 2023,Sunday,1582,1883,1222
+27, Bus ,Fall 2023,Sunday,2469,2571,1223
+28, Bus ,Fall 2023,Sunday,1321,1226,1224
+29, Bus ,Fall 2023,Sunday,1026,993,1225
+9, Bus ,Fall 2023,Saturday,1049,925,1226
+30, Bus ,Fall 2023,Sunday,688,909,1227
+31, Bus ,Fall 2023,Sunday,366,469,1228
+32, Bus ,Fall 2023,Sunday,1402,1445,1229
+33, Bus ,Fall 2023,Sunday,1005,1351,1230
+34, Bus ,Fall 2023,Sunday,1532,1526,1231
+35, Bus ,Fall 2023,Sunday,1969,1861,1232
+36, Bus ,Fall 2023,Sunday,1770,2069,1233
+10, Bus ,Fall 2023,Saturday,1301,1338,1234
+37, Bus ,Fall 2023,Sunday,1581,1489,1235
+11, Bus ,Fall 2023,Saturday,2442,2260,1236
+38, Bus ,Fall 2023,Sunday,1568,1563,1237
+12, Bus ,Fall 2023,Saturday,3725,3250,1238
+39, Bus ,Fall 2023,Sunday,4514,3983,1239
+13, Bus ,Fall 2023,Saturday,4497,4396,1240
+40, Bus ,Fall 2023,Sunday,2794,2733,1241
+14, Bus ,Fall 2023,Saturday,1313,1206,1242
+41, Bus ,Fall 2023,Sunday,1136,1028,1243
+15, Bus ,Fall 2023,Saturday,1183,1248,1244
+42, Bus ,Fall 2023,Sunday,1114,1730,1245
+16, Bus ,Fall 2023,Saturday,1544,1634,1246
+43, Bus ,Fall 2023,Sunday,2131,2265,1247
+17, Bus ,Fall 2023,Saturday,2224,2523,1248
+44, Bus ,Fall 2023,Sunday,1307,1459,1249
+18, Bus ,Fall 2023,Saturday,826,884,1250
+45, Bus ,Fall 2023,Sunday,1971,1404,1251
+19, Bus ,Fall 2023,Saturday,1494,1582,1252
+46, Bus ,Fall 2023,Sunday,841,891,1253
+20, Bus ,Fall 2023,Saturday,1448,1343,1254
+47, Bus ,Fall 2023,Sunday,1106,1430,1255
+21, Bus ,Fall 2023,Saturday,3129,2986,1256
+48, Bus ,Fall 2023,Sunday,1259,1107,1257
+22, Bus ,Fall 2023,Saturday,1330,1389,1258
+49, Bus ,Fall 2023,Sunday,5057,4376,1259
+23, Bus ,Fall 2023,Saturday,1936,2151,1260
+50, Bus ,Fall 2023,Sunday,1013,989,1261
+24, Bus ,Fall 2023,Saturday,1042,1064,1262
+51, Bus ,Fall 2023,Sunday,953,851,1263
+25, Bus ,Fall 2023,Saturday,1237,1659,1264
+52, Bus ,Fall 2023,Sunday,2157,2173,1265
+26, Bus ,Fall 2023,Saturday,2175,2542,1266
+53, Bus ,Fall 2023,Sunday,420,433,1267
+27, Bus ,Fall 2023,Saturday,3096,3313,1268
+54, Bus ,Fall 2023,Sunday,696,733,1269
+28, Bus ,Fall 2023,Saturday,1789,1609,1270
+55, Bus ,Fall 2023,Sunday,142,273,1271
+29, Bus ,Fall 2023,Saturday,1382,1275,1272
+56, Bus ,Fall 2023,Sunday,2031,1852,1273
+30, Bus ,Fall 2023,Saturday,977,1262,1274
+57, Bus ,Fall 2023,Sunday,424,624,1275
+31, Bus ,Fall 2023,Saturday,504,638,1276
+58, Bus ,Fall 2023,Sunday,1083,732,1277
+32, Bus ,Fall 2023,Saturday,1852,1851,1278
+13, Bus ,Fall 2023,Weekday,9440,9279,1279
+59, Bus ,Fall 2023,Sunday,2537,2825,1280
+60, Bus ,Fall 2023,Sunday,2873,2878,1281
+61, Bus ,Fall 2023,Sunday,2131,1872,1282
+62, Bus ,Fall 2023,Sunday,5489,5003,1283
+63, Bus ,Fall 2023,Sunday,385,391,1284
+64, Bus ,Fall 2023,Sunday,962,780,1285
+65, Bus ,Fall 2023,Sunday,213,208,1286
+66, Bus ,Fall 2023,Sunday,1135,1817,1287
+14, Bus ,Fall 2023,Weekday,2719,2488,1288
+33, Bus ,Fall 2023,Saturday,1317,1729,1289
+15, Bus ,Fall 2023,Weekday,2366,2491,1290
+34, Bus ,Fall 2023,Saturday,2284,2192,1291
+16, Bus ,Fall 2023,Weekday,3206,3472,1292
+35, Bus ,Fall 2023,Saturday,2846,2645,1293
+17, Bus ,Fall 2023,Weekday,5470,6332,1294
+36, Bus ,Fall 2023,Saturday,2439,2715,1295
+18, Bus ,Fall 2023,Weekday,1602,1699,1296
+37, Bus ,Fall 2023,Saturday,2241,2103,1297
+19, Bus ,Fall 2023,Weekday,3026,3274,1298
+38, Bus ,Fall 2023,Saturday,2058,2129,1299
+20, Bus ,Fall 2023,Weekday,3138,2908,1300
+39, Bus ,Fall 2023,Saturday,6488,5674,1301
+21, Bus ,Fall 2023,Weekday,6604,6470,1302
+40, Bus ,Fall 2023,Saturday,3620,3573,1303
+22, Bus ,Fall 2023,Weekday,2823,2606,1304
+41, Bus ,Fall 2023,Saturday,1494,1352,1305
+23, Bus ,Fall 2023,Weekday,4166,4661,1306
+42, Bus ,Fall 2023,Saturday,1612,2386,1307
+24, Bus ,Fall 2023,Weekday,2992,2769,1308
+43, Bus ,Fall 2023,Saturday,2870,2965,1309
+25, Bus ,Fall 2023,Weekday,2284,3204,1310
+44, Bus ,Fall 2023,Saturday,1836,1940,1311
+26, Bus ,Fall 2023,Weekday,4298,4891,1312
+45, Bus ,Fall 2023,Saturday,2510,1779,1313
+27, Bus ,Fall 2023,Weekday,9211,10031,1314
+46, Bus ,Fall 2023,Saturday,1201,1272,1315
+28, Bus ,Fall 2023,Weekday,3337,3016,1316
+47, Bus ,Fall 2023,Saturday,1461,1895,1317
+29, Bus ,Fall 2023,Weekday,2503,2317,1318
+48, Bus ,Fall 2023,Saturday,1704,1476,1319
+30, Bus ,Fall 2023,Weekday,2339,3894,1320
+49, Bus ,Fall 2023,Saturday,6526,5749,1321
+31, Bus ,Fall 2023,Weekday,1226,1546,1322
+50, Bus ,Fall 2023,Saturday,1455,1407,1323
+32, Bus ,Fall 2023,Weekday,3441,3596,1324
+51, Bus ,Fall 2023,Saturday,1313,1195,1325
+33, Bus ,Fall 2023,Weekday,2755,3297,1326
+52, Bus ,Fall 2023,Saturday,2959,2865,1327
+34, Bus ,Fall 2023,Weekday,5445,5190,1328
+53, Bus ,Fall 2023,Saturday,613,636,1329
+35, Bus ,Fall 2023,Weekday,5930,5750,1330
+54, Bus ,Fall 2023,Saturday,1026,1068,1331
+36, Bus ,Fall 2023,Weekday,5180,5992,1332
+55, Bus ,Fall 2023,Saturday,212,381,1333
+37, Bus ,Fall 2023,Weekday,4355,4074,1334
+56, Bus ,Fall 2023,Saturday,2933,2656,1335
+38, Bus ,Fall 2023,Weekday,5017,4847,1336
+57, Bus ,Fall 2023,Saturday,621,872,1337
+39, Bus ,Fall 2023,Weekday,11467,10043,1338
+58, Bus ,Fall 2023,Saturday,1528,1046,1339
+40, Bus ,Fall 2023,Weekday,5593,5738,1340
+59, Bus ,Fall 2023,Saturday,3483,3846,1341
+41, Bus ,Fall 2023,Weekday,3467,3140,1342
+60, Bus ,Fall 2023,Saturday,4003,4141,1343
+42, Bus ,Fall 2023,Weekday,3780,4948,1344
+61, Bus ,Fall 2023,Saturday,3091,2699,1345
+43, Bus ,Fall 2023,Weekday,6220,6155,1346
+62, Bus ,Fall 2023,Saturday,6933,6305,1347
+44, Bus ,Fall 2023,Weekday,3251,3261,1348
+63, Bus ,Fall 2023,Saturday,521,496,1349
+45, Bus ,Fall 2023,Weekday,5483,3939,1350
+64, Bus ,Fall 2023,Saturday,1255,1096,1351
+46, Bus ,Fall 2023,Weekday,2552,2538,1352
+65, Bus ,Fall 2023,Saturday,310,301,1353
+47, Bus ,Fall 2023,Weekday,3058,3868,1354
+66, Bus ,Fall 2023,Saturday,1503,2334,1355
+48, Bus ,Fall 2023,Weekday,3764,3288,1356
+1, Bus ,Fall 2023,Sunday,1852,1836,1357
+49, Bus ,Fall 2023,Weekday,13792,12322,1358
+2, Bus ,Fall 2023,Sunday,1375,1310,1359
+50, Bus ,Fall 2023,Weekday,2875,2851,1360
+3, Bus ,Fall 2023,Sunday,918,997,1361
+51, Bus ,Fall 2023,Weekday,2299,2249,1362
+4, Bus ,Fall 2023,Sunday,862,952,1363
+52, Bus ,Fall 2023,Weekday,6448,5601,1364
+53, Bus ,Fall 2023,Weekday,1774,1874,1365
+54, Bus ,Fall 2023,Weekday,2286,2342,1366
+55, Bus ,Fall 2023,Weekday,634,1047,1367
+56, Bus ,Fall 2023,Weekday,6268,5828,1368
+57, Bus ,Fall 2023,Weekday,1262,1804,1369
+58, Bus ,Fall 2023,Weekday,4349,3125,1370
+59, Bus ,Fall 2023,Weekday,7560,8546,1371
+60, Bus ,Fall 2023,Weekday,7853,7925,1372
+61, Bus ,Fall 2023,Weekday,6374,5806,1373
+62, Bus ,Fall 2023,Weekday,14103,12992,1374
+63, Bus ,Fall 2023,Weekday,1417,1546,1375
+64, Bus ,Fall 2023,Weekday,3140,2653,1376
+65, Bus ,Fall 2023,Weekday,1176,1084,1377
+66, Bus ,Fall 2023,Weekday,3373,5020,1378
+1, Bus ,Fall 2023,Saturday,2630,2465,1379
+2, Bus ,Fall 2023,Saturday,2099,2007,1380
+3, Bus ,Fall 2023,Saturday,1397,1454,1381
+4, Bus ,Fall 2023,Saturday,1219,1362,1382
+5, Bus ,Fall 2023,Saturday,16011,14127,1383
+6, Bus ,Fall 2023,Saturday,1046,1213,1384
+7, Bus ,Fall 2023,Saturday,1712,1771,1385
+8, Bus ,Fall 2023,Saturday,10296,11374,1386
