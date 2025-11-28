@@ -32,248 +32,841 @@ editor:
     wrap: 72
 ---
 
+# Potential Project?
+
+**Research Question:** Can we identify tipping point neighborhoods where eviction filings will surge next month to help with preemptive rental assistance distribution?
+
+**Method:** Negative Binomial regression with rolling window cross-validation using monthly tract-level panel data. This could be an issue bc the data is quite zero inflated.
+
+**Data Scope:** January 2020 - November 2025 eviction filings across Philadelphia census tracts with weekly and monthly granularity.
+
+**Key Stuff:**
+
+- Extreme zero-inflation (60-70% zeros) is p bad for Negative Binomial ...
+- Strong seasonality with summer-fall peaks requiring month fixed effects.
+- Moratorium policy created structural break from March 2020 through September 2021.
+- Racial majority strongly predicts filing intensity suggesting equity concerns.
+- High-frequency weekly data captures volatility but monthly data better for forecasting.
+
 # Setup and Core Data Preparation
 
+# Setup and Library Loading
+
 ```{r setup}
-# Load essential R language libraries for data manipulation and visualization.
+# Load libraries.
 library(tidyverse)
 library(lubridate)
-library(scales)
-library(dplyr)
-library(stringr)
 library(sf)
+library(scales)
 library(patchwork)
+library(viridis)
+library(kableExtra)
+library(corrplot)
+library(ggridges)
+library(forecast)
+library(zoo)
 
-# Suppress scientific notation for cleaner output.
+# Disable scientific notation.
 options(scipen = 999)
+
+# Consistent theme.
+theme_set(theme_minimal(base_size = 12))
 ```
 
-```{r load-clean}
-# Tracts of PA, filtered for Philly (Conceptual step, assumes pa_tracts.shp is loaded).
-tract_geo <- read_sf("data/pa_tracts/pa_tracts.shp")
-tract_geo <- tract_geo %>%
-  filter(`COUNTYFP` == "101")
+# Data Loading and Initial Exploration
 
-# Load core monthly and weekly eviction data files.
-df_eviction <- read.csv("data/eviction/philadelphia_monthly_2020_2021.csv")
-df_monthly <- read.csv("data/eviction/philadelphia_monthly_2020_2021.csv")
-df_weekly_full <- read.csv("data/eviction/philadelphia_weekly_2020_2021.csv")
+## Monthly Tract-Level Data
 
-# Clean column names in monthly data.
-df_eviction <- df_eviction %>%
-  rename(
-    filings_count = filings_2020,
-    GEOID = GEOID
-  )
+```{r load-monthly-data}
+# Load monthly eviction filings data at census tract level.
+df_monthly_raw <- read.csv("data/eviction/philadelphia_monthly_2020_2021.csv")
 
-# Convert month column to a proper date format for time series analysis.
-df_eviction <- df_eviction %>%
+# Initial data structure and dimensions.
+print(dim(df_monthly_raw))
+
+print(names(df_monthly_raw))
+```
+
+```{r load-monthly-data-table}
+# First few rows to understand structure.
+head(df_monthly_raw, 10) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+## Weekly Tract-Level Data
+
+```{r load-weekly-data}
+# Load weekly eviction filings data for high-frequency analysis.
+df_weekly_raw <- read.csv("data/eviction/philadelphia_weekly_2020_2021.csv")
+
+# Weekly data structure.
+print(dim(df_weekly_raw))
+```
+
+```{r load-weekly-data-table}
+head(df_weekly_raw, 10) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+## Claims Data (Aggregated System-Level)
+
+```{r load-claims-data}
+# Load aggregated monthly claims data showing financial severity.
+df_claims_raw <- read.csv("data/eviction/philadelphia_claims_monthly.csv")
+
+# Claims data structure.
+print(dim(df_claims_raw))
+```
+
+```{r load-claims-data-table}
+head(df_claims_raw, 10) %>%
+  kable(digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+# Data Cleaning and Feature Engineering
+
+## Monthly Data Preparation
+
+```{r clean-monthly}
+# Clean and prepare monthly data with temporal features.
+df_monthly <- df_monthly_raw %>%
+  # Rename filings variable for clarity.
+  rename(filings_count = filings_2020) %>%
+  # Parse month string to proper date format.
   mutate(
     date = as.Date(paste0("01/", month), format = "%d/%m/%Y"),
-    year = year(date)
+    year = year(date),
+    month_num = month(date),
+    month_name = month(date, label = TRUE, abbr = FALSE)
   ) %>%
-  filter(!is.na(date))
+  # Filter out rows with invalid dates.
+  filter(!is.na(date)) %>%
+  # Convert GEOID to character for joining operations.
+  mutate(GEOID = as.character(GEOID)) %>%
+  # Create policy intervention indicator for eviction moratorium.
+  mutate(
+    Moratorium_Active = ifelse(
+      date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30"),
+      1,
+      0
+    ),
+    Period = case_when(
+      date < as.Date("2020-03-01") ~ "Pre-Moratorium",
+      date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30") ~ "Moratorium",
+      date > as.Date("2021-09-30") ~ "Post-Moratorium"
+    ),
+    Period = factor(Period, levels = c("Pre-Moratorium", "Moratorium", "Post-Moratorium"))
+  ) %>%
+  # Create seasonal indicators for seasonality analysis.
+  mutate(
+    Season = case_when(
+      month_num %in% c(12, 1, 2) ~ "Winter",
+      month_num %in% c(3, 4, 5) ~ "Spring",
+      month_num %in% c(6, 7, 8) ~ "Summer",
+      month_num %in% c(9, 10, 11) ~ "Fall"
+    ),
+    Season = factor(Season, levels = c("Winter", "Spring", "Summer", "Fall"))
+  )
 
-# Filter out low-volume months (early 2020 shutdown) for distribution stability.
-df_eviction_clean <- df_eviction %>%
-  filter(filings_count > 0)
-
-# Summarize cleaned data structure.
-summary(df_eviction)
+# Print summary statistics of cleaned monthly data.
+summary(df_monthly %>% select(filings_count, date, year, Moratorium_Active)) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-# Temporal Trends
-
-```{r temporal-trends}
-# Calculate total filings aggregated by month to show system-wide trend.
-monthly_trend <- df_eviction %>%
-  group_by(date) %>%
-  summarise(Total_Filings = sum(filings_count),.groups = "drop")
-
-# Visualize total monthly filings over time.
-trend_plot <- ggplot(monthly_trend, aes(x = date, y = Total_Filings)) +
-  geom_line(color = "#b30000", linewidth = 1.1) +
-  geom_point(color = "#b30000", size = 2) +
-  geom_vline(xintercept = as.Date("2020-03-01"), linetype = "dashed", color = "gray50") +
-  geom_vline(xintercept = as.Date("2021-09-01"), linetype = "dashed", color = "gray50") +
-  labs(
-    title = "Total Monthly Eviction Filings (2020 - 2023)",
-    subtitle = "Vertical lines mark pandemic shutdown and partial moratorium lift.",
-    x = "Date",
-    y = "Total Filings"
-  ) +
-  scale_y_continuous(labels = comma)
-
-# Plot shows system-wide temporal trend of eviction filings.
-trend_plot
+```{r clean-monthly-coverage}
+# Check temporal coverage.
+df_monthly %>%
+  summarize(
+    Min_Date = min(date),
+    Max_Date = max(date),
+    N_Months = n_distinct(date),
+    N_Tracts = n_distinct(GEOID),
+    Total_Obs = n()
+  ) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-```{r count-distribution}
-# Create log(Count + 1) transformation for comparison.
-df_hist_data <- df_eviction_clean %>%
+## Weekly Data Preparation
+
+```{r clean-weekly}
+# Clean and prepare weekly data for high-frequency analysis.
+df_weekly <- df_weekly_raw %>%
+  # Rename filings variable.
+  rename(filings_count = filings_2020) %>%
+  # Convert week_date to proper date format.
+  mutate(
+    date = as.Date(week_date),
+    year = year(date),
+    month_num = month(date),
+    week_of_year = week(date)
+  ) %>%
+  # Filter out rows with invalid dates.
+  filter(!is.na(date)) %>%
+  # Convert GEOID to character.
+  mutate(GEOID = as.character(GEOID)) %>%
+  # Create moratorium indicator.
+  mutate(
+    Moratorium_Active = ifelse(
+      date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30"),
+      1,
+      0
+    )
+  )
+
+# Check weekly temporal coverage.
+df_weekly %>%
+  summarize(
+    Min_Date = min(date),
+    Max_Date = max(date),
+    N_Weeks = n_distinct(date),
+    N_Tracts = n_distinct(GEOID),
+    Total_Obs = n()
+  ) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Claims Data Preparation
+
+```{r clean-claims}
+# Clean claims data showing financial severity of evictions.
+df_claims <- df_claims_raw %>%
+  # Convert month_date to proper date format.
+  mutate(
+    date = as.Date(month_date),
+    year = year(date),
+    month_num = month(date)
+  ) %>%
+  # Filter valid dates.
+  filter(!is.na(date)) %>%
+  # Calculate ratio to baseline.
+  mutate(claim_ratio = median_claim / median_claim_baseline)
+
+summary(df_claims %>% select(median_claim, median_claim_baseline, claim_ratio)) %>%
+  kable(digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+# Distribution Analysis: Zero-Inflation Assessment
+
+## Monthly Filing Distribution
+
+```{r monthly-distribution}
+#| fig-dpi: 300
+#| fig-height: 10
+#| fig-width: 12
+
+# Calculate zero-inflation statistics for monthly data.
+zero_stats_monthly <- df_monthly %>%
+  summarize(
+    Total_Obs = n(),
+    Zero_Count = sum(filings_count == 0),
+    Zero_Pct = Zero_Count / Total_Obs * 100,
+    Positive_Count = sum(filings_count > 0),
+    Mean_All = mean(filings_count),
+    Mean_Positive = mean(filings_count[filings_count > 0]),
+    Median_All = median(filings_count),
+    Variance = var(filings_count),
+    Dispersion_Ratio = Variance / Mean_All
+  )
+
+cat("Zero-Inflation Statistics (Monthly Data):\n")
+cat(sprintf("Total Observations: %s\n", comma(zero_stats_monthly$Total_Obs)))
+cat(sprintf("Zero Filings: %s (%.1f%%)\n", 
+            comma(zero_stats_monthly$Zero_Count), 
+            zero_stats_monthly$Zero_Pct))
+cat(sprintf("Positive Filings: %s (%.1f%%)\n", 
+            comma(zero_stats_monthly$Positive_Count), 
+            100 - zero_stats_monthly$Zero_Pct))
+cat(sprintf("\nMean (all): %.2f\n", zero_stats_monthly$Mean_All))
+cat(sprintf("Mean (positive only): %.2f\n", zero_stats_monthly$Mean_Positive))
+cat(sprintf("Variance: %.2f\n", zero_stats_monthly$Variance))
+cat(sprintf("Dispersion Ratio: %.2f\n", zero_stats_monthly$Dispersion_Ratio))
+
+# Create histogram data for raw and log-transformed counts.
+df_hist_monthly <- df_monthly %>%
   mutate(
     Log_Count = log10(filings_count + 1),
     Scale = factor("Raw Count", levels = c("Raw Count", "Log10(Count + 1)"))
   )
 
-# Duplicate data for faceted plotting.
-df_log_data <- df_hist_data %>%
+# Duplicate data for log-transformed panel.
+df_log_monthly <- df_hist_monthly %>%
   mutate(
     filings_count = Log_Count,
     Scale = factor("Log10(Count + 1)", levels = c("Raw Count", "Log10(Count + 1)"))
   )
+```
 
-# Combine datasets for 1x2 faceted visualization.
-df_final_hist <- bind_rows(df_hist_data, df_log_data)
+High zero percentage could use zero-inflated Negative Binomial model, but I think we're restricted to just regular NB, lmk if I'm wrong.
+Dispersion ratio > 1 justifies Negative Binomial over Poisson.
 
-# Visualize distributions of raw and log-transformed counts.
-dist_plot <- ggplot(df_final_hist, aes(x = filings_count)) +
-  geom_histogram(bins = 30, fill = "#045a8d", color = "white", alpha = 0.8) +
+```{r monthly-distribution-viz}
+# Combine for faceted viz.
+df_final_hist_monthly <- bind_rows(df_hist_monthly, df_log_monthly)
+
+# Create 1x2 faceted histogram showing raw and log distributions.
+dist_plot_monthly <- ggplot(df_final_hist_monthly, aes(x = filings_count)) +
+  geom_histogram(bins = 50, fill = "#E74C3C", color = "white", alpha = 0.8) +
   scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = comma) +
   labs(
-    title = "Distribution of Monthly Eviction Filings per Tract",
-    subtitle = "Extreme skewness justifies use of Negative Binomial regression.",
+    title = "Distribution of Monthly Eviction Filings per Census Tract",
+    subtitle = sprintf("%.1f%% zeros justify Zero-Inflated Negative Binomial (ZINB) model.\nNot sure if in project toolbox.", 
+                       zero_stats_monthly$Zero_Pct),
     x = "Filings Count",
-    y = "Frequency (Number of Tracts)"
+    y = "Frequency (Number of Observations)",
+    caption = "Data: Philadelphia Eviction Filings 2020-2025 | Monthly tract-level observations"
   ) +
-  facet_wrap(~ Scale, scales = "free") +
-  theme_minimal()
+  facet_wrap(~ Scale, scales = "free", ncol = 2) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    strip.text = element_text(face = "bold")
+  )
 
-# Plot shows comparison of raw and log-transformed distributions.
-dist_plot
+# Display distribution plot demonstrating zero-inflation.
+dist_plot_monthly
 ```
 
-# Spatial Racial Disparity
+## Weekly Filing Distribution
 
-```{r disparity}
-# Summarize total filings by the tract's racial majority group.
-racial_filings <- df_eviction %>%
-  filter(!is.na(racial_majority)) %>%
-  group_by(racial_majority) %>%
-  summarize(Total_Filings = sum(filings_count),.groups = "drop") %>%
-  arrange(desc(Total_Filings))
+```{r weekly-distribution}
+#| fig-dpi: 300
+#| fig-height: 6
+#| fig-width: 12
 
-# Visualize total filings by group.
-racial_plot <- ggplot(racial_filings, aes(x = reorder(racial_majority, Total_Filings), y = Total_Filings)) +
-  geom_bar(stat = "identity", fill = "#3182bd") +
-  coord_flip() +
+# Calculate zero-inflation statistics for weekly data.
+zero_stats_weekly <- df_weekly %>%
+  summarize(
+    Total_Obs = n(),
+    Zero_Count = sum(filings_count == 0),
+    Zero_Pct = Zero_Count / Total_Obs * 100,
+    Mean_All = mean(filings_count),
+    Variance = var(filings_count),
+    Dispersion_Ratio = Variance / Mean_All
+  )
+
+cat("\nZero-Inflation Statistics (Weekly Data):\n")
+cat(sprintf("Total Observations: %s\n", comma(zero_stats_weekly$Total_Obs)))
+cat(sprintf("Zero Filings: %s (%.1f%%)\n", 
+            comma(zero_stats_weekly$Zero_Count), 
+            zero_stats_weekly$Zero_Pct))
+cat(sprintf("Mean: %.2f\n", zero_stats_weekly$Mean_All))
+cat(sprintf("Dispersion Ratio: %.2f\n", zero_stats_weekly$Dispersion_Ratio))
+```
+
+```{r weekly-distribution-histogram}
+# Create histogram for weekly distribution.
+weekly_hist <- df_weekly %>%
+  filter(filings_count > 0) %>%
+  ggplot(aes(x = filings_count)) +
+  geom_histogram(bins = 30, fill = "#3498DB", color = "white", alpha = 0.8) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = comma) +
   labs(
-    title = "Total Eviction Filings by Census Tract Racial Majority",
-    subtitle = "Highlights major structural disparities in risk exposure.",
-    x = "Census Tract Racial Majority",
-    y = "Total Eviction Filings (2020 - 2023)"
+    title = "Distribution of Weekly Eviction Filings (Positive Counts Only)",
+    subtitle = sprintf("%.1f%% of observations are zeros (not shown)", zero_stats_weekly$Zero_Pct),
+    x = "Weekly Filings Count",
+    y = "Frequency",
+    caption = "Data: Philadelphia Weekly Eviction Filings | Excludes zero observations"
   ) +
-  scale_y_continuous(labels = comma)
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 14))
 
-# Bar plot shows disparity in eviction filings by neighborhood demography.
-racial_plot
+weekly_hist
 ```
 
-# Eviction Claim Numbers
+## Quantile Analysis
 
-```{r claim-numbers}
-# Load contextual data on financial claims.
-df_claims <- read.csv("data/eviction/philadelphia_claims_monthly.csv")
+```{r quantile-analysis}
+# Calculate quantiles for positive filings only.
+quantile_stats_monthly <- df_monthly %>%
+  filter(filings_count > 0) %>%
+  summarize(
+    Min = min(filings_count),
+    Q01 = quantile(filings_count, 0.01),
+    Q05 = quantile(filings_count, 0.05),
+    Q25 = quantile(filings_count, 0.25),
+    Median = median(filings_count),
+    Q75 = quantile(filings_count, 0.75),
+    Q95 = quantile(filings_count, 0.95),
+    Q99 = quantile(filings_count, 0.99),
+    Max = max(filings_count)
+  )
 
-# Convert month_date to a proper date format.
-df_claims <- df_claims %>%
-  mutate(date = as.Date(month_date))
+# Monthly filing count distribution quantiles (positive counts only).
+quantile_stats_monthly %>%
+  pivot_longer(everything(), names_to = "Quantile", values_to = "Filings") %>%
+  kable(digits = 1) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
 
-# Visualize the trend of median claim amounts.
+# Temporal Analysis: System-Wide Trends
+
+## Monthly Aggregate Trend with Policy Markers
+
+```{r monthly-system-trend-plot}
+#| fig-dpi: 300
+#| fig-height: 7
+#| fig-width: 14
+
+# Calculate total monthly filings across all tracts.
+monthly_aggregate <- df_monthly %>%
+  group_by(date, Period) %>%
+  summarize(
+    Total_Filings = sum(filings_count, na.rm = TRUE),
+    Mean_Filings = mean(filings_count, na.rm = TRUE),
+    Median_Filings = median(filings_count, na.rm = TRUE),
+    N_Tracts = n_distinct(GEOID),
+    .groups = "drop"
+  )
+
+# Create line plot with policy intervention markers.
+monthly_trend_plot <- ggplot(monthly_aggregate, aes(x = date, y = Total_Filings)) +
+  geom_line(color = "#C0392B", linewidth = 1.3) +
+  geom_point(aes(color = Period), size = 3) +
+  # Mark start of moratorium.
+  geom_vline(xintercept = as.Date("2020-03-01"), 
+             linetype = "dashed", color = "#27AE60", linewidth = 1) +
+  annotate("text", x = as.Date("2020-03-01"), y = max(monthly_aggregate$Total_Filings) * 0.95,
+           label = "Moratorium\nStarts", hjust = -0.1, color = "#27AE60", size = 4, fontface = "bold") +
+  # Mark end of moratorium.
+  geom_vline(xintercept = as.Date("2021-09-30"), 
+             linetype = "dashed", color = "#E67E22", linewidth = 1) +
+  annotate("text", x = as.Date("2021-09-30"), y = max(monthly_aggregate$Total_Filings) * 0.85,
+           label = "Moratorium\nEnds", hjust = 1.1, color = "#E67E22", size = 4, fontface = "bold") +
+  scale_y_continuous(labels = comma) +
+  scale_color_manual(values = c("Pre-Moratorium" = "#3498DB", 
+                                 "Moratorium" = "#27AE60", 
+                                 "Post-Moratorium" = "#E67E22")) +
+  labs(
+    title = "Total Monthly Eviction Filings: System-Wide Trend (2020-2025)",
+    subtitle = "Dramatic suppression during moratorium followed by surge after policy ended",
+    x = "Date (Month)",
+    y = "Total Monthly Filings Across All Census Tracts",
+    color = "Policy Period",
+    caption = "Data: Philadelphia Eviction Filings | Vertical lines mark policy changes"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom"
+  )
+
+# Display system-wide trend with policy markers.
+monthly_trend_plot
+```
+
+```{r monthly-system-trend}
+# Print numeric statistics by period.
+# Filings by policy period.
+monthly_aggregate %>%
+  group_by(date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30")) %>%
+  summarize(
+    Period = ifelse(unique(`date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30")`), 
+                    "Moratorium", "Non-Moratorium"),
+    Mean_Monthly = mean(Total_Filings),
+    Median_Monthly = median(Total_Filings),
+    Min_Monthly = min(Total_Filings),
+    Max_Monthly = max(Total_Filings),
+    .groups = "drop"
+  ) %>%
+  select(-1) %>%
+  kable(digits = 0) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Weekly Aggregate Trend (High-Frequency View)
+
+```{r weekly-system-trend}
+#| fig-dpi: 300
+#| fig-height: 6
+#| fig-width: 14
+
+# Calculate total weekly filings for volatility assessment.
+weekly_aggregate <- df_weekly %>%
+  group_by(date) %>%
+  summarize(
+    Total_Filings = sum(filings_count, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Create high-frequency weekly trend plot.
+weekly_trend_plot <- ggplot(weekly_aggregate, aes(x = date, y = Total_Filings)) +
+  geom_line(color = "#8E44AD", alpha = 0.6, linewidth = 0.8) +
+  geom_smooth(method = "loess", se = TRUE, color = "#E74C3C", linewidth = 1.2, span = 0.1) +
+  geom_vline(xintercept = as.Date("2020-03-01"), 
+             linetype = "dashed", color = "#27AE60", alpha = 0.7) +
+  geom_vline(xintercept = as.Date("2021-09-30"), 
+             linetype = "dashed", color = "#E67E22", alpha = 0.7) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Weekly Eviction Filings: High-Frequency Volatility (2020-2025)",
+    subtitle = "Smoothed trend (red) shows underlying pattern amid weekly fluctuations",
+    x = "Date (Week Ending)",
+    y = "Total Weekly Filings Across All Census Tracts",
+    caption = "Data: Philadelphia Weekly Eviction Filings | Vertical Lines = Policy Changes"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 14))
+
+weekly_trend_plot
+```
+
+## Seasonality Analysis
+
+```{r seasonality-analysis}
+#| fig-dpi: 300
+#| fig-height: 6
+#| fig-width: 12
+
+# Calculate average filings by month of year for seasonality pattern.
+seasonality_data <- df_monthly %>%
+  filter(Period != "Moratorium") %>%
+  group_by(month_num, month_name) %>%
+  summarize(
+    Mean_Filings = mean(filings_count, na.rm = TRUE),
+    Median_Filings = median(filings_count, na.rm = TRUE),
+    SD_Filings = sd(filings_count, na.rm = TRUE),
+    N_Obs = n(),
+    .groups = "drop"
+  )
+
+# Create seasonal pattern plot.
+seasonality_plot <- ggplot(seasonality_data, aes(x = month_num, y = Mean_Filings)) +
+  geom_line(color = "#16A085", linewidth = 1.3) +
+  geom_point(color = "#16A085", size = 4) +
+  geom_ribbon(aes(ymin = Mean_Filings - SD_Filings, 
+                  ymax = Mean_Filings + SD_Filings),
+              alpha = 0.2, fill = "#16A085") +
+  scale_x_continuous(breaks = 1:12, labels = month.abb) +
+  labs(
+    title = "Seasonal Pattern of Eviction Filings (Non-Moratorium Periods)",
+    subtitle = "Summer-Fall peak suggests back-to-school timing effect | Shaded area = ± 1 SD",
+    x = "Month of Year",
+    y = "Mean Filings per Tract",
+    caption = "Data: Philadelphia Monthly Eviction Filings | Excludes moratorium period"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 14))
+
+seasonality_plot
+```
+
+```{r seasonality-analysis}
+# Print seasonal statistics.
+# Seasonal pattern statistics
+seasonality_data %>%
+  select(month_name, Mean_Filings, Median_Filings, SD_Filings) %>%
+  kable(digits = 2, col.names = c("Month", "Mean", "Median", "SD")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Claims Severity Over Time
+
+```{r claims-severity-plot}
+#| fig-dpi: 300
+#| fig-height: 6
+#| fig-width: 12
+
+# Median claim amount trend showing financial severity.
 claims_plot <- ggplot(df_claims, aes(x = date, y = median_claim)) +
-  geom_line(color = "#74c476", linewidth = 1.1) +
-  geom_hline(aes(yintercept = median_claim_baseline), linetype = "dashed", color = "gray50") +
+  geom_line(color = "#27AE60", linewidth = 1.2) +
+  geom_point(color = "#27AE60", size = 2.5) +
+  geom_hline(aes(yintercept = median_claim_baseline), 
+             linetype = "dashed", color = "#E74C3C", linewidth = 1) +
+  annotate("text", x = min(df_claims$date), y = df_claims$median_claim_baseline[1] * 1.05,
+           label = sprintf("Pre-Pandemic Baseline: $%s", 
+                          comma(df_claims$median_claim_baseline[1])),
+           hjust = 0, color = "#E74C3C", fontface = "bold") +
+  geom_vline(xintercept = as.Date("2020-03-01"), 
+             linetype = "dotted", color = "gray50", alpha = 0.7) +
+  geom_vline(xintercept = as.Date("2021-09-30"), 
+             linetype = "dotted", color = "gray50", alpha = 0.7) +
+  scale_y_continuous(labels = dollar) +
   labs(
     title = "Median Eviction Claim Amount Over Time",
-    subtitle = "Dashed line shows the median claim baseline (pre-pandemic average).",
-    x = "Date",
-    y = "Median Claim Amount (USD)"
+    subtitle = "Claims increased during moratorium as arrears accumulated then stabilized",
+    x = "Date (Month)",
+    y = "Median Claim Amount (USD)",
+    caption = "Data: Philadelphia Eviction Claims | Dashed line = pre-pandemic baseline"
   ) +
-  scale_y_continuous(labels = dollar)
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 14))
 
-# Plot shows financial severity of eviction claims over time.
 claims_plot
 ```
 
-# Weekly Filings vs. Pre-Pandemic Baseline
-
-```{r weekly-pre-pandemic}
-# Load weekly eviction filings data.
-df_weekly <- read.csv("data/eviction/philadelphia_weekly_2020_2021.csv")
-
-# Clean column names and convert date.
-df_weekly <- df_weekly %>%
-  rename(filings_count = filings_2020) %>%
-  mutate(date = as.Date(week_date)) %>%
-  filter(!is.na(date))
-
-# Calculate the average weekly filing ratio aggregated across all tracts.
-weekly_ratio_trend <- df_weekly %>%
-  group_by(date) %>%
-  summarise(
-    Total_Filings = sum(filings_count),
-    Total_Baseline = sum(filings_avg_prepandemic_baseline),
-    Ratio_to_Baseline = Total_Filings / Total_Baseline,
+```{r claims-severity}
+# Calculate claim statistics by period.
+df_claims %>%
+  mutate(Period = case_when(
+    date < as.Date("2020-03-01") ~ "Pre-Moratorium",
+    date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30") ~ "Moratorium",
+    date > as.Date("2021-09-30") ~ "Post-Moratorium"
+  )) %>%
+  group_by(Period) %>%
+  summarize(
+    Mean_Claim = mean(median_claim, na.rm = TRUE),
+    Median_Claim = median(median_claim, na.rm = TRUE),
+    Ratio_to_Baseline = mean(claim_ratio, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  filter(Total_Baseline > 0)
-
-# Visualize normalized weekly filings trend.
-ratio_plot <- ggplot(weekly_ratio_trend, aes(x = date, y = Ratio_to_Baseline)) +
-  geom_line(color = "#006d2c", linewidth = 0.7) +
-  geom_hline(yintercept = 1, linetype = "dashed", color = "red") +
-  geom_smooth(method = "loess", se = FALSE, color = "orange", linewidth = 1.2) +
-  labs(
-    title = "Weekly Filings Normalized to Pre-Pandemic Baseline",
-    subtitle = "Ratio > 1 indicates system overload compared to historical averages.",
-    x = "Date (Week Ending)",
-    y = "Weekly Filings / Pre-Pandemic Avg Ratio"
-  )
-
-# Plot shows ratio of current filings against historical norm.
-ratio_plot
+  kable(digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-# Weekly Filings by Racial Majority
+# Spatial and Racial Disparity Analysis
 
-```{r weekly-filing-race}
-#| fig-width: 12
-#| fig-height: 4
+## Filings by Racial Majority
+
+```{r racial-disparity-plot}
 #| fig-dpi: 300
+#| fig-height: 7
+#| fig-width: 12
 
-# Aggregate total filings by week and racial majority group.
-weekly_racial_trend <- df_weekly %>%
-  group_by(date, racial_majority) %>%
-  summarise(Total_Filings = sum(filings_count),.groups = "drop")
+# Calculate total and mean filings by racial majority category.
+racial_summary <- df_monthly %>%
+  filter(!is.na(racial_majority), racial_majority != "") %>%
+  group_by(racial_majority) %>%
+  summarize(
+    Total_Filings = sum(filings_count, na.rm = TRUE),
+    Mean_Filings = mean(filings_count, na.rm = TRUE),
+    Median_Filings = median(filings_count, na.rm = TRUE),
+    N_Tract_Months = n(),
+    N_Unique_Tracts = n_distinct(GEOID),
+    .groups = "drop"
+  ) %>%
+  arrange(desc(Total_Filings))
 
-# Visualize total filings by group using a stacked area plot.
-equity_plot <- ggplot(weekly_racial_trend, aes(x = date, y = Total_Filings, fill = racial_majority)) +
-  geom_area(linewidth = 0.5, color = "white", alpha = 0.8) +
+# Create bar chart showing total filings by racial majority.
+racial_plot <- ggplot(racial_summary, aes(x = reorder(racial_majority, Total_Filings), 
+                                           y = Total_Filings)) +
+  geom_col(aes(fill = Total_Filings), width = 0.7) +
+  coord_flip() +
+  scale_fill_gradient(low = "#BDC3C7", high = "#E74C3C", labels = comma) +
+  scale_y_continuous(labels = comma) +
   labs(
-    title = "Weekly Eviction Filings by Census Tract Racial Majority",
-    subtitle = "Stacked area plot shows differential weekly responses to policy changes.",
-    x = "Date (Week Ending)",
-    y = "Total Filings",
-    fill = "Racial Majority"
+    title = "Total Eviction Filings by Census Tract Racial Majority",
+    subtitle = "Stark disparities indicate structural inequities requiring policy attention",
+    x = "Census Tract Racial Majority",
+    y = "Total Eviction Filings (2020-2025)",
+    fill = "Total\nFilings",
+    caption = "Data: Philadelphia Monthly Eviction Filings"
   ) +
-  scale_y_continuous(labels = comma)
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "right"
+  )
 
-# Plot shows weekly equity disparity in filing totals.
-equity_plot
+racial_plot
+```
+
+```{r racial-disparity}
+# Print detailed racial disparity statistics.
+racial_summary %>%
+  kable(digits = 1) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+## Temporal Trends by Racial Majority
+
+```{r racial-temporal}
+#| fig-dpi: 300
+#| fig-height: 7
+#| fig-width: 14
+
+# Calculate monthly totals by racial majority for trend analysis.
+racial_temporal <- df_monthly %>%
+  filter(!is.na(racial_majority), racial_majority != "") %>%
+  group_by(date, racial_majority) %>%
+  summarize(Total_Filings = sum(filings_count, na.rm = TRUE), .groups = "drop")
+
+# Create line plot showing differential temporal patterns.
+racial_temporal_plot <- ggplot(racial_temporal, 
+                               aes(x = date, y = Total_Filings, color = racial_majority)) +
+  geom_line(linewidth = 1.1, alpha = 0.8) +
+  geom_vline(xintercept = as.Date("2020-03-01"), 
+             linetype = "dashed", color = "gray50", alpha = 0.5) +
+  geom_vline(xintercept = as.Date("2021-09-30"), 
+             linetype = "dashed", color = "gray50", alpha = 0.5) +
+  scale_y_continuous(labels = comma) +
+  scale_color_viridis_d(option = "plasma", end = 0.9) +
+  labs(
+    title = "Monthly Eviction Filings by Racial Majority: Temporal Trends",
+    subtitle = "Differential recovery patterns suggest unequal policy impact across communities",
+    x = "Date (Month)",
+    y = "Total Monthly Filings",
+    color = "Racial Majority",
+    caption = "Data: Philadelphia Monthly Eviction Filings | Vertical lines = policy changes"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom"
+  )
+
+racial_temporal_plot
+```
+
+## Weekly Filings by Racial Majority (Stacked Area)
+
+```{r racial-weekly-stacked}
+#| fig-dpi: 300
+#| fig-height: 6
+#| fig-width: 14
+
+# Calculate weekly totals by racial majority.
+weekly_racial <- df_weekly %>%
+  filter(!is.na(racial_majority), racial_majority != "") %>%
+  group_by(date, racial_majority) %>%
+  summarize(Total_Filings = sum(filings_count, na.rm = TRUE), .groups = "drop")
+
+# Create stacked area chart showing composition over time.
+weekly_racial_plot <- ggplot(weekly_racial, 
+                             aes(x = date, y = Total_Filings, fill = racial_majority)) +
+  geom_area(alpha = 0.8, color = "white", linewidth = 0.3) +
+  scale_y_continuous(labels = comma) +
+  scale_fill_viridis_d(option = "turbo", end = 0.9) +
+  labs(
+    title = "Weekly Eviction Filings by Racial Majority: Stacked Composition",
+    subtitle = "Proportional burden shifts over time revealing differential vulnerability",
+    x = "Date (Week Ending)",
+    y = "Total Weekly Filings",
+    fill = "Racial Majority",
+    caption = "Data: Philadelphia Weekly Eviction Filings"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom"
+  )
+
+weekly_racial_plot
+```
+
+# Tract-Level Heterogeneity
+
+## High-Risk Tract Identification
+
+```{r high-risk-tracts-table}
+# Calculate total filings per tract across entire period.
+tract_totals <- df_monthly %>%
+  group_by(GEOID, racial_majority) %>%
+  summarize(
+    Total_Filings = sum(filings_count, na.rm = TRUE),
+    Mean_Monthly = mean(filings_count, na.rm = TRUE),
+    Median_Monthly = median(filings_count, na.rm = TRUE),
+    SD_Monthly = sd(filings_count, na.rm = TRUE),
+    CV = SD_Monthly / Mean_Monthly,
+    Months_Observed = n(),
+    Months_With_Filings = sum(filings_count > 0),
+    .groups = "drop"
+  )
+
+# Identify top 20 highest-risk tracts.
+top_risk_tracts <- tract_totals %>%
+  arrange(desc(Total_Filings)) %>%
+  head(20)
+
+# Top 20 highest-risk census tracts (Total Filings 2020-2025).
+top_risk_tracts %>%
+  select(GEOID, racial_majority, Total_Filings, Mean_Monthly, CV) %>%
+  kable(digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+```{r high-risk-tracts-stats}
+# Calculate concentration statistics.
+total_system_filings <- sum(tract_totals$Total_Filings)
+top_20_pct <- sum(top_risk_tracts$Total_Filings) / total_system_filings * 100
+
+cat(sprintf("Concentration: Top 20 tracts account for %.1f%% of all filings\n", top_20_pct))
+```
+
+# Pre-Pandemic Baseline Comparison
+
+## Weekly Filings vs Baseline Ratio
+
+```{r weekly-baseline-ratio-plot}
+#| fig-dpi: 300
+#| fig-height: 6
+#| fig-width: 14
+
+# Calculate system-wide ratio to pre-pandemic baseline.
+weekly_baseline_ratio <- df_weekly %>%
+  group_by(date) %>%
+  summarize(
+    Total_Filings = sum(filings_count, na.rm = TRUE),
+    Total_Baseline = sum(filings_avg_prepandemic_baseline, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  filter(Total_Baseline > 0) %>%
+  mutate(Ratio_to_Baseline = Total_Filings / Total_Baseline)
+
+# Create line plot showing normalized recovery.
+baseline_ratio_plot <- ggplot(weekly_baseline_ratio, aes(x = date, y = Ratio_to_Baseline)) +
+  geom_line(color = "#16A085", linewidth = 0.8, alpha = 0.6) +
+  geom_smooth(method = "loess", se = TRUE, color = "#E74C3C", linewidth = 1.2, span = 0.15) +
+  geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 1) +
+  annotate("text", x = min(weekly_baseline_ratio$date), y = 1.05,
+           label = "Pre-Pandemic Average", hjust = 0, fontface = "bold") +
+  geom_vline(xintercept = as.Date("2020-03-01"), 
+             linetype = "dotted", color = "gray50", alpha = 0.7) +
+  geom_vline(xintercept = as.Date("2021-09-30"), 
+             linetype = "dotted", color = "gray50", alpha = 0.7) +
+  labs(
+    title = "Weekly Filings Normalized to Pre-Pandemic Baseline",
+    subtitle = "Ratio > 1 indicates system stress relative to historical norm | Smoothed trend in red",
+    x = "Date (Week Ending)",
+    y = "Weekly Filings / Pre-Pandemic Average Ratio",
+    caption = "Data: Philadelphia Weekly Eviction Filings"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(plot.title = element_text(face = "bold", size = 14))
+
+baseline_ratio_plot
+```
+
+```{r weekly-baseline-ratio-stats}
+# Calculate summary statistics by period.
+weekly_baseline_ratio %>%
+  mutate(Period = case_when(
+    date < as.Date("2020-03-01") ~ "Pre-Moratorium",
+    date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30") ~ "Moratorium",
+    date > as.Date("2021-09-30") ~ "Post-Moratorium"
+  )) %>%
+  group_by(Period) %>%
+  summarize(
+    Mean_Ratio = mean(Ratio_to_Baseline, na.rm = TRUE),
+    Median_Ratio = median(Ratio_to_Baseline, na.rm = TRUE),
+    .groups = "drop"
+  ) %>%
+  kable(digits = 2) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 # Spatial
 
 ```{r spatial-setup}
+# Tracts data.
+tract_geo <- st_read("data/pa_tracts/pa_tracts.shp") %>%
+  filter(COUNTYFP == "101")
+
 # Calculate total filings per tract across the entire study period.
 df_monthly_agg <- df_monthly %>%
-  rename(filings_count = filings_2020) %>%
   group_by(GEOID) %>%
   summarise(
     Total_Filings = sum(filings_count, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  # Convert GEOID to character to ensure successful join with geometry.
   mutate(GEOID = as.character(GEOID))
 
 # Perform spatial join for long-term risk.
@@ -283,14 +876,12 @@ tract_map_monthly <- tract_geo %>%
 
 ```{r weekly-filings}
 # Calculate the average weekly filings per tract across the study period.
-df_weekly_agg <- df_weekly_full %>%
-  rename(filings_count = filings_2020) %>%
+df_weekly_agg <- df_weekly %>%
   group_by(GEOID) %>%
   summarise(
     Avg_Weekly_Filings = mean(filings_count, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  # Convert GEOID to character to ensure successful join with geometry.
   mutate(GEOID = as.character(GEOID))
 
 # Average weekly filings per tract calculated for short-term risk map.
