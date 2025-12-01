@@ -83,7 +83,7 @@ theme_set(theme_minimal(base_size = 12))
 
 # Download viz when knitting.
 opts_chunk$set(
-  fig.path = "figures/", 
+  fig.path = "septa_figures/", 
   dev = "png"
 )
 ```

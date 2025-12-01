@@ -63,12 +63,19 @@ library(corrplot)
 library(ggridges)
 library(forecast)
 library(zoo)
+library(knitr)
 
 # Disable scientific notation.
 options(scipen = 999)
 
 # Consistent theme.
 theme_set(theme_minimal(base_size = 12))
+
+# Download viz when knitting.
+opts_chunk$set(
+  fig.path = "eviction_figures/", 
+  dev = "png"
+)
 ```
 
 ## Monthly Tract-Level Data
@@ -517,7 +524,7 @@ weekly_trend_plot
 
 ## Seasonality Analysis
 
-```{r seasonality-analysis}
+```{r seasonality-analysis-plot}
 #| fig-dpi: 300
 #| fig-height: 6
 #| fig-width: 12

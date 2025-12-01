@@ -49,6 +49,13 @@ library(tidyverse)
 library(tidyr)
 library(lubridate)
 library(sf)
+library(knitr)
+
+# Download viz when knitting.
+opts_chunk$set(
+  fig.path = "li_figures/", 
+  dev = "png"
+)
 ```
 
 ```{r load-and-shape}
@@ -187,7 +194,7 @@ certs_data$addr_std <- certs_data$address
 merged_by_addr_std <- inner_join(opa_parcels, certs_data, by = "addr_std", relationship = "many-to-many")
 ```
 
-```{r spatial-viz}
+```{r spatial-viz-fail-rate}
 # Calculate Failure Rate by Council District.
 district_risk <- merged_by_addr_std %>%
   group_by(council_district) %>%
