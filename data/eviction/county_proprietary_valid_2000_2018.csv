@@ -1,0 +1,5 @@
+cofips,county,state,year,type,filings,filing_rate,threatened,threatened_rate,judgements,judgement_rate
+42101,Philadelphia County,Pennsylvania,2010,observed,21446,7.79,18976,6.9000001,10470,3.8
+42101,Philadelphia County,Pennsylvania,2011,observed,22229,8.0799999,19735,7.1700001,11373,4.1300001
+42101,Philadelphia County,Pennsylvania,2012,observed,22824,8.29,20061,7.29,12628,4.5900002
+42101,Philadelphia County,Pennsylvania,2016,observed,21948,7.77,18847,6.6700001,,

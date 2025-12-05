@@ -1,0 +1,20 @@
+state,county,fips_state,fips_county,year,renting_hh,filings_observed,ind_filings_court_issued_lt,hh_threat_observed
+Pennsylvania,Philadelphia County,42,42101,2000,240438,26708,1,
+Pennsylvania,Philadelphia County,42,42101,2001,243914,26852,1,
+Pennsylvania,Philadelphia County,42,42101,2002,247390,17362,1,
+Pennsylvania,Philadelphia County,42,42101,2003,250867,19804,1,
+Pennsylvania,Philadelphia County,42,42101,2004,254343,20071,1,
+Pennsylvania,Philadelphia County,42,42101,2005,257819,19972,1,
+Pennsylvania,Philadelphia County,42,42101,2006,261295,21482,1,
+Pennsylvania,Philadelphia County,42,42101,2007,264771,21491,1,
+Pennsylvania,Philadelphia County,42,42101,2008,268248,21300,1,
+Pennsylvania,Philadelphia County,42,42101,2009,271724,19850,1,18296
+Pennsylvania,Philadelphia County,42,42101,2010,275200,22655,1,20040
+Pennsylvania,Philadelphia County,42,42101,2011,278464,23177,1,20574
+Pennsylvania,Philadelphia County,42,42101,2012,281727,23805,1,20918
+Pennsylvania,Philadelphia County,42,42101,2013,284991,22940,1,
+Pennsylvania,Philadelphia County,42,42101,2014,288254,23458,1,
+Pennsylvania,Philadelphia County,42,42101,2015,291518,21799,1,
+Pennsylvania,Philadelphia County,42,42101,2016,294781,22072,1,18963
+Pennsylvania,Philadelphia County,42,42101,2017,298045,24914,1,22645
+Pennsylvania,Philadelphia County,42,42101,2018,301308,23099,1,20522
