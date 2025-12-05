@@ -5,12 +5,8 @@ data/DOR_Parcel/DOR_Parcel.shp
 data/DOR_Parcel/DOR_Parcel.shx
 data/DOR_Parcel/DOR_Parcel.xml
 septa_spatial_rail_analysis.qmd
-.RData
-.RDataTmp10
-.RDataTmp6
-.RDataTmp7
-.RDataTmp8
-.RDataTmp9
-.Rhistory
+*.RData
 OLD_eviction_main.qmd
 eviction_early_warning_eda_comprehensive.qmd
+.RDataTmp*
+*.Rhistory
