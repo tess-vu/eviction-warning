@@ -1,0 +1,20 @@
+"0","# Use Model 3 for downstream analysis, this is for operational deployment."
+"0","model_nb_enhanced <- model_nb_3"
+"0","df_test_pred <- test_pred_3"
+"0","df_train_pred <- train_pred_3"
+"0",""
+"0","# Extract scalar metrics for the selected model."
+"0","selected_test_metrics <- test_metrics_3"
+"0",""
+"0","cat(""SELECTED MODEL: Model 3 (+ ACS)\n"")"
+"1","SELECTED MODEL: Model 3 (+ ACS)
+"
+"0","cat(sprintf(""Test MAE: %.3f\n"", selected_test_metrics$MAE))"
+"1","Test MAE: 1.829
+"
+"0","cat(sprintf(""Test RMSE: %.3f\n"", selected_test_metrics$RMSE))"
+"1","Test RMSE: 2.788
+"
+"0","cat(sprintf(""Test Correlation: %.3f\n"", selected_test_metrics$correlation))"
+"1","Test Correlation: 0.571
+"

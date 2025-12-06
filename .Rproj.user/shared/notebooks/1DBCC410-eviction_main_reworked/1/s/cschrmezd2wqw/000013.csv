@@ -1,0 +1,4 @@
+"0","# Display sample of tax delinquency data."
+"0","head(df_tax_raw, 10) %>%"
+"0","  kable(digits = 2, caption = ""Sample of Real Estate Tax Balances by Census Tract"") %>%"
+"0","  kable_styling(bootstrap_options = c(""striped"", ""hover"", ""condensed""))"

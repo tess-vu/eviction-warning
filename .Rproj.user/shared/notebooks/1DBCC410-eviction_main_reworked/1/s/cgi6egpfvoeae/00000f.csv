@@ -1,0 +1,13 @@
+"0","# Calculate concentration statistics showing geographic clustering of evictions."
+"0","total_system_filings <- sum(tract_totals$total_filings)"
+"0","top_20_pct <- sum(top_risk_tracts$total_filings) / total_system_filings * 100"
+"0",""
+"0","cat(""GEOGRAPHIC CONCENTRATION ANALYSIS\n"")"
+"1","GEOGRAPHIC CONCENTRATION ANALYSIS
+"
+"0","cat(sprintf(""Total System Filings: %s\n"", comma(total_system_filings)))"
+"1","Total System Filings: 65,331
+"
+"0","cat(sprintf(""Top 20 Tracts Account For: %.1f%% of all filings\n"", top_20_pct))"
+"1","Top 20 Tracts Account For: 16.6% of all filings
+"

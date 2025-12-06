@@ -1,0 +1,22 @@
+"0","# Filter spatial data to only tracts present in eviction data."
+"0","tracts_in_data <- unique(df_model_prep$GEOID)"
+"0",""
+"0","philly_model_sf <- philly_tracts_sf %>%"
+"0","  filter(GEOID %in% tracts_in_data)"
+"0",""
+"0","# Create spatial neighbors using Queen contiguity."
+"0","neighbors_queen <- poly2nb(philly_model_sf, queen = TRUE)"
+"0",""
+"0","# Convert to spatial weights matrix."
+"0","weights_matrix <- nb2listw(neighbors_queen, style = ""W"", zero.policy = TRUE)"
+"0",""
+"0","cat(""SPATIAL WEIGHTS MATRIX CREATED\n"")"
+"1","SPATIAL WEIGHTS MATRIX CREATED
+"
+"0","cat(sprintf(""Number of tracts in spatial analysis: %d\n"", length(neighbors_queen)))"
+"1","Number of tracts in spatial analysis: 408
+"
+"0","cat(sprintf(""Average number of neighbors per tract: %.1f\n"", "
+"0","            mean(card(neighbors_queen))))"
+"1","Average number of neighbors per tract: 6.0
+"

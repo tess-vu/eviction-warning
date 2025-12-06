@@ -1,0 +1,4 @@
+"0","# Display seasonality statistics table."
+"0","monthly_data %>%"
+"0","  kable(digits = 2, caption = ""Monthly Stats (Post-Moratorium Period)"") %>%"
+"0","  kable_styling(bootstrap_options = c(""striped"", ""hover""))"
