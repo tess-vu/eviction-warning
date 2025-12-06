@@ -45,53 +45,27 @@ The model demonstrates strong predictive performance with meaningful improvement
 ## 1. SETUP AND LIBRARY LOADING
 
 ```{r library}
-# Data manipulation and visualization.
 library(tidyverse)
-
-# Date and time operations.
 library(lubridate)
-
-# Spatial data handling.
 library(sf)
-
-# Formatting numbers and axes.
 library(scales)
-
-# Combining multiple plots.
 library(patchwork)
-
-# Colorblind-friendly color palettes.
 library(viridis)
-
-# Formatted tables.
 library(kableExtra)
-
-# Correlation matrix visualization.
 library(corrplot)
-
-# Ridgeline density plots.
-library(ggridges)
-
-# Rolling window calculations.
 library(zoo)
-
-# Negative binomial regression.
 library(MASS)
-
-# VIF testing.
 library(car)
-
-# Model training and cross-validation.
 library(caret)
-
-# ROC curve analysis.
 library(pROC)
-
-# Spatial weights and autocorrelation.
 library(spdep)
-
-# ACS data.
 library(tidycensus)
+library(httr)
+library(jsonlite)
+library(glue)
+library(dplyr)
+library(stringr)
+library(tidyr)
 
 # Disable scientific notation.
 options(scipen = 999)
@@ -279,7 +253,7 @@ df_monthly <- df_monthly_raw %>%
 
 # Display summary of cleaned monthly data.
 cat("CLEANED MONTHLY DATA SUMMARY\n")
-summary(df_monthly %>% dplyr::select(filings_count, date, year, moratorium_active))
+summary(df_monthly %>% select(filings_count, date, year, moratorium_active))
 ```
 
 ```{r clean-monthly-coverage}
@@ -354,7 +328,7 @@ df_claims <- df_claims_raw %>%
 
 # Display claims summary stats.
 cat("CLAIMS DATA SUMMARY\n")
-summary(df_claims %>% dplyr::select(median_claim, median_claim_baseline, claim_ratio))
+summary(df_claims %>% select(median_claim, median_claim_baseline, claim_ratio))
 ```
 
 ### Tax Delinquency Data Preparation
@@ -1032,7 +1006,7 @@ racial_stats %>%
 
 # Create side-by-side comparison of tract share vs filing share.
 racial_comparison <- racial_stats %>%
-  dplyr::select(racial_majority, pct_tracts, pct_total_filings) %>%
+  select(racial_majority, pct_tracts, pct_total_filings) %>%
   pivot_longer(cols = c(pct_tracts, pct_total_filings),
                names_to = "metric", values_to = "percentage") %>%
   mutate(
@@ -1093,7 +1067,7 @@ top_risk_tracts <- tract_totals %>%
 
 # Display top risk tracts.
 top_risk_tracts %>%
-  dplyr::select(GEOID, racial_majority, total_filings, mean_monthly, cv) %>%
+  select(GEOID, racial_majority, total_filings, mean_monthly, cv) %>%
   kable(digits = 2, caption = "Top 20 Highest-Risk Census Tracts (Total Filings 2020-2025)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
@@ -1329,7 +1303,7 @@ df_model_prep <- df_model_prep %>%
 
 df_claims_join <- df_claims %>%
   mutate(year_month = floor_date(date, "month")) %>%
-  dplyr::select(year_month, median_claim, claim_ratio)
+  select(year_month, median_claim, claim_ratio)
 
 # Merge claims data to tract-level panel.
 df_model_prep <- df_model_prep %>%
@@ -1356,7 +1330,7 @@ Tax delinquency serves as a proxy for landlord financial stress. Properties with
 ```{r merge-tax-data}
 # Prepare tax data for joining.
 df_tax_join <- df_tax %>%
-  dplyr::select(GEOID, num_props, balance, avg_balance, log_delinquent_balance, 
+  select(GEOID, num_props, balance, avg_balance, log_delinquent_balance, 
                 delinquent_prop_count, delinquency_age_years)
 
 # Merge tax delinquency data to tract-level panel.
@@ -1491,7 +1465,7 @@ df_acs <- acs_data %>%
 ```{r acs-summary-stats}
 # Calculate summary stats for ACS features.
 acs_summary <- df_acs %>%
-  dplyr::select(-GEOID) %>%
+  select(-GEOID) %>%
   pivot_longer(everything(), names_to = "variable", values_to = "value") %>%
   group_by(variable) %>%
   summarize(
@@ -1561,13 +1535,13 @@ calculate_lagged_spatial_lag <- function(data, sf_data, weights, target_date) {
   # Filter data to previous month.
   prev_month_data <- data %>%
     filter(date == prev_month_date) %>%
-    dplyr::select(GEOID, filings_count)
+    select(GEOID, filings_count)
   
   # If no previous month data exists, return NA.
   if (nrow(prev_month_data) == 0) {
     result <- sf_data %>%
       st_drop_geometry() %>%
-      dplyr::select(GEOID) %>%
+      select(GEOID) %>%
       mutate(
         date = target_date,
         spatial_lag_filings = NA_real_
@@ -1586,7 +1560,7 @@ calculate_lagged_spatial_lag <- function(data, sf_data, weights, target_date) {
   # Return as dataframe with the target date, not lag date.
   result <- sf_data %>%
     st_drop_geometry() %>%
-    dplyr::select(GEOID) %>%
+    select(GEOID) %>%
     mutate(
       date = target_date,
       spatial_lag_filings = spatial_lag
@@ -1611,52 +1585,6 @@ cat(sprintf("Observations with spatial lag: %s\n",
             comma(sum(!is.na(df_model_prep$spatial_lag_filings)))))
 cat(sprintf("First month has NA spatial lag because of no prior month data: %s observations\n",
             comma(sum(is.na(df_model_prep$spatial_lag_filings)))))
-```
-
-### Correlation Matrix
-
-```{r correlation-analysis}
-#| fig-dpi: 300
-#| fig-height: 12
-#| fig-width: 12
-
-df_model_prep <- df_model_prep %>%
-  mutate(log_delinquent_prop = log1p(df_model_prep$delinquent_prop_count))
-
-# Custom colors.
-custom_colors_diverging <- colorRampPalette(c("#0a8ac5", "#fffefe", "#f03e37"))(200)
-
-# Select numeric features for correlation analysis.
-correlation_vars <- df_model_prep %>%
-  dplyr::select(
-    # Target and temporal features.
-    filings_count, filings_lag1, filings_lag2, filings_ma3,
-    spatial_lag_filings, 
-    # Tax delinquency.
-    log_delinquent_balance, delinquent_prop_count, log_delinquent_prop,
-    # ACS socioeconomic indicators.
-    pct_renter, poverty_rate, severe_rent_burden, unemployment_rate,
-    log_median_income, pct_single_mother,
-    # Policy.
-    moratorium_active
-  ) %>%
-  filter(complete.cases(.))
-
-# Calculate correlation matrix.
-cor_matrix <- cor(correlation_vars)
-
-# Create correlation plot.
-corrplot(cor_matrix, 
-         method = "color",
-         type = "upper",
-         order = "hclust",
-         col = custom_colors_diverging,
-         tl.col = "black",
-         tl.srt = 45,
-         addCoef.col = "black",
-         number.cex = 0.7,
-         title = "Feature Correlation Matrix",
-         mar = c(0, 0, 2, 0))
 ```
 
 Modeling Notes:
@@ -1725,7 +1653,7 @@ print(table(df_train$filings_count))
 # Test set table.
 print(table(df_test$filings_count))
 
-# Adjust so that the extreme outliers are not included. Cap at 20 filings, which is 99.8 percentile.
+# Adjust so that the extreme outliers are not included. Cap lagged momentum signal to reduce distortion from rare mass-eviction spikes, which is 99.8 percentile.
 df_train <- df_train %>% mutate(filings_ma3 = pmin(filings_ma3, 20))
 df_test <- df_test %>% mutate(filings_ma3 = pmin(filings_ma3, 20))
 ```
@@ -1832,14 +1760,13 @@ model_comparison <- data.frame(
   loglik = c(logLik(model_nb_1), logLik(model_nb_2), logLik(model_nb_3), logLik(model_nb_4))
 ) %>%
   mutate(
-    delta_aic = aic - min(aic),
+    aic_change = aic - min(aic),
     rank = rank(aic)
   )
 
 model_comparison %>%
   kable(digits = 2, caption = "Model Comparison Statistics (Lower AIC = Better Fit)") %>%
-  kable_styling(bootstrap_options = c("striped", "hover")) %>%
-  row_spec(which.min(model_comparison$aic), bold = TRUE, background = "#E8F6F3")
+  kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 ## 4. MODEL VALIDATION AND DIAGNOSTICS
@@ -2048,9 +1975,9 @@ A critical concern in predictive modeling is overfitting, where the model learns
 ```{r overfitting-check}
 # Compare train vs test performance
 overfitting_check <- train_metrics %>%
-  dplyr::select(model, MAE_train = MAE, RMSE_train = RMSE, corr_train = correlation) %>%
+  select(model, MAE_train = MAE, RMSE_train = RMSE, corr_train = correlation) %>%
   left_join(
-    test_metrics %>% dplyr::select(model, MAE_test = MAE, RMSE_test = RMSE, corr_test = correlation),
+    test_metrics %>% select(model, MAE_test = MAE, RMSE_test = RMSE, corr_test = correlation),
     by = "model"
   ) %>%
   mutate(
@@ -2337,7 +2264,7 @@ acs_contribution <- broom::tidy(model_nb_enhanced) %>%
     pct_change = (irr - 1) * 100,
     significant = ifelse(p.value < 0.05, "Yes", "No")
   ) %>%
-  dplyr::select(term, estimate, std.error, p.value, irr, pct_change, significant)
+  select(term, estimate, std.error, p.value, irr, pct_change, significant)
 
 acs_contribution %>%
   kable(digits = 3, caption = "ACS Socioeconomic Feature Effects") %>%
@@ -2356,7 +2283,7 @@ irr_table <- broom::tidy(model_nb_enhanced) %>%
     pct_change = (irr - 1) * 100
   ) %>%
   filter(term != "(Intercept)") %>%
-  dplyr::select(term, irr, irr_lower, irr_upper, pct_change, p.value)
+  select(term, irr, irr_lower, irr_upper, pct_change, p.value)
 
 irr_table %>%
   head(15) %>%
@@ -2380,9 +2307,9 @@ operational_output <- df_test_pred %>%
 operational_output
 ```
 
-## 7. EQUITY ASSESSMENT
+# III. EQUITY ASSESSMENT
 
-### Impact Analysis
+## 1. Impact Analysis
 
 ```{r equity-assessment}
 #| fig-dpi: 300
@@ -2438,7 +2365,7 @@ equity_plot <- equity_metrics %>%
 equity_plot
 ```
 
-### Prediction Calibration by Race
+## 2. Prediction Calibration by Race
 
 ```{r calibration-analysis}
 #| fig-dpi: 300
@@ -2482,7 +2409,7 @@ calibration_plot <- df_test_pred %>%
 calibration_plot
 ```
 
-### Risk Category Distribution by Race
+## 3. Risk Category Distribution by Race
 
 ```{r risk-by-race}
 #| fig-dpi: 300
@@ -2553,33 +2480,7 @@ equity_plot <- equity_metrics %>%
 equity_plot
 ```
 
-## KEY FINDINGS SUMMARY
-
-```{r summary-stats-table}
-# Compile comprehensive summary stats.
-summary_stats <- df_monthly %>%
-  filter(GEOID != "sealed", !is.na(GEOID), GEOID != "") %>%
-  summarize(
-    total_obs = n(),
-    unique_tracts = n_distinct(GEOID),
-    unique_months = n_distinct(date),
-    mean_filings = mean(filings_count, na.rm = TRUE),
-    median_filings = median(filings_count, na.rm = TRUE),
-    sd_filings = sd(filings_count, na.rm = TRUE),
-    min_filings = min(filings_count, na.rm = TRUE),
-    max_filings = max(filings_count, na.rm = TRUE),
-    zero_pct = sum(filings_count == 0) / n() * 100,
-    dispersion = var(filings_count) / mean(filings_count)
-  )
-
-summary_stats %>%
-  pivot_longer(everything(), names_to = "statistic", values_to = "value") %>%
-  mutate(value = round(value, 2)) %>%
-  kable(caption = "Summary Statistics") %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
-```
-
-## SESSION INFORMATION
+# SESSION INFORMATION
 
 ```{r session-info}
 # Document R session information for reproducibility.
