@@ -11,3 +11,4 @@ eviction_early_warning_eda_comprehensive.qmd
 .RDataTmp*
 *.Rhistory
 .Rhistory
+.Rhistory

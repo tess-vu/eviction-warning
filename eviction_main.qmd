@@ -45,7 +45,6 @@ The model demonstrates strong predictive performance with meaningful improvement
 ## 1. SETUP AND LIBRARY LOADING
 
 ```{r library}
-library(tidyverse)
 library(lubridate)
 library(sf)
 library(scales)
@@ -63,9 +62,14 @@ library(tidycensus)
 library(httr)
 library(jsonlite)
 library(glue)
-library(dplyr)
 library(stringr)
 library(tidyr)
+library(tidyverse)
+library(dplyr)
+
+# Override masking.
+select <- dplyr::select
+filter <- dplyr::filter
 
 # Disable scientific notation.
 options(scipen = 999)
@@ -469,13 +473,14 @@ head(sealed_distribution, 10) %>%
 ```
 
 ```{r sealed-tracts-removal}
-# Remove sealed tracts.
-df_monthly <- df_monthly %>%
-  filter(GEOID != "sealed", !is.na(GEOID), GEOID != "")
-
-cat(sprintf("Remaining Observations: %s\n", comma(nrow(df_monthly))))
-cat(sprintf("Remaining Tracts: %d\n", n_distinct(df_monthly$GEOID)))
-cat(sprintf("Remaining Months: %d\n", n_distinct(df_monthly$date)))
+# COMMENTED OUT TO INCLUDE MASS EVICTIONS.
+# # Remove sealed tracts.
+# df_monthly <- df_monthly %>%
+#   filter(GEOID != "sealed", !is.na(GEOID), GEOID != "")
+# 
+# cat(sprintf("Remaining Observations: %s\n", comma(nrow(df_monthly))))
+# cat(sprintf("Remaining Tracts: %d\n", n_distinct(df_monthly$GEOID)))
+# cat(sprintf("Remaining Months: %d\n", n_distinct(df_monthly$date)))
 ```
 
 The sealed tracts are outliers and are legitimate evictions that reflect the current systematic issues, and could represent vulnerable communities experiencing a recent mass eviction (highest unsealed filings are from 2025). They aren't included because the privacy protection prevents geographically actionable policies and outreach, however, it has to be stressed that this is absolutely *not* ideal.
@@ -1587,6 +1592,15 @@ cat(sprintf("First month has NA spatial lag because of no prior month data: %s o
             comma(sum(is.na(df_model_prep$spatial_lag_filings)))))
 ```
 
+```{r cap-threshold}
+# Define threshold for capping target variable in training set.
+cap_threshold = 20
+
+# Create spike binary flag for all data to identify structural risk.
+df_model_prep <- df_model_prep %>%
+  mutate(is_extreme_spike = ifelse(filings_count > cap_threshold, 1, 0))
+```
+
 Modeling Notes:
 
 - Likely use `poverty_rate` over `log_median_income`, they measure the same concept, but poverty rate has a stronger theoretical link to evictions.
@@ -1607,23 +1621,8 @@ train_end_date <- as.Date("2023-12-31")
 test_start_date <- as.Date("2024-01-01")
 
 # Filter for all variables needed by most complex model.
-df_train <- df_model_prep %>%
+df_filtered <- df_model_prep %>%
   filter(
-    date <= train_end_date,
-    !is.na(filings_ma3),           # All models use this.
-    !is.na(spatial_lag_filings),   # Models 2-4 use this. 
-    !is.na(delinquent_prop_count), # Models 2-4 use this.
-    !is.na(pct_renter),            # Models 3-4 use this.
-    !is.na(poverty_rate),          # Models 3-4 use this.
-    !is.na(severe_rent_burden),    # Models 3-4 use this.
-    !is.na(pct_single_mother),     # Models 3-4 use this.
-    !is.na(racial_majority),       # Models 3-4 use this.
-    !is.na(moratorium_active)
-  )
-
-df_test <- df_model_prep %>%
-  filter(
-    date >= test_start_date,
     !is.na(filings_ma3),
     !is.na(spatial_lag_filings),
     !is.na(delinquent_prop_count),
@@ -1634,6 +1633,16 @@ df_test <- df_model_prep %>%
     !is.na(racial_majority),
     !is.na(moratorium_active)
   )
+
+# Apply the cap only to training target variable to make it stable.
+# Create training set where filings are capped at 99.75 percentile = 20 filings.
+df_train <- df_filtered %>%
+  filter(date <= train_end_date) %>%
+  mutate(filings_count_capped = pmin(filings_count, cap_threshold))
+
+# Create testing set where target is including spikes for real-world.
+df_test <- df_filtered %>%
+  filter(date >= test_start_date)
 
 # Display split statistics.
 cat("TRAIN/TEST SPLIT SUMMARY\n")
@@ -1646,19 +1655,10 @@ cat(sprintf("Test Months: %d\n", n_distinct(df_test$date)))
 ```
 
 ```{r outlier-cap}
-# Top are the numbers, below are the frequencies, alternating.
-# Train set table.
-print(table(df_train$filings_count))
-
-# Test set table.
-print(table(df_test$filings_count))
-
 # Adjust so that the extreme outliers are not included. Cap lagged momentum signal to reduce distortion from rare mass-eviction spikes, which is 99.8 percentile.
 df_train <- df_train %>% mutate(filings_ma3 = pmin(filings_ma3, 20))
 df_test <- df_test %>% mutate(filings_ma3 = pmin(filings_ma3, 20))
 ```
-
-Had to cap the extremes due to it making the model stretch like crazy, obviously this is a huge limitation because this model will not be able to predict mass evictions.
 
 ```{r train-test-distribution}
 # Compare filing distributions between train and test sets.
@@ -1692,7 +1692,7 @@ Because of overdispersion, Negative Binomial regression is preferred over Poisso
 
 ```{r model-1}
 # Fit baseline Negative Binomial model with core time, policy, and monthly predictors.
-model_nb_1 <- glm.nb(filings_count ~ filings_ma3 + moratorium_active + factor(month_num),
+model_nb_1 <- glm.nb(filings_count_capped ~ filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike,
                      data = df_train)
 
 # Display 1st model summary.
@@ -1703,8 +1703,8 @@ summary(model_nb_1)
 ### Model 2: Add Tax Delinquency and Spatial Lag
 
 ```{r model-2}
-model_nb_2 <- glm.nb(filings_count ~
-                       filings_ma3 + moratorium_active + factor(month_num) +
+model_nb_2 <- glm.nb(filings_count_capped ~
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
                        # Added spatial lag and delinquent properties because they're more actionable.
                        spatial_lag_filings + delinquent_prop_count,
                      data = df_train)
@@ -1717,9 +1717,9 @@ summary(model_nb_2)
 ### Model 3: Add ACS
 
 ```{r model-3}
-model_nb_3 <- glm.nb(filings_count ~
+model_nb_3 <- glm.nb(filings_count_capped ~
                        # 1st model.
-                       filings_ma3 + moratorium_active + factor(month_num) +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
                        # 2nd model.
                        spatial_lag_filings + delinquent_prop_count +
                        # Add demographics.
@@ -1735,16 +1735,16 @@ summary(model_nb_3)
 ### Model 4: Full Model with Interactions
 
 ```{r model-4}
-model_nb_4 <- glm.nb(filings_count ~
+model_nb_4 <- glm.nb(filings_count_capped ~
                        # 1st model.
-                       filings_ma3 + moratorium_active + factor(month_num) +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
                        # 2nd model.
                        spatial_lag_filings + delinquent_prop_count +
                        # 3rd model.
                        pct_renter + severe_rent_burden + poverty_rate + pct_single_mother +
                        factor(racial_majority) +
                        # Add interactions.
-                       factor(racial_majority):moratorium_active,
+                       factor(racial_majority) * moratorium_active,
                      data = df_train)
 
 cat("FULL NEGATIVE BINOMIAL MODEL SUMMARY\n")
@@ -1781,7 +1781,7 @@ Generate predictions for all four models on both training and test sets.
 train_pred_1 <- df_train %>%
   mutate(
     predicted = predict(model_nb_1, newdata = ., type = "response"),
-    residual = filings_count - predicted,
+    residual = filings_count_capped - predicted,
     abs_error = abs(residual)
   )
 
@@ -1789,7 +1789,7 @@ train_pred_1 <- df_train %>%
 train_pred_2 <- df_train %>%
   mutate(
     predicted = predict(model_nb_2, newdata = ., type = "response"),
-    residual = filings_count - predicted,
+    residual = filings_count_capped - predicted,
     abs_error = abs(residual)
   )
 
@@ -1797,7 +1797,7 @@ train_pred_2 <- df_train %>%
 train_pred_3 <- df_train %>%
   mutate(
     predicted = predict(model_nb_3, newdata = ., type = "response"),
-    residual = filings_count - predicted,
+    residual = filings_count_capped - predicted,
     abs_error = abs(residual)
   )
 
@@ -1805,7 +1805,7 @@ train_pred_3 <- df_train %>%
 train_pred_4 <- df_train %>%
   mutate(
     predicted = predict(model_nb_4, newdata = ., type = "response"),
-    residual = filings_count - predicted,
+    residual = filings_count_capped - predicted,
     abs_error = abs(residual)
   )
 
@@ -1856,10 +1856,10 @@ train_metrics_1 <- train_pred_1 %>%
     n = n(),
     MAE = mean(abs_error, na.rm = TRUE),
     RMSE = sqrt(mean(residual^2, na.rm = TRUE)),
-    mean_observed = mean(filings_count, na.rm = TRUE),
+    mean_observed = mean(filings_count_capped, na.rm = TRUE),
     mean_predicted = mean(predicted, na.rm = TRUE),
-    correlation = cor(filings_count, predicted, use = "complete.obs"),
-    bias = mean(predicted - filings_count, na.rm = TRUE)
+    correlation = cor(filings_count_capped, predicted, use = "complete.obs"),
+    bias = mean(predicted - filings_count_capped, na.rm = TRUE)
   )
 
 train_metrics_2 <- train_pred_2 %>%
@@ -1868,10 +1868,10 @@ train_metrics_2 <- train_pred_2 %>%
     n = n(),
     MAE = mean(abs_error, na.rm = TRUE),
     RMSE = sqrt(mean(residual^2, na.rm = TRUE)),
-    mean_observed = mean(filings_count, na.rm = TRUE),
+    mean_observed = mean(filings_count_capped, na.rm = TRUE),
     mean_predicted = mean(predicted, na.rm = TRUE),
-    correlation = cor(filings_count, predicted, use = "complete.obs"),
-    bias = mean(predicted - filings_count, na.rm = TRUE)
+    correlation = cor(filings_count_capped, predicted, use = "complete.obs"),
+    bias = mean(predicted - filings_count_capped, na.rm = TRUE)
   )
 
 train_metrics_3 <- train_pred_3 %>%
@@ -1880,10 +1880,10 @@ train_metrics_3 <- train_pred_3 %>%
     n = n(),
     MAE = mean(abs_error, na.rm = TRUE),
     RMSE = sqrt(mean(residual^2, na.rm = TRUE)),
-    mean_observed = mean(filings_count, na.rm = TRUE),
+    mean_observed = mean(filings_count_capped, na.rm = TRUE),
     mean_predicted = mean(predicted, na.rm = TRUE),
-    correlation = cor(filings_count, predicted, use = "complete.obs"),
-    bias = mean(predicted - filings_count, na.rm = TRUE)
+    correlation = cor(filings_count_capped, predicted, use = "complete.obs"),
+    bias = mean(predicted - filings_count_capped, na.rm = TRUE)
   )
 
 train_metrics_4 <- train_pred_4 %>%
@@ -1892,10 +1892,10 @@ train_metrics_4 <- train_pred_4 %>%
     n = n(),
     MAE = mean(abs_error, na.rm = TRUE),
     RMSE = sqrt(mean(residual^2, na.rm = TRUE)),
-    mean_observed = mean(filings_count, na.rm = TRUE),
+    mean_observed = mean(filings_count_capped, na.rm = TRUE),
     mean_predicted = mean(predicted, na.rm = TRUE),
-    correlation = cor(filings_count, predicted, use = "complete.obs"),
-    bias = mean(predicted - filings_count, na.rm = TRUE)
+    correlation = cor(filings_count_capped, predicted, use = "complete.obs"),
+    bias = mean(predicted - filings_count_capped, na.rm = TRUE)
   )
 
 # Combine training metrics.
