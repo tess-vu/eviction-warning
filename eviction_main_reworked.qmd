@@ -66,9 +66,20 @@ library(stringr)
 library(tidyr)
 library(tidyverse)
 library(dplyr)
+library(knitr)
+
+# Override masking.
+select <- dplyr::select
+filter <- dplyr::filter
+
+# API Key.
+Sys.getenv("CENSUS_API_KEY")
 
 # Disable scientific notation.
 options(scipen = 999)
+
+# Save figures.
+# opts_chunk$set(fig.path = "final_figures/")
 ```
 
 ```{r customization}
@@ -1602,6 +1613,15 @@ cat(sprintf("First month has NA spatial lag because of no prior month data: %s o
             comma(sum(is.na(df_model_prep$spatial_lag_filings)))))
 ```
 
+```{r cap-threshold}
+# Define threshold for capping target variable in training set.
+cap_threshold = 20
+
+# Create spike binary flag for all data to identify structural risk.
+df_model_prep <- df_model_prep %>%
+  mutate(is_extreme_spike = ifelse(filings_count > cap_threshold, 1, 0))
+```
+
 Modeling Notes:
 
 - Likely use `poverty_rate` over `log_median_income`, they measure the same concept, but poverty rate has a stronger theoretical link to evictions.
@@ -1622,23 +1642,8 @@ train_end_date <- as.Date("2023-12-31")
 test_start_date <- as.Date("2024-01-01")
 
 # Filter for all variables needed by most complex model.
-df_train <- df_model_prep %>%
+df_filtered <- df_model_prep %>%
   filter(
-    date <= train_end_date,
-    !is.na(filings_ma3),           # All models use this.
-    !is.na(spatial_lag_filings),   # Models 2-4 use this. 
-    !is.na(delinquent_prop_count), # Models 2-4 use this.
-    !is.na(pct_renter),            # Models 3-4 use this.
-    !is.na(poverty_rate),          # Models 3-4 use this.
-    !is.na(severe_rent_burden),    # Models 3-4 use this.
-    !is.na(pct_single_mother),     # Models 3-4 use this.
-    !is.na(racial_majority),       # Models 3-4 use this.
-    !is.na(moratorium_active)
-  )
-
-df_test <- df_model_prep %>%
-  filter(
-    date >= test_start_date,
     !is.na(filings_ma3),
     !is.na(spatial_lag_filings),
     !is.na(delinquent_prop_count),
@@ -1649,6 +1654,16 @@ df_test <- df_model_prep %>%
     !is.na(racial_majority),
     !is.na(moratorium_active)
   )
+
+# Apply the cap only to training target variable to make it stable.
+# Create training set where filings are capped at 99.75 percentile = 20 filings.
+df_train <- df_filtered %>%
+  filter(date <= train_end_date) %>%
+  mutate(filings_count_capped = pmin(filings_count, cap_threshold))
+
+# Create testing set where target is including spikes for real-world.
+df_test <- df_filtered %>%
+  filter(date >= test_start_date)
 
 # Display split statistics.
 cat("TRAIN/TEST SPLIT SUMMARY\n")
@@ -1661,19 +1676,10 @@ cat(sprintf("Test Months: %d\n", n_distinct(df_test$date)))
 ```
 
 ```{r outlier-cap}
-# Top are the numbers, below are the frequencies, alternating.
-# Train set table.
-print(table(df_train$filings_count))
-
-# Test set table.
-print(table(df_test$filings_count))
-
 # Adjust so that the extreme outliers are not included. Cap lagged momentum signal to reduce distortion from rare mass-eviction spikes, which is 99.8 percentile.
 df_train <- df_train %>% mutate(filings_ma3 = pmin(filings_ma3, 20))
 df_test <- df_test %>% mutate(filings_ma3 = pmin(filings_ma3, 20))
 ```
-
-Had to cap the extremes due to it making the model stretch like crazy, obviously this is a huge limitation because this model will not be able to predict mass evictions.
 
 ```{r train-test-distribution}
 # Compare filing distributions between train and test sets.
@@ -1707,27 +1713,23 @@ Because of overdispersion, Negative Binomial regression is preferred over Poisso
 
 ```{r model-1}
 library(glmmTMB)
-# Fit baseline Negative Binomial model with core time, policy, and monthly predictors. I used glmmTMB because my model kept crashing this is good for big datasets, zero-heavy count distribution. I also changed the beginning of the rest of the code
+# Fit baseline Negative Binomial model with core time, policy, and monthly predictors.
 model_nb_1 <- glmmTMB(
-  filings_count ~ filings_ma3 + moratorium_active + factor(month_num),
+  filings_count_capped ~ filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike,
   data = df_train,
-  family = nbinom2(), # this line is added so it is negative binomial
+  family = nbinom2()
 )
 
 # Display 1st model summary.
 cat("BASELINE NEGATIVE BINOMIAL MODEL SUMMARY\n")
 summary(model_nb_1)
-
-#original model code
-#model_nb_1 <- glm.nb(filings_count ~ filings_ma3 + moratorium_active + factor(month_num),
-#                     data = df_train)
 ```
 
 ### Model 2: Add Tax Delinquency and Spatial Lag
 
 ```{r model-2}
-model_nb_2 <- glmmTMB(filings_count ~
-                       filings_ma3 + moratorium_active + factor(month_num) +
+model_nb_2 <- glmmTMB(filings_count_capped ~
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
                        # Added spatial lag and delinquent properties because they're more actionable.
                        spatial_lag_filings + delinquent_prop_count,
                      data = df_train,
@@ -1742,9 +1744,9 @@ summary(model_nb_2)
 ### Model 3: Add ACS
 
 ```{r model-3}
-model_nb_3 <- glmmTMB(filings_count ~
+model_nb_3 <- glmmTMB(filings_count_capped ~
                        # 1st model.
-                       filings_ma3 + moratorium_active + factor(month_num) +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
                        # 2nd model.
                        spatial_lag_filings + delinquent_prop_count +
                        # Add demographics.
@@ -1762,29 +1764,28 @@ summary(model_nb_3)
 ### Model 4: Full Model with Interactions
 
 ```{r model-4}
-
-model_nb_4 <- glmmTMB(filings_count ~ # changed from glm.nb to glmmTMB
-    # 1st model.
-    filings_ma3 + moratorium_active + factor(month_num) +
-    # 2nd model.
-    spatial_lag_filings + delinquent_prop_count +
-    # 3rd model.
-    pct_renter + severe_rent_burden + poverty_rate + pct_single_mother +
-    factor(racial_majority) +
-    # Add interactions.
-    factor(racial_majority):moratorium_active,
-  data = df_train,
-  family = nbinom2() # added this line so it is a negative binomial when we make the switch at the beginning 
-)
+model_nb_4 <- glmmTMB(filings_count_capped ~
+                       # 1st model.
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
+                       # 2nd model.
+                       spatial_lag_filings + delinquent_prop_count +
+                       # 3rd model.
+                       pct_renter + severe_rent_burden + poverty_rate + pct_single_mother +
+                       factor(racial_majority) +
+                       # Add interactions.
+                       factor(racial_majority) * moratorium_active,
+                     data = df_train,
+                     family = nbinom2()
+                     )
 
 cat("FULL NEGATIVE BINOMIAL MODEL SUMMARY\n")
 summary(model_nb_4)
 ```
 
 ```{r model-comparison}
-# Compare model fit statistics. Needed to add the following section because glmmTMB does not store $theta so need to get it
+# Compare model fit statistics.
 get_theta <- function(model) {
-  suppressWarnings(as.numeric(sigma(model)))   # returns NA if not NB
+  suppressWarnings(as.numeric(sigma(model)))
 }
 
 model_comparison <- data.frame(
@@ -1802,18 +1803,6 @@ model_comparison <- data.frame(
     aic_change = aic - min(aic),
     rank = rank(aic)
   )
-
-
-#model_comparison <- data.frame(
-#  model = c("Baseline", "+ Tax and Spatial", "+ ACS", "+ Interactions"),
-#  aic = c(AIC(model_nb_1), AIC(model_nb_2), AIC(model_nb_3), AIC(model_nb_4)),
-#  theta = c(model_nb_1$theta, model_nb_2$theta, model_nb_3$theta, model_nb_4$theta),
-#  loglik = c(logLik(model_nb_1), logLik(model_nb_2), logLik(model_nb_3), logLik(model_nb_4))
-#) %>%
-#  mutate(
-#    aic_change = aic - min(aic),
-#    rank = rank(aic)
-#  )
 
 model_comparison %>%
   kable(digits = 2, caption = "Model Comparison Statistics (Lower AIC = Better Fit)") %>%
