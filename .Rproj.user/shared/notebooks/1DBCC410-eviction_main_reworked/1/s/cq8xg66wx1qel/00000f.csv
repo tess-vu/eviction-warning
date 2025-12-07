@@ -1,0 +1,13 @@
+"0","# Remove sealed tracts."
+"0","df_monthly <- df_monthly %>%"
+"0","  filter(GEOID != ""sealed"", !is.na(GEOID), GEOID != """")"
+"0",""
+"0","cat(sprintf(""Remaining Observations: %s\n"", comma(nrow(df_monthly))))"
+"1","Remaining Observations: 28,968
+"
+"0","cat(sprintf(""Remaining Tracts: %d\n"", n_distinct(df_monthly$GEOID)))"
+"1","Remaining Tracts: 408
+"
+"0","cat(sprintf(""Remaining Months: %d\n"", n_distinct(df_monthly$date)))"
+"1","Remaining Months: 71
+"

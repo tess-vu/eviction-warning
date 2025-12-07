@@ -41,10 +41,10 @@ Where should renter's assistance programs be targeted in Philadelphia?
 
 ### Philadelphia Context
 
-There are 331,415 renter households in Philadelphia. The eviction notice timelines range from 10 days for non-payment of rent to 15 days for a lease less than a year and 30 days for a lease greater than a year. 
+331,415 households Philadelphia are renters. The eviction notice timeline ranges from 10 (no rent payments) to 15 days for a lease less than a year and 30 days for a lease greater than a year. 
 
 
-![](eviction_figures/choropleth-1.png){fig-align="center"}
+![](eviction_figures/TotalEvictionFilingsCensusTract.png){width="200%" fig-align="center"}
 
 
 ---
@@ -87,8 +87,9 @@ The Emergency Rental Assistance Program (ERAP) ended (Sept 2025).
 
 ### Exploratory Data Analysis
 
-
-![](eviction_figures/comparison_table.png){width="60" fig-align="center"}
+<br>
+![](eviction_figures/comparison_table.png){width="800" fig-align="center"}
+<br><br>
 
 **Excess amount of zeros**
 

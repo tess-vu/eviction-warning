@@ -1,0 +1,43 @@
+"0","# Calculate zero-inflation stats for monthly data."
+"0","zero_stats_monthly <- df_monthly %>%"
+"0","  summarize("
+"0","    total_obs = n(),"
+"0","    zero_count = sum(filings_count == 0),"
+"0","    zero_pct = zero_count / total_obs * 100,"
+"0","    positive_count = sum(filings_count > 0),"
+"0","    mean_all = mean(filings_count),"
+"0","    mean_positive = mean(filings_count[filings_count > 0]),"
+"0","    median_all = median(filings_count),"
+"0","    variance = var(filings_count),"
+"0","    dispersion_ratio = variance / mean_all"
+"0","  )"
+"0",""
+"0","# Display zero-inflation stats."
+"0","cat(""MONTHLY ZERO-INFLATION STATS\n"")"
+"1","MONTHLY ZERO-INFLATION STATS
+"
+"0","cat(sprintf(""Total Observations: %s\n"", comma(zero_stats_monthly$total_obs)))"
+"1","Total Observations: 28,968
+"
+"0","cat(sprintf(""Zero Filings: %s (%.1f%%)\n"", "
+"0","            comma(zero_stats_monthly$zero_count), "
+"0","            zero_stats_monthly$zero_pct))"
+"1","Zero Filings: 10,721 (37.0%)
+"
+"0","cat(sprintf(""Positive Filings: %s (%.1f%%)\n"", "
+"0","            comma(zero_stats_monthly$positive_count), "
+"0","            100 - zero_stats_monthly$zero_pct))"
+"1","Positive Filings: 18,247 (63.0%)
+"
+"0","cat(sprintf(""Mean (all observations): %.2f\n"", zero_stats_monthly$mean_all))"
+"1","Mean (all observations): 2.26
+"
+"0","cat(sprintf(""Mean (positive only): %.2f\n"", zero_stats_monthly$mean_positive))"
+"1","Mean (positive only): 3.58
+"
+"0","cat(sprintf(""Variance: %.2f\n"", zero_stats_monthly$variance))"
+"1","Variance: 10.63
+"
+"0","cat(sprintf(""Dispersion Ratio (Variance/Mean): %.2f\n"", zero_stats_monthly$dispersion_ratio))"
+"1","Dispersion Ratio (Variance/Mean): 4.71
+"

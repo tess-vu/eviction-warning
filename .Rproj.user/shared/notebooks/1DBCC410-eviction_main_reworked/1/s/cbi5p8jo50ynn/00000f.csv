@@ -1,0 +1,39 @@
+"0","# Analyze sealed tracts before removal."
+"0","sealed_tracts_analysis <- df_monthly %>%"
+"0","  filter(GEOID == ""sealed"" | is.na(GEOID) | GEOID == """") %>%"
+"0","  summarize("
+"0","    n_obs = n(),"
+"0","    n_unique_dates = n_distinct(date),"
+"0","    total_filings = sum(filings_count, na.rm = TRUE),"
+"0","    mean_filings = mean(filings_count, na.rm = TRUE),"
+"0","    median_filings = median(filings_count, na.rm = TRUE),"
+"0","    min_filings = min(filings_count, na.rm = TRUE),"
+"0","    max_filings = max(filings_count, na.rm = TRUE),"
+"0","    sd_filings = sd(filings_count, na.rm = TRUE),"
+"0","    zero_pct = sum(filings_count == 0) / n() * 100"
+"0","  )"
+"0",""
+"0","cat(sprintf(""Total Observations: %s\n"", comma(sealed_tracts_analysis$n_obs)))"
+"1","Total Observations: 71
+"
+"0","cat(sprintf(""Months of Data: %d\n"", sealed_tracts_analysis$n_unique_dates))"
+"1","Months of Data: 71
+"
+"0","cat(sprintf(""Total Filings in Sealed Tracts: %s\n"", comma(sealed_tracts_analysis$total_filings)))"
+"1","Total Filings in Sealed Tracts: 1,043
+"
+"0","cat(sprintf(""Mean Filings per Tract-Month: %.1f\n"", sealed_tracts_analysis$mean_filings))"
+"1","Mean Filings per Tract-Month: 14.7
+"
+"0","cat(sprintf(""Median Filings per Tract-Month: %.1f\n"", sealed_tracts_analysis$median_filings))"
+"1","Median Filings per Tract-Month: 1.0
+"
+"0","cat(sprintf(""Range: %d to %d\n"", sealed_tracts_analysis$min_filings, sealed_tracts_analysis$max_filings))"
+"1","Range: 0 to 694
+"
+"0","cat(sprintf(""Standard Deviation: %.1f\n"", sealed_tracts_analysis$sd_filings))"
+"1","Standard Deviation: 85.9
+"
+"0","cat(sprintf(""Zero-Filing Months: %.1f%%\n"", sealed_tracts_analysis$zero_pct))"
+"1","Zero-Filing Months: 43.7%
+"
