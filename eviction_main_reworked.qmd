@@ -108,6 +108,19 @@ racial_colors <- c(
 
 The primary dataset contains monthly eviction filing counts at the census tract level from January 2020 through November 2025.
 
+```{r census_key, eval=FALSE}
+
+census_api_key("c6a297963a8439019874bbdbc08bd1f0b462f928", overwrite = TRUE, install = TRUE)
+
+```
+
+```{r census_key_hidden, include=FALSE}
+# Hidden key for rendering
+census_api_key("c6a297963a8439019874bbdbc08bd1f0b462f928", overwrite = TRUE)
+```
+
+
+
 ```{r load-monthly-data}
 # Load monthly eviction filings data at census tract level.
 df_monthly_raw <- read.csv("data/eviction/philadelphia_monthly_2020_2021.csv")
