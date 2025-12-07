@@ -10,7 +10,6 @@ author:
 format: 
   revealjs:
     theme: simple
-    css: styles/style.css
     slide-number: true
     smaller: true
 
@@ -20,12 +19,15 @@ format:
 
 ### Contents
 
+<span style="font-size: 1.55em; line-height: 1.9;">
+
 **1.** The Problem  
 **2.** Methods  
 **3.** Results & Model Performance  
 **4.** Limitations  
 **5.** Recommendations
 
+</span>
 
 ---
 
@@ -120,8 +122,21 @@ The weekly distribution is severely zero-inflated, which the Negative Binomial R
 
 ---
 
+### Best Predictors
+
+![](final_figures/feature-importance-1.png){fig-align="center"}
+
+---
+
 ### Model Performance
 
+![](final_figures/predicted-vs-observed-1.png){fig-align="center"}
+
+---
+
+### Evaluation of Model
+
+![](final_figures/calibration-analysis-1.png){fig-align="center"}
 
 ---
 
@@ -129,6 +144,13 @@ The weekly distribution is severely zero-inflated, which the Negative Binomial R
 
 - Limited toolkit: Cannot use Zero-Inflated Negative Binomial model
 - Accounting for mass evictions
+- racial inequity 
+
+---
+
+### Limitations: Less accuracy in majority black tracts
+
+![](final_figures/equity-plot-mae-1.png){fig-align="center"}
 
 ---
 
