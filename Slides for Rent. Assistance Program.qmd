@@ -10,6 +10,7 @@ author:
 format: 
   revealjs:
     theme: simple
+    css: styles/style.css
     slide-number: true
     smaller: true
 
@@ -18,29 +19,41 @@ format:
 ---
 
 ### Contents
-- The Problem
-- Methods
-- Results and Model Performance
-- Limitations
-- Recommendations for implementation
+
+**1.** The Problem  
+**2.** Methods  
+**3.** Results & Model Performance  
+**4.** Limitations  
+**5.** Recommendations
+
 
 ---
 
 ### Research Question
 
-Where should renter's assistance programs be?
+<br>
+
+Where should renter's assistance programs be targeted in Philadelphia?
+
+<br><br>
 
 ---
 
 ### Philadelphia Context
 
-- 331,415 renter households
-- Notice Periods
-    - Non-payment of rent: 10-days
-    - Lease of one year or less: 15-day
-    - Leases longer than a year: 30-day
-- Emergency Rental Assistance Program (ERAP) program ended in September
-- New protections went into effect in December 
+There are 331,415 renter households in Philadelphia. The eviction notice timelines range from 10 days for non-payment of rent to 15 days for a lease less than a year and 30 days for a lease greater than a year. 
+
+
+![](eviction_figures/choropleth-1.png){fig-align="center"}
+
+
+---
+
+### Philadelphia Context: Policy Updates
+
+The Emergency Rental Assistance Program (ERAP) ended (Sept 2025).
+
+![](eviction_figures/claims-severity-plot-1.png){fig-align="center"}
 
 ---
 
@@ -102,6 +115,7 @@ The weekly distribution is severely zero-inflated, which the Negative Binomial R
 
 ### Analysis of Additional Data Sources
 
+![](eviction_figures/racial-disparity-plot-1){fig-align="center"}
 
 ---
 
@@ -118,8 +132,5 @@ The weekly distribution is severely zero-inflated, which the Negative Binomial R
 ---
 
 ### Recommendations for Implementation
-
-
----
 
 
