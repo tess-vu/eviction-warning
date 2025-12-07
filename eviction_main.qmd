@@ -47,6 +47,7 @@ The model demonstrates strong predictive performance with meaningful improvement
 ```{r library}
 library(lubridate)
 library(sf)
+library(broom)
 library(scales)
 library(patchwork)
 library(viridis)
@@ -79,13 +80,10 @@ Sys.getenv("CENSUS_API_KEY")
 options(scipen = 999)
 
 # Save figures.
-# opts_chunk$set(fig.path = "final_figures/")
+opts_chunk$set(fig.path = "final_figures/")
 ```
 
 ```{r customization}
-# Theme for all viz.
-theme_set(theme_minimal(base_size = 12))
-
 # Custom color palette for policy periods.
 period_colors <- c(
   "Pre-Moratorium" = "#3498DB",
@@ -536,7 +534,7 @@ cat(sprintf("Dispersion Ratio (Variance/Mean): %.2f\n", zero_stats_monthly$dispe
 # Raw distribution.
 monthly_plot_raw <- df_monthly %>%
   ggplot(aes(x = filings_count)) +
-  geom_histogram(bins = 30, fill = "#E74C3C", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 30, fill = "#E74C3C", color = "white") +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -554,7 +552,7 @@ monthly_plot_raw <- df_monthly %>%
 monthly_plot_log <- df_monthly %>%
   mutate(log_filings = log10(filings_count + 1)) %>%
   ggplot(aes(x = log_filings)) +
-  geom_histogram(bins = 30, fill = "#E67E22", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 30, fill = "#E67E22", color = "white") +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -578,8 +576,8 @@ monthly_plot_raw + monthly_plot_log +
     caption = "Data: Philadelphia Eviction Filings 2020-2025 via Eviction Lab",
     theme = theme(
       plot.title = element_text(face = "bold", size = 14),
-      plot.subtitle = element_text(size = 11, color = "gray40"),
-      plot.caption = element_text(size = 9, color = "gray50")
+      plot.subtitle = element_text(size = 11),
+      plot.caption = element_text(size = 9)
     )
   )
 ```
@@ -621,7 +619,7 @@ cat(sprintf("Dispersion Ratio: %.2f\n", zero_stats_weekly$dispersion_ratio))
 # Raw distribution.
 plot_weekly_raw <- df_weekly %>%
   ggplot(aes(x = filings_count)) +
-  geom_histogram(bins = 30, fill = "#3498DB", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 30, fill = "#3498DB", color = "white") +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -639,7 +637,7 @@ plot_weekly_raw <- df_weekly %>%
 plot_weekly_log <- df_weekly %>%
   mutate(log_filings = log10(filings_count + 1)) %>%
   ggplot(aes(x = log_filings)) +
-  geom_histogram(bins = 30, fill = "#8E44AD", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 30, fill = "#8E44AD", color = "white") +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -660,7 +658,7 @@ plot_weekly_raw + plot_weekly_log +
     subtitle = sprintf("%.1f%% Zeros | Dispersion Ratio = %.1f", 
                        zero_stats_weekly$zero_pct,
                        zero_stats_weekly$dispersion_ratio),
-    caption = "Data: Philadelphia Weekly Eviction Filings via Eviction Lab",
+    caption = "Data: Philadelphia Eviction Filings via Eviction Lab",
     theme = theme(plot.title = element_text(face = "bold", size = 14),
                   plot.subtitle = element_text(size = 11))
   )
@@ -670,7 +668,7 @@ Weekly distribution is severely zero-inflated, so it wouldn't be a methodologica
 
 ### Tax Delinquency Distribution
 
-```{r tax-distribution}
+```{r tax-distribution-histogram}
 #| fig-dpi: 300
 #| fig-height: 6
 #| fig-width: 12
@@ -678,7 +676,7 @@ Weekly distribution is severely zero-inflated, so it wouldn't be a methodologica
 # Raw distribution.
 plot_tax_raw <- df_tax %>%
   ggplot(aes(x = avg_delinquent_balance_per_prop)) +
-  geom_histogram(bins = 40, fill = "#9B59B6", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 40, fill = "#9B59B6", color = "white") +
   scale_x_continuous(labels = dollar_format()) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -693,7 +691,7 @@ plot_tax_raw <- df_tax %>%
 plot_tax_log <- df_tax %>%
   mutate(log_balance = log10(avg_delinquent_balance_per_prop + 1)) %>%
   ggplot(aes(x = log_balance)) +
-  geom_histogram(bins = 40, fill = "#3498DB", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 40, fill = "#3498DB", color = "white") +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
   labs(
@@ -761,8 +759,8 @@ monthly_aggregate <- df_monthly %>%
 
 # Create line plot with policy intervention markers.
 monthly_trend_plot <- ggplot(monthly_aggregate, aes(x = date, y = total_filings)) +
-  geom_line(color = "#C0392B", linewidth = 1.3) +
-  geom_point(aes(color = period), size = 3) +
+  geom_line(color = "#C0392B", linewidth = 1.5) +
+  geom_point(aes(color = period), size = 4) +
   # Mark start of eviction moratorium.
   geom_vline(xintercept = as.Date("2020-03-01"), 
              linetype = "dashed", color = "#27AE60", linewidth = 1) +
@@ -777,7 +775,7 @@ monthly_trend_plot <- ggplot(monthly_aggregate, aes(x = date, y = total_filings)
   scale_color_manual(values = period_colors) +
   labs(
     title = "Total Monthly Eviction Filings: System-Wide Trend (2020-2025)",
-    subtitle = "Dramatic suppression during moratorium followed by sustained elevation after policy ended.",
+    subtitle = "Suppression during moratorium followed by sustained elevation after end.",
     x = "Date (Month)",
     y = "Total Monthly Filings Across All Census Tracts",
     color = "Policy Period",
@@ -810,46 +808,6 @@ monthly_aggregate %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-### Weekly Trend
-
-```{r weekly-system-trend}
-#| fig-dpi: 300
-#| fig-height: 6
-#| fig-width: 14
-#| message: FALSE
-#| warning: FALSE
-
-# Calculate total weekly filings to see volatility.
-weekly_aggregate <- df_weekly %>%
-  group_by(date) %>%
-  summarize(
-    total_filings = sum(filings_count, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-# Create weekly trend plot.
-weekly_trend_plot <- ggplot(weekly_aggregate, aes(x = date, y = total_filings)) +
-  geom_line(color = "#8E44AD", alpha = 0.6, linewidth = 0.8) +
-  geom_smooth(method = "loess", se = TRUE, color = "#E74C3C", linewidth = 1.2, span = 0.1) +
-  geom_vline(xintercept = as.Date("2020-03-01"), 
-             linetype = "dashed", color = "#27AE60", alpha = 0.7) +
-  geom_vline(xintercept = as.Date("2021-09-30"), 
-             linetype = "dashed", color = "#E67E22", alpha = 0.7) +
-  scale_y_continuous(labels = comma) +
-  labs(
-    title = "Weekly Eviction Filing Volatility (2020-2025)",
-    subtitle = "Red line reveals underlying pattern over weekly fluctuations.",
-    x = "Date (Week)",
-    y = "Total Weekly Filings Across All Census Tracts",
-    caption = "Data: Philadelphia Weekly Eviction Filings via Eviction Lab"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(plot.title = element_text(face = "bold", size = 14))
-
-# Display weekly trend plot.
-weekly_trend_plot
-```
-
 ### Seasonality Analysis
 
 ```{r seasonality-boxplot}
@@ -872,9 +830,9 @@ seasonality_data <- df_monthly %>%
 # Create seasonal pattern bar plot.
 seasonality_boxplot <- seasonality_data %>%
   ggplot(aes(x = season, y = mean_filings)) +
-  geom_col(fill = "#3498DB", alpha = 0.8) +
+  geom_col(fill = "#3498DB", alpha = 1) +
   geom_errorbar(aes(ymin = mean_filings - sd_filings, ymax = mean_filings + sd_filings),
-                width = 0.3, color = "#2C3E50") +
+                width = 0.3, color = "black") +
   labs(
     title = "Seasonal Pattern in Eviction Filings",
     x = "Season",
@@ -901,9 +859,9 @@ monthly_data <- df_monthly %>%
 # Create monthly pattern bar plot.
 monthly_boxplot <- monthly_data %>%
   ggplot(aes(x = reorder(month_name, month_num), y = mean_filings)) +
-  geom_col(fill = "#3498DB", alpha = 0.8) +
+  geom_col(fill = "#3498DB", alpha = 1) +
   geom_errorbar(aes(ymin = mean_filings - sd_filings, ymax = mean_filings + sd_filings),
-                width = 0.3, color = "#2C3E50") +
+                width = 0.3, color = "black") +
   labs(
     title = "Monthly Pattern in Eviction Filings",
     x = "Month",
@@ -921,9 +879,9 @@ seasonality_boxplot + monthly_boxplot +
   plot_annotation(
     title = "Seasonal and Monthly Patterns in Eviction Filings",
     subtitle = "Post-Moratorium",
-    caption = "Data: OpenDataPhilly Real Estate Tax Balances",
+    caption = "Data: Philadelphia Eviction Claims via Eviction Lab",
     theme = theme(plot.title = element_text(face = "bold", size = 14),
-                  plot.subtitle = element_text(size = 11))
+                  plot.subtitle = element_text(size = 12))
   )
 ```
 
@@ -951,18 +909,18 @@ monthly_data %>%
 # Create median claim amount trend showing financial severity evolution.
 claims_plot <- ggplot(df_claims %>% filter(!is.na(median_claim)), 
                       aes(x = date, y = median_claim)) +
-  geom_line(color = "#27AE60", linewidth = 1.2) +
-  geom_point(color = "#27AE60", size = 2.5) +
+  geom_line(color = "#27AE60", linewidth = 1.5) +
+  geom_point(color = "#27AE60", size = 3) +
   geom_hline(aes(yintercept = median_claim_baseline), 
              linetype = "dashed", color = "#E74C3C", linewidth = 1) +
-  annotate("text", x = min(df_claims$date), y = df_claims$median_claim_baseline[1] * 1.05,
+  annotate("text", x = min(df_claims$date - 100), y = df_claims$median_claim_baseline[1] + 200,
            label = sprintf("Pre-Pandemic Baseline: $%s", 
                           comma(df_claims$median_claim_baseline[1])),
            hjust = 0, color = "#E74C3C", fontface = "bold") +
   geom_vline(xintercept = as.Date("2020-03-01"), 
-             linetype = "dotted", color = "gray50", alpha = 0.7) +
+             linetype = "dotted", color = "#27AE60", alpha = 1, linewidth = 1) +
   geom_vline(xintercept = as.Date("2021-09-30"), 
-             linetype = "dotted", color = "gray50", alpha = 0.7) +
+             linetype = "dotted", color = "#E67E22", alpha = 1, linewidth = 1) +
   scale_y_continuous(labels = dollar_format()) +
   labs(
     title = "Median Eviction Claim Amount Over Time",
@@ -1022,7 +980,7 @@ racial_comparison <- racial_stats %>%
   pivot_longer(cols = c(pct_tracts, pct_total_filings),
                names_to = "metric", values_to = "percentage") %>%
   mutate(
-    metric = ifelse(metric == "pct_tracts", "share of tracts", "share of filings")
+    metric = ifelse(metric == "pct_tracts", "Share of Tracts", "Share of Filings")
   )
 
 # Create grouped bar plot showing disparity.
@@ -1031,13 +989,13 @@ racial_disparity_plot <- racial_comparison %>%
   geom_col(position = "dodge", width = 0.7) +
   geom_text(aes(label = sprintf("%.1f%%", percentage)), 
             position = position_dodge(width = 0.7), vjust = -0.5, size = 3.5) +
-  scale_fill_manual(values = c("share of tracts" = "#3498DB", "share of filings" = "#E74C3C")) +
+  scale_fill_manual(values = c("Share of Tracts" = "#3498DB", "Share of Filings" = "#E74C3C")) +
   scale_y_continuous(labels = percent_format(scale = 1), expand = expansion(mult = c(0, 0.15))) +
   labs(
     title = "Racial Disparity in Eviction Filings",
     x = "Tract Racial Majority",
     y = "Percentage",
-    fill = "metric",
+    fill = "Metric",
     caption = "Data: Philadelphia Eviction Filings via Eviction Lab"
   ) +
   theme_minimal(base_size = 12) +
@@ -1112,7 +1070,8 @@ eviction_map <- ggplot(philly_eviction_sf) +
     option = "inferno",
     trans = "log1p",
     labels = comma,
-    na.value = "gray50"
+    na.value = "gray50",
+    breaks = c(0, 25, 100, 250, 831)
   ) +
   labs(
     title = "Total Eviction Filings by Census Tract (2020-2025)",
@@ -1148,7 +1107,8 @@ tax_map <- ggplot(philly_tax_sf) +
     option = "plasma",
     trans = "log1p",
     labels = dollar_format(),
-    na.value = "gray50"
+    na.value = "gray50",
+    breaks = c(1000, 5000, 10000, 50000)
   ) +
   labs(
     title = "Average Property Tax Delinquency by Census Tract",
@@ -1168,9 +1128,9 @@ tax_map
 
 ## 8. PRE-PANDEMIC BASELINE COMPARISON
 
-### Weekly Filings vs Baseline Ratio
+### Monthly Filings vs Baseline Ratio
 
-```{r weekly-baseline-ratio-plot}
+```{r monthly-baseline-ratio-plot}
 #| fig-dpi: 300
 #| fig-height: 6
 #| fig-width: 14
@@ -1178,7 +1138,7 @@ tax_map
 #| warning: FALSE
 
 # Calculate system-wide ratio to pre-pandemic baseline over time.
-weekly_baseline_ratio <- df_weekly %>%
+monthly_baseline_ratio <- df_monthly %>%
   group_by(date) %>%
   summarize(
     total_filings = sum(filings_count, na.rm = TRUE),
@@ -1190,21 +1150,21 @@ weekly_baseline_ratio <- df_weekly %>%
 
 # Create line plot showing normalized recovery trajectory.
 # Ratio greater than 1 indicates system stress relative to historical norm.
-baseline_ratio_plot <- ggplot(weekly_baseline_ratio, aes(x = date, y = ratio_to_baseline)) +
+baseline_ratio_plot <- ggplot(monthly_baseline_ratio, aes(x = date, y = ratio_to_baseline)) +
   geom_line(color = "#16A085", linewidth = 0.8, alpha = 0.6) +
-  geom_smooth(method = "loess", se = TRUE, color = "#E74C3C", linewidth = 1.2, span = 0.15) +
+  geom_smooth(method = "loess", se = TRUE, color = "#E74C3C", linewidth = 1) +
   geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate("text", x = min(weekly_baseline_ratio$date), y = 1.05,
+  annotate("text", x = min(monthly_baseline_ratio$date + 100), y = 1.08,
            label = "Pre-Pandemic Average", hjust = 0, fontface = "bold") +
   geom_vline(xintercept = as.Date("2020-03-01"), 
-             linetype = "dotted", color = "gray50", alpha = 0.7) +
+             linetype = "dotted", color = "#27AE60", alpha = 1, linewidth = 1) +
   geom_vline(xintercept = as.Date("2021-09-30"), 
-             linetype = "dotted", color = "gray50", alpha = 0.7) +
+             linetype = "dotted", color = "#E67E22", alpha = 1, linewidth = 1) +
   labs(
-    title = "Weekly Filings Normalized to Pre-Pandemic Baseline",
-    x = "Date (Week)",
-    y = "Weekly Filings / Pre-Pandemic Average Ratio",
-    caption = "Data: Philadelphia Weekly Eviction Filings via Eviction Lab"
+    title = "Monthly Filings Normalized to Pre-Pandemic Baseline",
+    x = "Date (Month)",
+    y = "Monthly Filings / Pre-Pandemic Average Ratio",
+    caption = "Data: Philadelphia Monthly Eviction Filings via Eviction Lab"
   ) +
   theme_minimal(base_size = 12) +
   theme(plot.title = element_text(face = "bold", size = 14))
@@ -1213,9 +1173,9 @@ baseline_ratio_plot <- ggplot(weekly_baseline_ratio, aes(x = date, y = ratio_to_
 baseline_ratio_plot
 ```
 
-```{r weekly-baseline-ratio-table}
+```{r monthly-baseline-ratio-table}
 # Calculate summary statistics by policy period.
-weekly_baseline_ratio %>%
+monthly_baseline_ratio %>%
   mutate(period = case_when(
     date < as.Date("2020-03-01") ~ "pre_moratorium",
     date >= as.Date("2020-03-01") & date <= as.Date("2021-09-30") ~ "moratorium",
@@ -2011,7 +1971,6 @@ Based on the model comparison and overfitting assessment, we select the best-per
 
 ```{r select-best-model}
 # Use Model 3 for downstream analysis, this is for operational deployment.
-model_nb_enhanced <- model_nb_3
 df_test_pred <- test_pred_3
 df_train_pred <- train_pred_3
 
@@ -2028,17 +1987,19 @@ cat(sprintf("Test Correlation: %.3f\n", selected_test_metrics$correlation))
 #| fig-dpi: 300
 #| fig-height: 10
 #| fig-width: 10
+#| message: FALSE
+#| warning: FALSE
 
 # Create scatter plot of predicted vs observed values using selected model.
 pred_obs_plot <- df_test_pred %>%
   ggplot(aes(x = predicted, y = filings_count)) +
-  geom_hex(bins = 40) +
+  geom_hex(bins = 50) +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "#E74C3C", linewidth = 1) +
   scale_fill_viridis_c(option = "plasma", trans = "log10", labels = comma) +
-  scale_x_continuous(limits = c(0, 20)) +
-  scale_y_continuous(limits = c(0, 20)) +
+  scale_x_continuous(limits = c(0, 155)) +
+  scale_y_continuous(limits = c(0, 50)) +
   labs(
-    title = "Predicted vs Observed Eviction Filings (Test Set)",
+    title = "Predicted vs Observed Eviction Filings (Test Set | Model 3)",
     subtitle = sprintf("MAE = %.2f | RMSE = %.2f | Correlation = %.3f",
                        selected_test_metrics$MAE, 
                        selected_test_metrics$RMSE, 
@@ -2046,7 +2007,7 @@ pred_obs_plot <- df_test_pred %>%
     x = "Predicted Filings",
     y = "Observed Filings",
     fill = "Count",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set | Model 4"
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2086,19 +2047,21 @@ test_metrics_by_race %>%
 #| fig-dpi: 300
 #| fig-height: 6
 #| fig-width: 12
+#| message: FALSE
+#| warning: FALSE
 
 # Create residual distribution plot.
 residual_plot <- df_test_pred %>%
   ggplot(aes(x = residual)) +
-  geom_histogram(bins = 50, fill = "#3498DB", color = "white", alpha = 0.8) +
+  geom_histogram(bins = 50, fill = "#3498DB", color = "white", alpha = 1) +
   geom_vline(xintercept = 0, linetype = "dashed", color = "#E74C3C", linewidth = 1) +
   scale_x_continuous(limits = c(-15, 15)) +
   labs(
     title = "Distribution of Prediction Residuals (Test Set)",
-    subtitle = "Centered near zero indicates unbiased predictions",
+    subtitle = "Centered near zero indicates unbiased predictions.",
     x = "Residual (Observed - Predicted)",
     y = "Frequency",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set"
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(plot.title = element_text(face = "bold", size = 14))
@@ -2161,10 +2124,10 @@ risk_bar_plot <- risk_validation %>%
   scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
   labs(
     title = "Mean Observed Filings by Predicted Risk Category",
-    subtitle = "Higher predicted risk categories correctly capture higher observed filing rates",
+    subtitle = "Higher predicted risk categories correctly capture higher observed filing rates.",
     x = "Predicted Risk Category",
     y = "Mean Observed Filings per Tract-Month",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set"
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2207,7 +2170,7 @@ high_risk_profile %>%
 #| fig-width: 10
 
 # Extract standardized coefficients for interpretation.
-feature_importance <- broom::tidy(model_nb_enhanced) %>%
+feature_importance <- tidy(model_nb_3) %>%
   filter(term != "(Intercept)") %>%
   mutate(
     abs_estimate = abs(estimate),
@@ -2246,11 +2209,11 @@ importance_plot <- feature_importance %>%
   scale_fill_brewer(palette = "Set2") +
   labs(
     title = "Top 20 Most Important Predictors",
-    subtitle = "Coefficient magnitude indicates effect size on log(expected filings)",
+    subtitle = "Coefficient magnitude indicates effect size on log(expected filings).",
     x = "Predictor Variable",
     y = "Coefficient Estimate",
     fill = "Category",
-    caption = "Enhanced Negative Binomial Regression Coefficients (including ACS indicators)"
+    caption = "Negative Binomial Regression Coefficients"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2264,14 +2227,15 @@ importance_plot
 
 ```{r acs-feature-contribution}
 # Specifically analyze contribution of ACS features.
-acs_contribution <- broom::tidy(model_nb_enhanced) %>%
+acs_contribution <- tidy(model_nb_3) %>%
   filter(str_detect(term, "pct_renter|poverty_rate|severe_rent_burden|unemployment_rate")) %>%
   mutate(
     irr = exp(estimate),
     pct_change = (irr - 1) * 100,
     significant = ifelse(p.value < 0.05, "Yes", "No")
-  ) %>%
-  select(term, estimate, std.error, p.value, irr, pct_change, significant)
+  )%>%
+  rename(standard_error = std.error, p_value = p.value, percent_change = pct_change) %>%
+  select(term, estimate, standard_error, p_value, irr, percent_change, significant)
 
 acs_contribution %>%
   kable(digits = 3, caption = "ACS Socioeconomic Feature Effects") %>%
@@ -2282,7 +2246,7 @@ acs_contribution %>%
 
 ```{r incidence-rate-ratios}
 # Calculate incidence rate ratios for interpretation.
-irr_table <- broom::tidy(model_nb_enhanced) %>%
+irr_table <- tidy(model_nb_3) %>%
   mutate(
     irr = exp(estimate),
     irr_lower = exp(estimate - 1.96 * std.error),
@@ -2290,7 +2254,8 @@ irr_table <- broom::tidy(model_nb_enhanced) %>%
     pct_change = (irr - 1) * 100
   ) %>%
   filter(term != "(Intercept)") %>%
-  select(term, irr, irr_lower, irr_upper, pct_change, p.value)
+  rename(p_value = p.value) %>%
+  select(term, irr, irr_lower, irr_upper, pct_change, p_value)
 
 irr_table %>%
   head(15) %>%
@@ -2357,10 +2322,10 @@ equity_plot <- equity_metrics %>%
   scale_y_continuous(expand = expansion(mult = c(0, 0.15))) +
   labs(
     title = "Model Accuracy (MAE) by Tract Racial Majority",
-    subtitle = "Lower values indicate better prediction accuracy",
+    subtitle = "Lower values indicate better prediction accuracy.",
     x = "Tract Racial Majority",
     y = "Mean Absolute Error",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set"
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2393,18 +2358,18 @@ calibration_plot <- df_test_pred %>%
   ) %>%
   filter(n >= 10) %>%
   ggplot(aes(x = mean_predicted, y = mean_observed, color = racial_majority)) +
-  geom_point(aes(size = n), alpha = 0.7) +
+  geom_point(aes(size = n), alpha = 0.75) +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "black") +
   scale_color_manual(values = racial_colors) +
   scale_size_continuous(range = c(2, 8)) +
   labs(
-    title = "Model Calibration by Tract Racial Majority",
-    subtitle = "Points on diagonal indicate well-calibrated predictions",
+    title = "Model by Tract Racial Majority",
+    subtitle = "Points on diagonal indicate good predictions.",
     x = "Mean Predicted Filings",
     y = "Mean Observed Filings",
     color = "Racial\nMajority",
-    size = "N Obs",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set"
+    size = "Observations",
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2439,12 +2404,12 @@ risk_race_plot <- risk_by_race %>%
   scale_fill_viridis_d(option = "plasma", direction = -1) +
   scale_y_continuous(labels = percent_format(scale = 1)) +
   labs(
-    title = "Distribution of Risk Categories by Tract Racial Majority",
-    subtitle = "Black-majority tracts disproportionately classified as high risk",
+    title = "Risk Distribution by Tract Racial Majority",
+    subtitle = "Black-majority tracts disproportionately classified as high risk.",
     x = "Tract Racial Majority",
     y = "Percentage of Tract-Months",
     fill = "Risk\nCategory",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set"
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2465,17 +2430,17 @@ risk_race_plot
 equity_plot <- equity_metrics %>%
   pivot_longer(cols = c(mean_observed, mean_predicted), 
                names_to = "type", values_to = "value") %>%
-  mutate(type = ifelse(type == "mean_observed", "observed", "predicted")) %>%
+  mutate(type = ifelse(type == "mean_observed", "Observed", "Predicted")) %>%
   ggplot(aes(x = racial_majority, y = value, fill = type)) +
   geom_col(position = "dodge", width = 0.7) +
-  scale_fill_manual(values = c("observed" = "#E74C3C", "predicted" = "#3498DB")) +
+  scale_fill_manual(values = c("Observed" = "#E74C3C", "Predicted" = "#3498DB")) +
   labs(
     title = "Model Calibration by Racial Majority: Observed vs Predicted",
-    subtitle = "Close alignment indicates equitable prediction accuracy across communities",
+    subtitle = "Close alignment indicates equitable prediction accuracy across communities.",
     x = "Tract Racial Majority",
     y = "Mean Filings per Tract-Month",
-    fill = "type",
-    caption = "Data: Philadelphia Eviction Filings 2024-2025 Test Set"
+    fill = "Type",
+    caption = "Data: Philadelphia Eviction Filings 2024-2025"
   ) +
   theme_minimal(base_size = 12) +
   theme(
@@ -2490,6 +2455,6 @@ equity_plot
 # SESSION INFORMATION
 
 ```{r session-info}
-# Document R session information for reproducibility.
+# R session info.
 sessionInfo()
 ```
