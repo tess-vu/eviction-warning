@@ -1,0 +1,32 @@
+"0","#| fig-dpi: 300"
+"0","#| fig-height: 6"
+"0","#| fig-width: 12"
+"0",""
+"0","# Calculate zero-inflation stats for weekly data."
+"0","zero_stats_weekly <- df_weekly %>%"
+"0","  summarize("
+"0","    total_obs = n(),"
+"0","    zero_count = sum(filings_count == 0),"
+"0","    zero_pct = zero_count / total_obs * 100,"
+"0","    mean_all = mean(filings_count),"
+"0","    variance = var(filings_count),"
+"0","    dispersion_ratio = variance / mean_all"
+"0","  )"
+"0",""
+"0","cat(""WEEKLY ZERO-INFLATION STATS\n"")"
+"1","WEEKLY ZERO-INFLATION STATS
+"
+"0","cat(sprintf(""Total Observations: %s\n"", comma(zero_stats_weekly$total_obs)))"
+"1","Total Observations: 125,563
+"
+"0","cat(sprintf(""Zero Filings: %s (%.1f%%)\n"", "
+"0","            comma(zero_stats_weekly$zero_count), "
+"0","            zero_stats_weekly$zero_pct))"
+"1","Zero Filings: 88,027 (70.1%)
+"
+"0","cat(sprintf(""Mean: %.2f\n"", zero_stats_weekly$mean_all))"
+"1","Mean: 0.53
+"
+"0","cat(sprintf(""Dispersion Ratio: %.2f\n"", zero_stats_weekly$dispersion_ratio))"
+"1","Dispersion Ratio: 5.62
+"

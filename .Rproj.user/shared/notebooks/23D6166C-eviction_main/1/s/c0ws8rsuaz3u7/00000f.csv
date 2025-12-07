@@ -1,0 +1,16 @@
+"0","# Load real estate tax balances aggregated by census tract."
+"0","df_tax_raw <- read.csv(""data/eviction/real_estate_tax_balances_census_tract.csv"")"
+"0",""
+"0","# Display tax data dimensions."
+"0","cat(""TAX DELINQUENCY DATA DIMENSIONS\n"")"
+"1","TAX DELINQUENCY DATA DIMENSIONS
+"
+"0","cat(sprintf(""Rows: %s\n"", comma(nrow(df_tax_raw))))"
+"1","Rows: 402
+"
+"0","cat(sprintf(""Columns: %d\n"", ncol(df_tax_raw)))"
+"1","Columns: 11
+"
+"0","cat(sprintf(""Variables: %s\n"", paste(names(df_tax_raw), collapse = "", "")))"
+"1","Variables: objectid, census_tract, num_props, min_period, max_period, principal, interest, penalty, other, balance, avg_balance
+"

@@ -3,9 +3,9 @@ title: "The Philadelphia Eviction Early Warning System"
 subtitle: "A Predictive Model for Proactive Resource Allocation"
 date: today
 author:
-  - name: Angel Rutherford
-  - name: Ixchel Ramirez
-  - name: Tess Vu
+  - name: "Angel Rutherford"
+  - name: "Ixchel Ramirez"
+  - name: "Tess Vu"
     email:
       - tessavu@proton.me
       - tessavu@upenn.edu
@@ -1694,7 +1694,7 @@ Because of overdispersion, Negative Binomial regression is preferred over Poisso
 
 ```{r model-1}
 library(glmmTMB)
-# Fit baseline Negative Binomial model with core time, policy, and monthly predictors. I used MASS::glm.nb() instead of glmmTMB because my model kept crashing this is good for big datasets, zero-heavy count distribution. I also changed the beginning of the rest of the code
+# Fit baseline Negative Binomial model with core time, policy, and monthly predictors. I used glmmTMB because my model kept crashing this is good for big datasets, zero-heavy count distribution. I also changed the beginning of the rest of the code
 model_nb_1 <- glmmTMB(
   filings_count ~ filings_ma3 + moratorium_active + factor(month_num),
   data = df_train,

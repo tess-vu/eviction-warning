@@ -1,0 +1,14 @@
+"0","# Identify sealed census tracts where GEOID is hidden for privacy protection."
+"0","# Reduces geographic specificity for modeling."
+"0","sealed_count <- df_monthly %>%"
+"0","  filter(GEOID == ""sealed"" | is.na(GEOID) | GEOID == """") %>%"
+"0","  nrow()"
+"0",""
+"0","sealed_pct <- sealed_count / nrow(df_monthly) * 100"
+"0",""
+"0","cat(""SEALED TRACT ASSESSMENT\n"")"
+"1","SEALED TRACT ASSESSMENT
+"
+"0","cat(sprintf(""Sealed or Missing Tract Observations: %s (%.1f%%)\n"", comma(sealed_count), sealed_pct))"
+"1","Sealed or Missing Tract Observations: 71 (0.2%)
+"

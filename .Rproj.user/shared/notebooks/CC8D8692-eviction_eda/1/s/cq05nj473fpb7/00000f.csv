@@ -1,0 +1,4 @@
+"0","# Print detailed racial disparity statistics."
+"0","racial_summary %>%"
+"0","  kable(digits = 1) %>%"
+"0","  kable_styling(bootstrap_options = c(""striped"", ""hover""))"
