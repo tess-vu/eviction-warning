@@ -1,0 +1,4 @@
+"0","# Display first rows to understand data structure."
+"0","head(df_monthly_raw, 10) %>%"
+"0","  kable(caption = ""Sample of Raw Monthly Eviction Filing Data"") %>%"
+"0","  kable_styling(bootstrap_options = c(""striped"", ""hover"", ""condensed""))"

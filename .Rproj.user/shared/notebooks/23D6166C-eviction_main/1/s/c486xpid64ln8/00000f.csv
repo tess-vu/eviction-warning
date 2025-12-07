@@ -1,0 +1,13 @@
+"0","# Load aggregated monthly claims data showing financial severity."
+"0","df_claims_raw <- read.csv(""data/eviction/philadelphia_claims_monthly.csv"")"
+"0",""
+"0","# Display claims data dimensions."
+"0","cat(""CLAIMS DATA DIMENSIONS\n"")"
+"1","CLAIMS DATA DIMENSIONS
+"
+"0","cat(sprintf(""Rows: %s\n"", comma(nrow(df_claims_raw))))"
+"1","Rows: 70
+"
+"0","cat(sprintf(""Columns: %d\n"", ncol(df_claims_raw)))"
+"1","Columns: 6
+"

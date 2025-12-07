@@ -1,0 +1,33 @@
+"0","#| fig-dpi: 300"
+"0","#| fig-height: 6"
+"0","#| fig-width: 12"
+"0",""
+"0","# Calculate zero-inflation statistics for weekly data."
+"0","zero_stats_weekly <- df_weekly %>%"
+"0","  summarize("
+"0","    Total_Obs = n(),"
+"0","    Zero_Count = sum(filings_count == 0),"
+"0","    Zero_Pct = Zero_Count / Total_Obs * 100,"
+"0","    Mean_All = mean(filings_count),"
+"0","    Variance = var(filings_count),"
+"0","    Dispersion_Ratio = Variance / Mean_All"
+"0","  )"
+"0",""
+"0","cat(""\nZero-Inflation Statistics (Weekly Data):\n"")"
+"1","
+Zero-Inflation Statistics (Weekly Data):
+"
+"0","cat(sprintf(""Total Observations: %s\n"", comma(zero_stats_weekly$Total_Obs)))"
+"1","Total Observations: 125,563
+"
+"0","cat(sprintf(""Zero Filings: %s (%.1f%%)\n"", "
+"0","            comma(zero_stats_weekly$Zero_Count), "
+"0","            zero_stats_weekly$Zero_Pct))"
+"1","Zero Filings: 88,027 (70.1%)
+"
+"0","cat(sprintf(""Mean: %.2f\n"", zero_stats_weekly$Mean_All))"
+"1","Mean: 0.53
+"
+"0","cat(sprintf(""Dispersion Ratio: %.2f\n"", zero_stats_weekly$Dispersion_Ratio))"
+"1","Dispersion Ratio: 5.62
+"

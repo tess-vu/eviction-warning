@@ -1,0 +1,17 @@
+"0","# Load Pennsylvania census tracts shapefile."
+"0","pa_tracts_sf <- st_read(""data/pa_tracts/pa_tracts.shp"", quiet = TRUE)"
+"0",""
+"0","# Filter to Philadelphia County only using FIPS code 42101."
+"0","philly_tracts_sf <- pa_tracts_sf %>%"
+"0","  filter(str_starts(GEOID, ""42101""))"
+"0",""
+"0","# Display spatial data summary."
+"0","cat(""PHILADELPHIA CENSUS TRACT GEOMETRY\n"")"
+"1","PHILADELPHIA CENSUS TRACT GEOMETRY
+"
+"0","cat(sprintf(""Total Philadelphia Tracts: %d\n"", nrow(philly_tracts_sf)))"
+"1","Total Philadelphia Tracts: 408
+"
+"0","cat(sprintf(""Coordinate Reference System: %s\n"", st_crs(philly_tracts_sf)$input))"
+"1","Coordinate Reference System: NAD83
+"
