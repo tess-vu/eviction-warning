@@ -1,0 +1,13 @@
+"0","# Load weekly eviction filings data for high-frequency analysis."
+"0","df_weekly_raw <- read.csv(""data/eviction/philadelphia_weekly_2020_2021.csv"")"
+"0",""
+"0","# Display weekly data dimensions."
+"0","cat(""WEEKLY EVICTION DATA DIMENSIONS\n"")"
+"1","WEEKLY EVICTION DATA DIMENSIONS
+"
+"0","cat(sprintf(""Rows: %s\n"", comma(nrow(df_weekly_raw))))"
+"1","Rows: 125,563
+"
+"0","cat(sprintf(""Columns: %d\n"", ncol(df_weekly_raw)))"
+"1","Columns: 9
+"

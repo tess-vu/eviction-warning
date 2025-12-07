@@ -1,0 +1,4 @@
+"0","# Display sample of weekly data."
+"0","head(df_weekly_raw, 10) %>%"
+"0","  kable(caption = ""Sample of Raw Weekly Eviction Filing Data"") %>%"
+"0","  kable_styling(bootstrap_options = c(""striped"", ""hover"", ""condensed""))"

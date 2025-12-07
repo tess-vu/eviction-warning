@@ -1,0 +1,16 @@
+"0","# Load monthly eviction filings data at census tract level."
+"0","df_monthly_raw <- read.csv(""data/eviction/philadelphia_monthly_2020_2021.csv"")"
+"0",""
+"0","# Display initial data dimensions."
+"0","cat(""MONTHLY EVICTION DATA DIMENSIONS\n"")"
+"1","MONTHLY EVICTION DATA DIMENSIONS
+"
+"0","cat(sprintf(""Rows: %s\n"", comma(nrow(df_monthly_raw))))"
+"1","Rows: 29,039
+"
+"0","cat(sprintf(""Columns: %d\n"", ncol(df_monthly_raw)))"
+"1","Columns: 8
+"
+"0","cat(sprintf(""Variables: %s\n"", paste(names(df_monthly_raw), collapse = "", "")))"
+"1","Variables: type, GEOID, racial_majority, month, filings_2020, filings_avg, filings_avg_prepandemic_baseline, last_updated
+"
