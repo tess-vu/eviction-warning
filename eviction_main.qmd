@@ -66,13 +66,20 @@ library(stringr)
 library(tidyr)
 library(tidyverse)
 library(dplyr)
+library(knitr)
 
 # Override masking.
 select <- dplyr::select
 filter <- dplyr::filter
 
+# API Key.
+Sys.getenv("CENSUS_API_KEY")
+
 # Disable scientific notation.
 options(scipen = 999)
+
+# Save figures.
+# opts_chunk$set(fig.path = "final_figures/")
 ```
 
 ```{r customization}
