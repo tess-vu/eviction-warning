@@ -155,17 +155,6 @@ Tess Vu
 </section>
 <section class="slide level2 center">
 
-<h3 id="contents">Contents</h3>
-<p><span style="font-size: 1.55em; line-height: 1.9;"></span></p>
-<p><strong>1.</strong> The Crisis and Policy Context<br>
-<strong>2.</strong> Data Pipeline and Methodology<br>
-<strong>3.</strong> Model Performance and Validation<br>
-<strong>4.</strong> Equity and Critical Analysis<br>
-<strong>5.</strong> Operational Recommendations</p>
-<p></p>
-</section>
-<section class="slide level2 center">
-
 <h3 id="research-question">Research Question</h3>
 <p><br></p>
 <blockquote>
@@ -181,8 +170,7 @@ Tess Vu
 <ul>
 <li><strong>Eviction Timeline:</strong> As short as <strong>10 days</strong> for non-payment, 15 days for a lease less than a year, and 30 days for a lease greater than a year.</li>
 </ul>
-
-<img data-src="eviction_figures/TotalEvictionFilingsCensusTract.png" class="quarto-figure quarto-figure-center r-stretch" style="width:150.0%"></section>
+</section>
 <section class="slide level2 center">
 
 <ul>
@@ -246,10 +234,10 @@ Tess Vu
 <section class="slide level2 center">
 
 <h3 id="methodology-spatio-temporal-modeling">Methodology: Spatio-Temporal Modeling</h3>
-<p>Negative Binomial Model that predicts filings (<span class="math inline">\(Y_t\)</span>) using:</p>
+<p>Negative Binomial Model that predicts filings using:</p>
 <ol type="1">
-<li><strong>Momentum:</strong> Lagged filings from <span class="math inline">\(t-1\)</span> (inertia).</li>
-<li><strong>Contagion:</strong> Average filings of <em>neighboring</em> tracts (spatial lag).</li>
+<li><strong>Momentum:</strong> Filings from month before.</li>
+<li><strong>Contagion:</strong> Average filings of <em>neighboring</em> tracts.</li>
 <li><strong>Structure:</strong> Neighborhoods, Poverty, Tax Delinquency, and Demographics.</li>
 <li><strong>Policy:</strong> Moratorium active/inactive status.</li>
 </ol>
@@ -294,7 +282,7 @@ Tess Vu
 <h3 id="risk-triage">Risk Triage</h3>
 
 <img data-src="final_figures/risk-by-race-1.png" class="quarto-figure quarto-figure-center r-stretch"><ul>
-<li>Tracts flagged as <strong>“Critical Risk”</strong> saw <strong>5x more actual evictions</strong> than those flagged as “Low Risk.”</li>
+<li>Tracts flagged as “Critical Risk” saw <strong>5x more actual evictions</strong> than those flagged as “Low Risk.”</li>
 <li>Model works as a <strong>Triage Tool</strong> for resource allocation.</li>
 </ul>
 </section>
@@ -302,47 +290,40 @@ Tess Vu
 
 <h3 id="structural-inequity">Structural Inequity</h3>
 
-<img data-src="final_figures/racial-disparity-plot-1.png" class="quarto-figure quarto-figure-center r-stretch"><p><strong>Finding:</strong> Black-majority tracts face a structurally higher baseline risk.</p>
+<img data-src="final_figures/racial-disparity-plot-1.png" class="quarto-figure quarto-figure-center r-stretch"><p>Black-majority tracts face higher risk.</p>
 </section>
 <section class="slide level2 center">
 
 <h3 id="model-accurately-predicts-disparity">Model Accurately Predicts Disparity</h3>
 <p>Model reproduces structural bias to identify communities most at risk.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/calibration-analysis-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/risk-by-race-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-</section>
+
+<img data-src="final_figures/calibration-analysis-1.png" class="quarto-figure quarto-figure-center r-stretch" data-fig-width="85%"></section>
 <section class="slide level2 center">
 
 
 <img data-src="final_figures/equity-plot-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="limitations" class="slide level2 center">
-<h2>Limitations</h2>
+<section class="slide level2 center">
+
+<h3 id="limitations">Limitations</h3>
 <ol type="1">
-<li><strong>Mass Events:</strong> Cannot predict a specific landlord’s decision to evict 600 people on a random day.</li>
-<li><strong>Data Lag:</strong> ACS data is static (2022); it misses real-time gentrification shifts.</li>
-<li><strong>Sealed Tracts:</strong> Privacy rules hide some of the most vulnerable hotspots from the spatial model.</li>
+<li><strong>Mass Events</strong></li>
+<li><strong>Stale Data</strong></li>
+<li><strong>Sealed Tracts</strong></li>
+<li><strong>Variability</strong></li>
 </ol>
 </section>
-<section id="recommendations-for-implementation" class="slide level2 center">
-<h2>Recommendations for Implementation</h2>
-<p><strong>The “Triage Dashboard” Strategy</strong></p>
+<section class="slide level2 center">
+
+<h3 id="recommendations-for-implementation">Recommendations for Implementation</h3>
+<p><strong>Triage Dashboard</strong></p>
 <ol type="1">
 <li><strong>Run Monthly:</strong> Input new filing data on the 1st of the month.</li>
-<li><strong>Generate List:</strong> Output the <strong>Top 50 “Critical Risk” Tracts</strong>.</li>
+<li><strong>Generate List:</strong> Output <strong>Top 50 “Critical Risk” Tracts</strong>.</li>
 <li><strong>Targeted Intervention:</strong>
 <ul>
-<li><strong>Canvassing:</strong> Deploy teams to these 50 tracts <em>before</em> court dates.</li>
-<li><strong>Legal Aid:</strong> Position pop-up clinics in these specific zip codes.</li>
+<li><strong>Canvassing / Legal Aid:</strong> Deploy teams, allocate resources.</li>
 </ul></li>
-<li><strong>Safeguard:</strong> Use this tool strictly for <strong>Resource Addition</strong>, never for automated decision-making or policing.</li>
+<li><strong>Safeguard:</strong> Tool strictly for adding resources, never for automated decision-making.</li>
 </ol>
 
 </section>
