@@ -163,6 +163,8 @@ head(df_claims_raw, 10) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
+This is not used in the dataset, but for exploration behind the scenes of evictions. It looks like 3% of claims are for below $1,000, which could reflect unpaid fees rather than market rate rent. However, it *could* reflect rent in subsidized public housing. 6% is for the median market rate rents. 14% is for rent unpaid for at least 6 months. These timelines could have varying reasons, especially due to the time-consuming legal aspect that could delay filings.
+
 ### Real Estate Tax Balances
 
 Tax delinquency is a proxy for landlord financial stress at the tract level. Properties with outstanding tax balances may pressure landlords to pursue evictions.
@@ -426,6 +428,8 @@ tax_summary %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
+Usually, delinquent properties are not considered delinquent if they have overdue payments, it is only for properties where penalties are assessed, and because it is just a marginal 8 properties that were overdue rather than delinquent they were removed.
+
 ### Sealed Tract Assessment
 
 ```{r sealed-tracts}
@@ -480,24 +484,11 @@ head(sealed_distribution, 10) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-```{r sealed-tracts-removal}
-# COMMENTED OUT TO INCLUDE MASS EVICTIONS.
-# # Remove sealed tracts.
-# df_monthly <- df_monthly %>%
-#   filter(GEOID != "sealed", !is.na(GEOID), GEOID != "")
-# 
-# cat(sprintf("Remaining Observations: %s\n", comma(nrow(df_monthly))))
-# cat(sprintf("Remaining Tracts: %d\n", n_distinct(df_monthly$GEOID)))
-# cat(sprintf("Remaining Months: %d\n", n_distinct(df_monthly$date)))
-```
-
-The sealed tracts are outliers and are legitimate evictions that reflect the current systematic issues, and could represent vulnerable communities experiencing a recent mass eviction (highest unsealed filings are from 2025). They aren't included because the privacy protection prevents geographically actionable policies and outreach, however, it has to be stressed that this is absolutely *not* ideal.
+The sealed tracts are outliers and are legitimate evictions that reflect the current systematic issues, and could represent vulnerable communities experiencing a recent mass eviction (highest unsealed filings are from 2025). They aren't included because the tracts cannot be mapped to in the data if they're sealed, this privacy protection prevents geographically actionable policies and outreach, however, it has to be stressed that this is absolutely *not* ideal.
 
 ## 4. EXPLORATORY DATA ANALYSIS
 
 ### Distribution Analysis: Zero-Inflation Assessment
-
-Understanding the distribution of eviction filings is critical for selecting the appropriate modeling approach. Count data with excess zeros requires specialized models.
 
 ```{r monthly-distribution}
 # Calculate zero-inflation stats for monthly data.
@@ -585,7 +576,7 @@ monthly_plot_raw + monthly_plot_log +
   )
 ```
 
-The dispersion ratio exceeds 1, indicating overdispersion that violates the Poisson assumption of equal mean and variance. This justifies the use of Negative Binomial regression over Poisson regression.
+The dispersion ratio exceeds 1, indicating overdispersion that violates the Poisson assumption of equal mean and variance. This justifies the use of Negative Binomial regression over Poisson regression. There are also 37% zero filings, so perhaps in the future a Zero Inflated Negative Binomial regression could potentially perform better even though Negative Binomial itself can handle zeros.
 
 ### Weekly Filing Distribution
 
@@ -667,7 +658,7 @@ plot_weekly_raw + plot_weekly_log +
   )
 ```
 
-Weekly distribution is severely zero-inflated, so it wouldn't be a methodologically sound choice to use Negative Binomial with the current toolkit. However, this is possible with the Zero-Inflated Negative Binomial model.
+Weekly distribution is severely zero-inflated at 70.1%, so it would not be a methodologically sound choice to use Negative Binomial with the current toolkit. While it would be more useful and actionable to provide more granular weekly predictions, this is more doable with the Zero-Inflated Negative Binomial regression in a future study.
 
 ### Tax Delinquency Distribution
 
@@ -739,6 +730,8 @@ quantile_stats_monthly %>%
   kable(digits = 1, caption = "Monthly Filing Count Quantiles (Positive Counts Only)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+Another indication that the quantiles are very inflated at 0 as median is 3, then 5 for 75th percentile, a jump to 10 at 95th percentile, another jump to 16 at the 99th percentile, and a whopping 694 jump to the max.
 
 ## 5. TEMPORAL ANALYSIS: SYSTEM-WIDE TRENDS
 
@@ -1201,7 +1194,7 @@ monthly_baseline_ratio %>%
 
 ### Creating Temporal Lag Variables
 
-Temporal lags capture the momentum or inertia in eviction filing patterns. A tract with high filings last month is statistically likely to have elevated filings this month.
+Temporal lags capture the momentum or inertia in eviction filing patterns. A tract with high filings last month is likely to have elevated filings this month.
 
 ```{r lagged-variables}
 # Create lagged features.
@@ -1395,7 +1388,7 @@ df_acs <- acs_data %>%
   transmute(
     GEOID = GEOID,
     
-    # Renter percentage (key eviction vulnerability indicator).
+    # Renter percentage.
     pct_renter = ifelse(B25003_001E > 0, B25003_003E / B25003_001E * 100, NA),
     
     # Median gross rent.
@@ -1414,7 +1407,7 @@ df_acs <- acs_data %>%
     # Unemployment rate.
     unemployment_rate = ifelse(B23025_001E > 0, B23025_005E / B23025_001E * 100, NA),
     
-    # Educational attainment (% with bachelor's or higher).
+    # Educational attainment (% with at least bachelor's).
     pct_college = ifelse(B15003_001E > 0, 
                          (B15003_022E + B15003_023E + B15003_025E) / B15003_001E * 100, NA),
     
@@ -1425,14 +1418,16 @@ df_acs <- acs_data %>%
     # Median age.
     median_age = B01002_001E,
     
-    # Single mother households (% of total households).
+    # Single mother households (% total households).
     pct_single_mother = ifelse(B11001_001E > 0, B11001_006E / B11001_001E * 100, NA),
     
-    # Severe rent burden (% of renters paying 35%+ of income on rent).
+    # Severe rent burden (% renters paying 35%+ income on rent).
     severe_rent_burden = ifelse(B25070_001E > 0, 
                                 (B25070_008E + B25070_009E + B25070_010E) / B25070_001E * 100, NA)
   )
 ```
+
+
 
 ```{r acs-summary-stats}
 # Calculate summary stats for ACS features.
@@ -1456,7 +1451,7 @@ acs_summary %>%
 ```
 
 ```{r acs-merge}
-# Merge ACS data into model preparation dataset.
+# Merge ACS data into model prep dataset.
 df_model_prep <- df_model_prep %>%
   left_join(df_acs, by = "GEOID")
 
@@ -1492,70 +1487,44 @@ cat(sprintf("Average number of neighbors per tract: %.1f\n",
 ```
 
 ```{r spatial-lag-filings}
+#| message: FALSE
+#| warning: FALSE
+
 # Calculate lagged spatial lag of filings for each month.
 # Use neighbors' filings from month t-1 (previous month).
 # Using same-month neighbor data would be data leakage since we wouldn't have that info at prediction time.
 
 # Create function to calculate spatial lag for a given month using previous month's data.
-calculate_lagged_spatial_lag <- function(data, sf_data, weights, target_date) {
-  
-  # Get previous month's date.
-  prev_month_date <- target_date %m-% months(1)
-  
-  # Filter data to previous month.
-  prev_month_data <- data %>%
-    filter(date == prev_month_date) %>%
-    select(GEOID, filings_count)
-  
-  # If no previous month data exists, return NA.
-  if (nrow(prev_month_data) == 0) {
-    result <- sf_data %>%
-      st_drop_geometry() %>%
-      select(GEOID) %>%
-      mutate(
-        date = target_date,
-        spatial_lag_filings = NA_real_
-      )
-    return(result)
-  }
-  
-  # Match order to spatial data.
-  sf_matched <- sf_data %>%
-    left_join(prev_month_data, by = "GEOID") %>%
-    mutate(filings_count = ifelse(is.na(filings_count), 0, filings_count))
-  
-  # Calculate spatial lag for weighted average of neighbors' previous month filings.
-  spatial_lag <- lag.listw(weights, sf_matched$filings_count, zero.policy = TRUE)
-  
-  # Return as dataframe with the target date, not lag date.
-  result <- sf_data %>%
-    st_drop_geometry() %>%
-    select(GEOID) %>%
-    mutate(
-      date = target_date,
-      spatial_lag_filings = spatial_lag
-    )
-  
-  return(result)
-}
-
-# Get unique dates in data.
-unique_dates <- sort(unique(df_model_prep$date))
-
-# Calculate lagged spatial lag for each month.
-spatial_lag_df <- map_dfr(unique_dates, function(d) {
-  calculate_lagged_spatial_lag(df_model_prep, philly_model_sf, weights_matrix, d)
-})
-
-# Merge spatial lag back to main data.
+# Shift each tract's filings by 1 month.
 df_model_prep <- df_model_prep %>%
-  left_join(spatial_lag_df, by = c("GEOID", "date"))
+  arrange(GEOID, date) %>%
+  group_by(GEOID) %>%
+  mutate(filings_count_lag1 = lag(filings_count, n = 1)) %>%
+  ungroup()
+
+# For each month, calculate spatial lag using the lagged filings.
+df_model_prep <- df_model_prep %>%
+  group_by(date) %>%
+  mutate(
+    # Match order to spatial data for this month.
+    spatial_lag_filings = {
+      sf_matched <- philly_model_sf %>%
+        left_join(
+          cur_data() %>% select(GEOID, filings_count_lag1), 
+          by = "GEOID"
+        ) %>%
+        mutate(filings_count_lag1 = ifelse(is.na(filings_count_lag1), 0, filings_count_lag1))
+      
+      # Calculate weighted average of neighbors' lagged filings.
+      lag.listw(weights_matrix, sf_matched$filings_count_lag1, zero.policy = TRUE)
+    }
+  ) %>%
+  ungroup()
 
 cat(sprintf("Observations with spatial lag: %s\n", 
             comma(sum(!is.na(df_model_prep$spatial_lag_filings)))))
-cat(sprintf("First month has NA spatial lag because of no prior month data: %s observations\n",
-            comma(sum(is.na(df_model_prep$spatial_lag_filings)))))
 ```
+First month has no spatial lag because of no prior month data!
 
 ```{r neighborhood-boundaries}
 # Load boundaries.
@@ -1741,7 +1710,7 @@ Because of overdispersion, Negative Binomial regression is preferred over Poisso
 
 ```{r model-1}
 # Fit baseline Negative Binomial model with core time, policy, and monthly predictors.
-model_nb_1 <- glm.nb(filings_count_capped ~ filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike + neighborhood,
+model_nb_1 <- glm.nb(filings_count_capped ~ filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike,
                      data = df_train)
 
 # Display 1st model summary.
@@ -1753,7 +1722,7 @@ summary(model_nb_1)
 
 ```{r model-2}
 model_nb_2 <- glm.nb(filings_count_capped ~
-                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike + neighborhood +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
                        # Added spatial lag and delinquent properties because they're more actionable.
                        spatial_lag_filings + delinquent_prop_count,
                      data = df_train)
@@ -2019,7 +1988,7 @@ test_metrics %>%
 
 ### Overfitting Diagnostic Check
 
-A critical concern in predictive modeling is overfitting, where the model learns noise in the training data rather than generalizable patterns. We assess this by comparing train vs test performance and examining temporal stability.
+A critical concern in predictive modeling is overfitting, where the model learns noise in the training data rather than generalizable patterns. We assess this by comparing train vs test performance.
 
 ```{r overfitting-check}
 # Compare train vs test performance
@@ -2045,7 +2014,7 @@ MAE/RMSE degradation < 20%: Good generalization.
 MAE/RMSE degradation 20-50%: Moderate overfitting.
 MAE/RMSE degradation > 50%: Severe overfitting.
 
-Worst MAE degradation across models is 14.7%, so good generalization, models not overfitting.
+Worst MAE degradation across models is 19.44%, so good generalization. Looks like the test MAE for the best model, which is the ACCS one, is off by 1.77 filings and accounts for 57% of variation. This is a good start and quite good considering we are essentially measuring a response variable that is very tied to human behavior.
 
 ### Select Best Model for Further Analysis
 
@@ -2257,27 +2226,21 @@ feature_importance <- tidy(model_nb_3) %>%
   mutate(
     abs_estimate = abs(estimate),
     direction = ifelse(estimate > 0, "Positive", "Negative"),
-    # Clean term names for display.
-    term_clean = str_replace(term, "factor\\(month_num\\)", "Month ") %>%
-      str_replace("factor\\(racial_majority\\)", "") %>%
-      str_replace("filings_", "Lag: ") %>%
-      str_replace("spatial_lag_filings", "Spatial Lag (Lagged)") %>%
-      str_replace("log_avg_balance", "Tax Delinquency (Log)") %>%
-      str_replace("pct_renter", "ACS: % Renter") %>%
-      str_replace("poverty_rate", "ACS: Poverty Rate") %>%
-      str_replace("severe_rent_burden", "ACS: Severe Rent Burden") %>%
-      str_replace("unemployment_rate", "ACS: Unemployment Rate") %>%
-      str_replace("log_median_income", "ACS: Median Income (Log)") %>%
-      str_replace("pct_single_mother", "ACS: % Single Mother HH"),
-    # Identify feature category.
     category = case_when(
-      str_detect(term_clean, "Lag") ~ "Temporal",
-      str_detect(term_clean, "Spatial") ~ "Spatial",
-      str_detect(term_clean, "ACS") ~ "Socioeconomic (ACS)",
-      str_detect(term_clean, "Tax") ~ "Tax Delinquency",
-      str_detect(term_clean, "Month") ~ "Seasonality",
-      str_detect(term_clean, "Moratorium") ~ "Policy",
-      TRUE ~ "Demographic"
+      str_detect(term, "filings_") ~ "Temporal",
+      str_detect(term, "spatial_lag_filings") ~ "Spatial",
+      str_detect(term, "log_avg_balance") ~ "Tax Delinquency",
+      str_detect(term, "pct_renter") |
+        str_detect(term, "poverty_rate") |
+        str_detect(term, "severe_rent_burden") |
+        str_detect(term, "unemployment_rate") |
+        str_detect(term, "log_median_income") |
+        str_detect(term, "pct_single_mother") ~ "Socioeconomic (ACS)",
+      str_detect(term, "factor\\(month_num\\)") ~ "Seasonality",
+      str_detect(term, "moratorium") ~ "Policy",
+      str_detect(term, "factor\\(racial_majority\\)") ~ "Demographic",
+      str_detect(term, "neighborhood") ~ "Neighborhood",
+      TRUE ~ "Other"
     )
   ) %>%
   arrange(desc(abs_estimate)) %>%
@@ -2285,7 +2248,7 @@ feature_importance <- tidy(model_nb_3) %>%
 
 # Create feature importance plot.
 importance_plot <- feature_importance %>%
-  ggplot(aes(x = reorder(term_clean, abs_estimate), y = estimate, fill = category)) +
+  ggplot(aes(x = reorder(term, abs_estimate), y = estimate, fill = category)) +
   geom_col(width = 0.7) +
   coord_flip() +
   scale_fill_brewer(palette = "Set2") +
@@ -2331,6 +2294,7 @@ acs_contribution %>%
 irr_table <- tidy(model_nb_3) %>%
   mutate(
     irr = exp(estimate),
+    # 1.96 is z-score for 95% confidence level.
     irr_lower = exp(estimate - 1.96 * std.error),
     irr_upper = exp(estimate + 1.96 * std.error),
     pct_change = (irr - 1) * 100
@@ -2344,6 +2308,14 @@ irr_table %>%
   kable(digits = 3, caption = "Incidence Rate Ratios (IRR) for Key Predictors") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+`filings_ma3`: For every one-unit increase in the 3-month moving average of past eviction filings, the expected number of current eviction filings increases by a factor of 1.114 or 11.4%. So a history of higher recent filings strongly predicts higher current filings.
+
+`moratorium_active`: When an eviction moratorium is active the expected number of eviction filings is multiplied by 0.483 or is 51.7% lower compared to when the moratorium is not active.
+
+`is_extreme_spike`: If a time period is classified as having an extreme spike in filings, the expected number of eviction filings is nearly six times higher multiplied by 5.808, or increases by a staggering 481%, compared to a period without a spike.
+
+`neighborhoodAcademy Gardens`: Compared to the baseline East Falls neighborhood, Academy Gardens is expected to have 59.8% more eviction filings.
 
 ```{r operational-recommendation}
 # Create actionable output for city agencies with intervention thresholds.
@@ -2418,6 +2390,8 @@ equity_plot <- equity_metrics %>%
 # Display equity plot.
 equity_plot
 ```
+
+Model does not perform as well for tracts with higher Black populations when it comes to predicting eviction filings as opposed to other tracts, with white tracts having the least MAE. Future modifications need to be made to account for Black communities who account for the majority of Philadelphia's population.
 
 ## 2. Prediction Calibration by Race
 
