@@ -39,3 +39,51 @@ The model demonstrates strong performance with meaningful improvement, and sets 
 [Tract Boundaries](https://opendataphilly.org/datasets/census-tracts/)
 
 ACS 2023 Data via `tidycensus` API
+
+# Methodology
+
+### Volatility & Overdispersion
+
+Eviction data is **zero-inflated** (37% of tracts have 0 filings) and **overdispersed** (Variance > Mean). Standard OLS or Poisson models fail to capture the unpredictable, volatile nature of eviction spikes.
+
+### Negative Binomial Regression
+
+We trained a series of **Negative Binomial Models**, progressively adding complexity:
+
+* **Model 1 (Baseline):** Time + Seasonality.
+* **Model 2 (+ Actionable):** Adds Tax Delinquency + Spatial Lag.
+* **Model 3 (+ Structural):** Adds ACS Demographics.
+* **Model 4 (+ Interaction):** Tests Racial Disparities in Policy Impact.
+
+### Capping & Flagging
+
+To handle extreme "mass displacement events" (e.g., 694 filings in a single tract), we developed a robust capping strategy where the target variable capped at the 99th percentile (20 filings) to stabilize coefficients, created an `is_extreme_spike` flag to explicitly model crisis propensity, and evaluated on raw, uncapped data to prove real-world usefulness.
+
+## Key Findings & Performance
+
+Our final model (**Model 3 + ACS**) achieved the best balance of accuracy and stability.
+
+### Predictive Accuracy
+
+* **Test MAE:** **1.48** (The model is accurate to within < 2 filings per tract).
+
+* **Stability:** The model performed *better* on the 2024-2025 Test Set than the Training Set, proving it is not overfit and can generalize well to unseen, real-world data.
+
+### Equity Analysis
+
+* **Disparate Impact:** Black-majority tracts face a structurally higher baseline risk that standard economic variables cannot fully explain.
+
+* **Model Fairness:** The model's error rate (MAE) is slightly higher in Black tracts, indicating higher unmeasured volatility in these neighborhoods that are historically and currently most vulnerable.
+
+## Operational Recommendations
+
+This model's future would be best used as a monthly **Triage Dashboard**:
+
+1.  **Input:** Load previous month's filing data on 1st of month.
+2.  **Output:** Generate list of the **Top 50 "Critical Risk" Tracts**.
+3.  **Potential Action:**
+    * **Deploy Canvassers:** Aid 50 tracts *before* any major court dates in the system.
+    * **Direct Mail:** Send "Know Your Rights" flyers to all rental units within zip codes.
+    * **Legal Aid Pop-Ups:** Establish temporary clinics in these specific zones.
+
+**Ethical Safeguard:** This tool must be used strictly for providing resources, never for automated decision-making or punitive enforcement.
