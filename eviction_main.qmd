@@ -2604,7 +2604,17 @@ sessionInfo()
 
 # DATA DOWNLOADS
 
+[Eviction Lab Main Data](https://evictionlab.org/eviction-tracking/get-the-data/)
 
+[Eviction Lab Claims Data](https://evictionlab.org/eviction-tracking/philadelphia-pa/)
+
+[Real Estate Tax Balances](https://opendataphilly.org/datasets/real-estate-tax-balances/)
+
+[Neighborhood Boundaries](https://opendataphilly.org/datasets/philadelphia-neighborhoods/)
+
+[Tract Boundaries](https://opendataphilly.org/datasets/census-tracts/)
+
+ACS 2023 Data via `tidycensus` API
 
 # AI USAGE
 
