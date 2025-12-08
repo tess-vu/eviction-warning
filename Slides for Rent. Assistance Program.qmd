@@ -6,26 +6,27 @@ author:
   - name: Angel Rutherford
   - name: Ixchel Ramirez
   - name: Tess Vu
-
 format: 
   revealjs:
     theme: simple
     slide-number: true
-    smaller: true
-
----
-
+    transition: fade
+    background-transition: fade
+    highlight-style: github
+    controls: true
+    progress: true
+    center: true
 ---
 
 ### Contents
 
 <span style="font-size: 1.55em; line-height: 1.9;">
 
-**1.** The Problem  
-**2.** Methods  
-**3.** Results & Model Performance  
-**4.** Limitations  
-**5.** Recommendations
+**1.** The Crisis and Policy Context  
+**2.** Data Pipeline and Methodology  
+**3.** Model Performance and Validation  
+**4.** Equity and Critical Analysis  
+**5.** Operational Recommendations
 
 </span>
 
@@ -35,125 +36,171 @@ format:
 
 <br>
 
-Where should renter's assistance programs be targeted in Philadelphia?
+> **"Where should renter's assistance programs be targeted in Philadelphia?"**
 
-<br><br>
+<br>
+
+**The Goal:** Move from *reactive* crisis management to *proactive* triage.
 
 ---
 
 ### Philadelphia Context
 
-331,415 Philadelphia households are renters. The eviction notice timeline ranges are: 10 (no rent payments), 15 days for a lease less than a year and 30 days for a lease greater than a year. 
+331,415 Philadelphia households are renters, who face a volatile landscape.
 
+* **Eviction Timeline:** As short as **10 days** for non-payment, 15 days for a lease less than a year, and 30 days for a lease greater than a year.
 
 ![](eviction_figures/TotalEvictionFilingsCensusTract.png){width="150%" fig-align="center"}
 
+---
+
+* **Policy Gap:** The Emergency Rental Assistance Program (ERAP) just ended in **September 30, 2025**, removing a critical safety net.
+
+![](final_figures/claims-trend-1.png){fig-align="center"}
 
 ---
 
-### Philadelphia Context: Policy Updates
+### Monthly Eviction Trends and Volatility Issues
 
-The Emergency Rental Assistance Program (ERAP) ended (Sept 2025).
+* **Trend:** Filings are rebounding to pre-pandemic levels but are affecting neighborhoods unevenly.
 
-![](eviction_figures/claims-severity-plot-1.png){fig-align="center"}
-
----
-
-### Monthly Eviction Trends
-
-![](eviction_figures/monthly-system-trend-plot-1.png){fig-align="center"}
+![](final_figures/monthly-system-trend-plot-1.png){fig-align="center"}
 
 ---
 
-### Data Sources:
+### Data Sources
 
-- Census ACS (American Community Survey, 2022)  
-
-- OpenDataPhilly  
-  - Claims 
-  
-  - Real Estate Tax Balances
-   
-  - Crime Incidents: Citywide crime incident reports
-  
----
-
-### Cleaning Data
-
-- **Tax Delinquincy Data**: Removed 8 Overdue Properties
-
-- **Monthly Census Data**: Sealed data introduces outlies of mass evictions
-
+1.  **Eviction Lab:** Monthly Filing Counts
+2.  **OpenDataPhilly:**
+    * **Tax Delinquency:** Proxy for landlord financial distress.
+3.  **Census ACS (2023):** Poverty Rate, Rent Burden, Single-Parent Households.
 
 ---
 
-### Exploratory Data Analysis
+### Data Cleaning
 
-<br>
-![](eviction_figures/comparison_table.png){width="800" fig-align="center"}
-<br><br>
-
-**Excess amount of zeros**
-
----
-
-### Methods: Monthly Eviction Filings
-
-![](eviction_figures/combined_monthly_plot.png){fig-align="center"}
-
-The overdispersion violates the Poisson assumption of equal mean and variance which justifies using Negative Binomial regression over Poisson regression.
-
+* **Sealed Tracts (Privacy):** We identified "Sealed Tracts" containing mass eviction events (up to **694 filings/month**).
+    * We excluded these from spatial lags to prevent distortion.
+* **Tax Data:** Cleaned to focus on *true* delinquency with active penalties rather than minor overdue bills.
+* **Outlier Management:** We capped training data at the 99.75th percentile (20 filings) to stabilize the model, but tested on raw data to prove real-world robustness.
 
 ---
 
-### Methods: Weekly Eviction Filings
+### Exploratory Analysis
 
+Eviction data is zero-inflated and overdispersed.
 
+::: {.columns}
+::: {.column width="70%"}
 
-![](eviction_figures/combined_weekly_plot.png){fig-align="center"}
+![](final_figures/monthly-distribution-viz-1.png){fig-align="center"}
 
-The weekly distribution is severely zero-inflated, which the Negative Binomial Regression model cannot handle.
+* **Conclusion:** OLS and Poisson models are invalid, use **Negative Binomial Regression**.
+
+:::
+::: {.column width="30%"}
+
+* **Zeros:** 37% of tract-months have zero filings.
+
+* **Dispersion:** Variance > Mean.
+
+:::
+:::
 
 ---
 
-### Analysis of Additional Data Sources
+### Methodology: Spatio-Temporal Modeling
 
-![](eviction_figures/racial-disparity-plot-1){fig-align="center"}
+Negative Binomial Model that predicts filings ($Y_t$) using:
+
+1.  **Momentum:** Lagged filings from $t-1$ (inertia).
+2.  **Contagion:** Average filings of *neighboring* tracts (spatial lag).
+3.  **Structure:** Neighborhoods, Poverty, Tax Delinquency, and Demographics.
+4.  **Policy:** Moratorium active/inactive status.
 
 ---
 
-### Best Predictors
+### Key Drivers
+
+::: {.columns}
+::: {.column width="50%"}
 
 ![](final_figures/feature-importance-1.png){fig-align="center"}
+
+:::
+::: {.column width="50%"}
+
+![](final_figures/non-neighborhood-importance-1.png){fig-align="center"}
+
+:::
+:::
 
 ---
 
 ### Model Performance
 
+::: {.columns}
+::: {.column width="70%"}
+
 ![](final_figures/predicted-vs-observed-1.png){fig-align="center"}
+
+:::
+::: {.column width="30%"}
+
+* **Accuracy:** Within **< 2 filings** per tract.
+* **Stability:** RMSE change is **-5**, so it's *better* on unseen data.
+
+:::
+:::
 
 ---
 
-### Evaluation of Model
+### Risk Triage
+
+![](final_figures/risk-by-race-1.png){fig-align="center"}
+
+* Tracts flagged as **"Critical Risk"** saw **5x more actual evictions** than those flagged as "Low Risk."
+* Model works as a **Triage Tool** for resource allocation.
+
+---
+
+### Structural Inequity
+
+![](final_figures/racial-disparity-plot-1.png){fig-align="center"}
+
+**Finding:** Black-majority tracts face a structurally higher baseline risk.
+
+---
+
+### Model Accurately Predicts Disparity
+
+Model reproduces structural bias to identify communities most at risk.
 
 ![](final_figures/calibration-analysis-1.png){fig-align="center"}
 
----
-
-### Limitations
-
-- Limited toolkit: Cannot use Zero-Inflated Negative Binomial model
-- Accounting for mass evictions
-- racial inequity 
+![](final_figures/risk-by-race-1.png){fig-align="center"}
 
 ---
 
-### Limitations: Less accuracy in majority black tracts
-
-![](final_figures/equity-plot-mae-1.png){fig-align="center"}
+![](final_figures/equity-plot-1.png){fig-align="center"}
 
 ---
 
-### Recommendations for Implementation
+## Limitations
 
+1.  **Mass Events:** Cannot predict a specific landlord's decision to evict 600 people on a random day.
+2.  **Data Lag:** ACS data is static (2022); it misses real-time gentrification shifts.
+3.  **Sealed Tracts:** Privacy rules hide some of the most vulnerable hotspots from the spatial model.
 
+---
+
+## Recommendations for Implementation
+
+**The "Triage Dashboard" Strategy**
+
+1.  **Run Monthly:** Input new filing data on the 1st of the month.
+2.  **Generate List:** Output the **Top 50 "Critical Risk" Tracts**.
+3.  **Targeted Intervention:**
+    * **Canvassing:** Deploy teams to these 50 tracts *before* court dates.
+    * **Legal Aid:** Position pop-up clinics in these specific zip codes.
+4.  **Safeguard:** Use this tool strictly for **Resource Addition**, never for automated decision-making or policing.
