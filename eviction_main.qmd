@@ -80,7 +80,7 @@ filter <- dplyr::filter
 options(scipen = 999)
 
 # Save figures.
-opts_chunk$set(fig.path = "final_figures/")
+opts_chunk$set(fig.path = "final_figures/", dpi = 300)
 ```
 
 ```{r customization}
@@ -914,7 +914,7 @@ monthly_data %>%
 
 ```{r claims-trend}
 #| fig-dpi: 300
-#| fig-height: 6
+#| fig-height: 7
 #| fig-width: 14
 
 # Create median claim amount trend showing financial severity evolution.
@@ -2248,7 +2248,7 @@ high_risk_profile %>%
 #| fig-height: 10
 #| fig-width: 10
 
-# Extract standardized coefficients for interpretation.
+# Get standardized coefficients for interpretation.
 feature_importance <- tidy(model_nb_3) %>%
   filter(term != "(Intercept)") %>%
   mutate(
@@ -2272,7 +2272,7 @@ feature_importance <- tidy(model_nb_3) %>%
     )
   ) %>%
   arrange(desc(abs_estimate)) %>%
-  head(20)
+  head(10)
 
 # Create feature importance plot.
 importance_plot <- feature_importance %>%
@@ -2281,7 +2281,7 @@ importance_plot <- feature_importance %>%
   coord_flip() +
   scale_fill_brewer(palette = "Set2") +
   labs(
-    title = "Top 20 Most Important Predictors",
+    title = "Top 10 Most Important Predictors",
     subtitle = "Coefficient magnitude indicates effect size on log(expected filings).",
     x = "Predictor Variable",
     y = "Coefficient Estimate",
@@ -2296,6 +2296,62 @@ importance_plot <- feature_importance %>%
 
 # Display importance plot.
 importance_plot
+```
+
+```{r non-neighborhood-importance}
+#| fig-dpi: 300
+#| fig-height: 10
+#| fig-width: 10
+
+# Get standardized coefficients for interpretation.
+all_coefficients <- tidy(model_nb_3) %>%
+  # Remove intercept term.
+  filter(term != "(Intercept)") %>%
+  # Filter out terms with "neighborhood".
+  filter(!str_detect(term, "neighborhood")) %>%
+  mutate(
+    abs_estimate = abs(estimate),
+    direction = ifelse(estimate > 0, "Positive", "Negative"),
+    category = case_when(
+      str_detect(term, "filings_") ~ "Temporal",
+      str_detect(term, "spatial_lag_filings") ~ "Spatial",
+      str_detect(term, "log_avg_balance") ~ "Tax Delinquency",
+      str_detect(term, "pct_renter") |
+        str_detect(term, "poverty_rate") |
+        str_detect(term, "severe_rent_burden") |
+        str_detect(term, "unemployment_rate") |
+        str_detect(term, "log_median_income") |
+        str_detect(term, "pct_single_mother") ~ "Socioeconomic (ACS)",
+      str_detect(term, "factor\\(month_num\\)") ~ "Seasonality",
+      str_detect(term, "moratorium") ~ "Policy",
+      str_detect(term, "factor\\(racial_majority\\)") ~ "Demographic",
+      TRUE ~ "Other"
+    )
+  ) %>%
+  arrange(desc(abs_estimate)) %>%
+  head(10)
+
+# Create feature importance plot.
+other_importance_plot <- all_coefficients %>%
+  ggplot(aes(x = reorder(term, abs_estimate), y = estimate, fill = category)) +
+  geom_col(width = 0.7) +
+  coord_flip() +
+  scale_fill_brewer(palette = "Set2") +
+  labs(
+    title = "All Non-Neighborhood Predictors",
+    subtitle = "Coefficient magnitude indicates effect size on log(expected filings).",
+    x = "Predictor Variable",
+    y = "Coefficient Estimate",
+    fill = "Category"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    legend.position = "bottom"
+  )
+
+# Display importance plot.
+other_importance_plot
 ```
 
 ```{r acs-feature-contribution}
@@ -2492,7 +2548,7 @@ risk_race_plot <- risk_by_race %>%
   scale_y_continuous(labels = percent_format(scale = 1)) +
   labs(
     title = "Risk Distribution by Tract Racial Majority",
-    subtitle = "Black-majority tracts disproportionately classified as high risk.",
+    subtitle = "Black-majority tracts classified as high risk.",
     x = "Tract Racial Majority",
     y = "Percentage of Tract-Months",
     fill = "Risk\nCategory",

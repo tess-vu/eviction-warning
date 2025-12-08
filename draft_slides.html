@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="Slides for Rent. Assistance Program_files/libs/clipboard/clipboard.min.js"></script>
-<script src="Slides for Rent. Assistance Program_files/libs/quarto-html/tabby.min.js"></script>
-<script src="Slides for Rent. Assistance Program_files/libs/quarto-html/popper.min.js"></script>
-<script src="Slides for Rent. Assistance Program_files/libs/quarto-html/tippy.umd.min.js"></script>
-<link href="Slides for Rent. Assistance Program_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="Slides for Rent. Assistance Program_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="Slides for Rent. Assistance Program_files/libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="draft_slides_files/libs/clipboard/clipboard.min.js"></script>
+<script src="draft_slides_files/libs/quarto-html/tabby.min.js"></script>
+<script src="draft_slides_files/libs/quarto-html/popper.min.js"></script>
+<script src="draft_slides_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="draft_slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="draft_slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="draft_slides_files/libs/quarto-html/quarto-syntax-highlighting-a6e161b2431e1f94a14e0f5d32135a3c.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.24">
 
   <meta name="author" content="Angel Rutherford">
   <meta name="author" content="Ixchel Ramirez">
   <meta name="author" content="Tess Vu">
-  <meta name="dcterms.date" content="2025-12-08">
+  <meta name="dcterms.date" content="2025-12-07">
   <title>The Philadelphia Eviction Early Warning System</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="Slides for Rent. Assistance Program_files/libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="Slides for Rent. Assistance Program_files/libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="draft_slides_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="draft_slides_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -32,11 +32,11 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="Slides for Rent. Assistance Program_files/libs/revealjs/dist/theme/quarto-0fde88a82f0356838740f155f1088782.css">
-  <link href="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="draft_slides_files/libs/revealjs/dist/theme/quarto-832775eafbd512325564c8c290c39367.css">
+  <link href="draft_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="draft_slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="draft_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="draft_slides_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -131,7 +131,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">The Philadelphia Eviction Early Warning System</h1>
-  <p class="subtitle">A Predictive Model for Proactive Resource Allocation</p>
+  <p class="subtitle">Moving from Reactive Crisis Management to Proactive Prevention</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -151,199 +151,112 @@ Tess Vu
 </div>
 </div>
 
-  <p class="date">2025-12-08</p>
+  <p class="date">2025-12-07</p>
 </section>
-<section class="slide level2 center">
-
-<h3 id="contents">Contents</h3>
-<p><span style="font-size: 1.55em; line-height: 1.9;"></span></p>
-<p><strong>1.</strong> The Crisis and Policy Context<br>
-<strong>2.</strong> Data Pipeline and Methodology<br>
-<strong>3.</strong> Model Performance and Validation<br>
-<strong>4.</strong> Equity and Critical Analysis<br>
-<strong>5.</strong> Operational Recommendations</p>
-<p></p>
-</section>
-<section class="slide level2 center">
-
-<h3 id="research-question">Research Question</h3>
-<p><br></p>
-<blockquote>
-<p><strong>“Where should renter’s assistance programs be targeted in Philadelphia?”</strong></p>
-</blockquote>
-<p><br></p>
-<p><strong>The Goal:</strong> Move from <em>reactive</em> crisis management to <em>proactive</em> triage.</p>
-</section>
-<section class="slide level2 center">
-
-<h3 id="philadelphia-context">Philadelphia Context</h3>
-<p>331,415 Philadelphia households are renters, who face a volatile landscape.</p>
-<ul>
-<li><strong>Eviction Timeline:</strong> As short as <strong>10 days</strong> for non-payment, 15 days for a lease less than a year, and 30 days for a lease greater than a year.</li>
-</ul>
-
-<img data-src="eviction_figures/TotalEvictionFilingsCensusTract.png" class="quarto-figure quarto-figure-center r-stretch" style="width:150.0%"></section>
-<section class="slide level2 center">
-
-<ul>
-<li><strong>Policy Gap:</strong> The Emergency Rental Assistance Program (ERAP) just ended in <strong>September 30, 2025</strong>, removing a critical safety net.</li>
-</ul>
-
-<img data-src="final_figures/claims-trend-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section class="slide level2 center">
-
-<h3 id="monthly-eviction-trends-and-volatility-issues">Monthly Eviction Trends and Volatility Issues</h3>
-<ul>
-<li><strong>Trend:</strong> Filings are rebounding to pre-pandemic levels but are affecting neighborhoods unevenly.</li>
-</ul>
-
-<img data-src="final_figures/monthly-system-trend-plot-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section class="slide level2 center">
-
-<h3 id="data-sources">Data Sources</h3>
-<ol type="1">
-<li><strong>Eviction Lab:</strong> Monthly Filing Counts</li>
-<li><strong>OpenDataPhilly:</strong>
-<ul>
-<li><strong>Tax Delinquency:</strong> Proxy for landlord financial distress.</li>
-</ul></li>
-<li><strong>Census ACS (2023):</strong> Poverty Rate, Rent Burden, Single-Parent Households.</li>
-</ol>
-</section>
-<section class="slide level2 center">
-
-<h3 id="data-cleaning">Data Cleaning</h3>
-<ul>
-<li><strong>Sealed Tracts (Privacy):</strong> We identified “Sealed Tracts” containing mass eviction events (up to <strong>694 filings/month</strong>).
-<ul>
-<li>We excluded these from spatial lags to prevent distortion.</li>
-</ul></li>
-<li><strong>Tax Data:</strong> Cleaned to focus on <em>true</em> delinquency with active penalties rather than minor overdue bills.</li>
-<li><strong>Outlier Management:</strong> We capped training data at the 99.75th percentile (20 filings) to stabilize the model, but tested on raw data to prove real-world robustness.</li>
-</ul>
-</section>
-<section class="slide level2 center">
-
-<h3 id="exploratory-analysis">Exploratory Analysis</h3>
-<p>Eviction data is zero-inflated and overdispersed.</p>
+<section id="the-crisis-eviction-moves-faster-than-policy" class="slide level2 center" data-background-color="#2C3E50">
+<h2>The Crisis: Eviction Moves Faster Than Policy</h2>
 <div class="columns">
-<div class="column" style="width:70%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/monthly-distribution-viz-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-<ul>
-<li><strong>Conclusion:</strong> OLS and Poisson models are invalid, use <strong>Negative Binomial Regression</strong>.</li>
-</ul>
-</div><div class="column" style="width:30%;">
-<ul>
-<li><p><strong>Zeros:</strong> 37% of tract-months have zero filings.</p></li>
-<li><p><strong>Dispersion:</strong> Variance &gt; Mean.</p></li>
-</ul>
+<div class="column" style="width:60%;">
+<p><img data-src="eviction_figures/TotalEvictionFilingsCensusTract.png"></p>
+</div><div class="column" style="width:40%;">
+<h3 id="the-status-quo">The Status Quo</h3>
+<p>City responses are <strong>reactive</strong>. Resources deploy <em>after</em> filings surge.</p>
+<h3 id="the-stake">The Stake</h3>
+<p><strong>331,415</strong> renter households. Eviction is a cause and consequence of poverty that destabilizes entire blocks.</p>
+<h3 id="the-goal">The Goal</h3>
+<p>Build a tool that gives the Office of Homeless Services a <strong>one-month head start</strong>.</p>
 </div></div>
 </section>
-<section class="slide level2 center">
+<section id="the-context-a-volatile-landscape" class="slide level2 center">
+<h2>The Context: A Volatile Landscape</h2>
 
-<h3 id="methodology-spatio-temporal-modeling">Methodology: Spatio-Temporal Modeling</h3>
-<p>Negative Binomial Model that predicts filings (<span class="math inline">\(Y_t\)</span>) using:</p>
-<ol type="1">
-<li><strong>Momentum:</strong> Lagged filings from <span class="math inline">\(t-1\)</span> (inertia).</li>
-<li><strong>Contagion:</strong> Average filings of <em>neighboring</em> tracts (spatial lag).</li>
-<li><strong>Structure:</strong> Neighborhoods, Poverty, Tax Delinquency, and Demographics.</li>
-<li><strong>Policy:</strong> Moratorium active/inactive status.</li>
-</ol>
+<img data-src="eviction_figures/monthly-system-trend-plot-1.png" class="r-stretch"><ul>
+<li><strong>The Shock:</strong> COVID-19 Moratorium (2020-2021) suppressed filings by <strong>~50%</strong>.</li>
+<li><strong>The Rebound:</strong> Filings are rising again, but the recovery is <strong>“K-shaped”</strong> and unequal.</li>
+<li><strong>The Challenge:</strong> Volatility makes simple trend forecasting impossible. We need a structural model.</li>
+</ul>
 </section>
-<section class="slide level2 center">
-
-<h3 id="key-drivers">Key Drivers</h3>
+<section id="the-solution-a-spatio-temporal-risk-engine" class="slide level2 center">
+<h2>The Solution: A Spatio-Temporal Risk Engine</h2>
+<div class="panel-tabset">
+<ul id="tabset-1" class="panel-tabset-tabby"><li><a data-tabby-default="" href="#tabset-1-1">Input Data</a></li><li><a href="#tabset-1-2">Methodology</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1">
+<p>We integrated <strong>dynamic</strong> and <strong>structural</strong> data sources:</p>
+<ol type="1">
+<li><strong>Momentum:</strong> Past filing history (Lagged).</li>
+<li><strong>Contagion:</strong> Neighboring tract filings (Spatial Lag).</li>
+<li><strong>Distress:</strong> Tax Delinquency &amp; Median Claim Amount.</li>
+<li><strong>Structure:</strong> Poverty Rate, Rent Burden, Single-Parent Households.</li>
+</ol>
+</div>
+<div id="tabset-1-2">
+<p><strong>Negative Binomial Regression (Count Model)</strong></p>
+<ul>
+<li><strong>Why?</strong> Eviction data is “Overdispersed” (Variance <span class="math inline">\(\gg\)</span> Mean).</li>
+<li><strong>Strategy:</strong> We trained on the chaotic 2020–2023 period but validated on the “New Normal” of 2024–2025 to prove robustness.</li>
+<li><strong>Innovation:</strong> We capped extreme outliers in training to stabilize the model, while testing against real-world mass displacement events.</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="does-it-work-model-performance" class="slide level2 center">
+<h2>Does It Work? Model Performance</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/feature-importance-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
+<h3 id="accuracy">Accuracy</h3>
+<ul>
+<li><strong>MAE:</strong> <strong>1.85</strong> filings/month.</li>
+<li><strong>Result:</strong> Our model is accurate to within <strong>&lt; 2 filings</strong> per tract.</li>
+</ul>
+<h3 id="validating-risk">Validating Risk</h3>
+<p>We don’t just count; we <strong>triage</strong>. Tracts flagged as <strong>“Critical Risk”</strong> saw <strong>5x more evictions</strong> than those flagged as “Low Risk.”</p>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/non-neighborhood-importance-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
+<p><img data-src="final_figures/risk-quintile-plot-1.png"></p>
 </div></div>
 </section>
-<section class="slide level2 center">
+<section id="key-drivers-of-eviction-risk" class="slide level2 center">
+<h2>Key Drivers of Eviction Risk</h2>
 
-<h3 id="model-performance">Model Performance</h3>
+<img data-src="final_figures/feature-importance-1.png" class="r-stretch"><ul>
+<li><strong>Momentum (Inertia):</strong> The strongest predictor. Eviction is “sticky.”</li>
+<li><strong>Policy Impact:</strong> The Moratorium reduced filings by <strong>45%</strong>.</li>
+<li><strong>Structural Vulnerability:</strong> Single-mother households and tax delinquency are significant risk multipliers.</li>
+</ul>
+</section>
+<section id="critical-analysis-equity-ethics" class="slide level2 center" data-background-color="#E74C3C">
+<h2>Critical Analysis: Equity &amp; Ethics</h2>
 <div class="columns">
-<div class="column" style="width:70%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/predicted-vs-observed-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-</div><div class="column" style="width:30%;">
-<ul>
-<li><strong>Accuracy:</strong> Within <strong>&lt; 2 filings</strong> per tract.</li>
-<li><strong>Stability:</strong> RMSE change is <strong>-5</strong>, so it’s <em>better</em> on unseen data.</li>
-</ul>
+<div class="column" style="width:50%;">
+<p><img data-src="final_figures/equity-plot-mae-1.png"></p>
+</div><div class="column" style="width:50%;">
+<h3 id="the-finding">The Finding</h3>
+<p><strong>Disparate Impact.</strong> Black-majority tracts face a structurally higher baseline risk that standard economic variables cannot fully explain.</p>
+<h3 id="the-safeguard">The Safeguard</h3>
+<p>This tool must be used for <strong>Resource Addition</strong> (targeting aid), never for <strong>Resource Withdrawal</strong> (redlining).</p>
 </div></div>
 </section>
-<section class="slide level2 center">
-
-<h3 id="risk-triage">Risk Triage</h3>
-
-<img data-src="final_figures/risk-by-race-1.png" class="quarto-figure quarto-figure-center r-stretch"><ul>
-<li>Tracts flagged as <strong>“Critical Risk”</strong> saw <strong>5x more actual evictions</strong> than those flagged as “Low Risk.”</li>
-<li>Model works as a <strong>Triage Tool</strong> for resource allocation.</li>
-</ul>
-</section>
-<section class="slide level2 center">
-
-<h3 id="structural-inequity">Structural Inequity</h3>
-
-<img data-src="final_figures/racial-disparity-plot-1.png" class="quarto-figure quarto-figure-center r-stretch"><p><strong>Finding:</strong> Black-majority tracts face a structurally higher baseline risk.</p>
-</section>
-<section class="slide level2 center">
-
-<h3 id="model-accurately-predicts-disparity">Model Accurately Predicts Disparity</h3>
-<p>Model reproduces structural bias to identify communities most at risk.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/calibration-analysis-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="final_figures/risk-by-race-1.png" class="quarto-figure quarto-figure-center"></p>
-</figure>
-</div>
-</section>
-<section class="slide level2 center">
-
-
-<img data-src="final_figures/equity-plot-1.png" class="quarto-figure quarto-figure-center r-stretch"></section>
-<section id="limitations" class="slide level2 center">
-<h2>Limitations</h2>
+<section id="implementation-the-triage-dashboard" class="slide level2 center">
+<h2>Implementation: The “Triage Dashboard”</h2>
+<h3 id="operational-plan-for-office-of-homeless-services">Operational Plan for Office of Homeless Services</h3>
 <ol type="1">
-<li><strong>Mass Events:</strong> Cannot predict a specific landlord’s decision to evict 600 people on a random day.</li>
-<li><strong>Data Lag:</strong> ACS data is static (2022); it misses real-time gentrification shifts.</li>
-<li><strong>Sealed Tracts:</strong> Privacy rules hide some of the most vulnerable hotspots from the spatial model.</li>
-</ol>
-</section>
-<section id="recommendations-for-implementation" class="slide level2 center">
-<h2>Recommendations for Implementation</h2>
-<p><strong>The “Triage Dashboard” Strategy</strong></p>
-<ol type="1">
-<li><strong>Run Monthly:</strong> Input new filing data on the 1st of the month.</li>
-<li><strong>Generate List:</strong> Output the <strong>Top 50 “Critical Risk” Tracts</strong>.</li>
-<li><strong>Targeted Intervention:</strong>
+<li><strong>Run Model (Monthly):</strong> Input last month’s data on the 1st.</li>
+<li><strong>Generate List:</strong> Output the <strong>Top 50 “Critical” Tracts</strong>.</li>
+<li><strong>Deploy Resources:</strong>
 <ul>
-<li><strong>Canvassing:</strong> Deploy teams to these 50 tracts <em>before</em> court dates.</li>
-<li><strong>Legal Aid:</strong> Position pop-up clinics in these specific zip codes.</li>
+<li><strong>Canvassing:</strong> Send teams to these 50 tracts <em>before</em> court dates.</li>
+<li><strong>Direct Mail:</strong> Target “Know Your Rights” flyers.</li>
+<li><strong>Coordination:</strong> Alert local CDCs to expect volume.</li>
 </ul></li>
-<li><strong>Safeguard:</strong> Use this tool strictly for <strong>Resource Addition</strong>, never for automated decision-making or policing.</li>
 </ol>
+</section>
+<section id="conclusion" class="slide level2 center">
+<h2>Conclusion</h2>
+<blockquote>
+<p>“This model turns data into defense. By identifying structural vulnerability one month in advance, we move from counting evictions to preventing them.”</p>
+</blockquote>
+<p><strong>Thank You.</strong></p>
 
 </section>
     </div>
@@ -354,19 +267,19 @@ Tess Vu
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/dist/reveal.js"></script>
+  <script src="draft_slides_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/search/search.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="Slides for Rent. Assistance Program_files/libs/revealjs/plugin/math/math.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="draft_slides_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>
