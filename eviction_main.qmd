@@ -44,6 +44,8 @@ The model demonstrates strong performance with meaningful improvement, and sets 
 
 ## 1. SETUP AND LIBRARY LOADING
 
+All required R packages were loaded at the start to streamline data cleaning, visualization, spatial analysis, and modeling.
+
 ```{r library}
 #| message: false
 #| warning: false
@@ -80,8 +82,10 @@ filter <- dplyr::filter
 options(scipen = 999)
 
 # Save figures.
-opts_chunk$set(fig.path = "final_figures/", dpi = 300)
+#opts_chunk$set(fig.path = "final_figures/", dpi = 300)
 ```
+
+Two visualization techniques were employed to provide clear and effective evidence of our findings. First, a consistent plotting theme was established to ensure readability and uniformity across all figures. Second, custom color palettes were applied to highlight key analytical distinctions, specifically racial categories and policy periods. Racial differences in eviction filings are central to the Eviction Lab’s dataset and visualizations and were incorporated to acknowledge inequitable outcomes. In addition, the periods before, during, and after the moratorium were visually differentiated to measure the impact of policy interventions on eviction patterns.
 
 ```{r customization}
 # Custom color palette for policy periods.
@@ -104,7 +108,20 @@ racial_colors <- c(
 
 ### Monthly Tract-Level Eviction Data
 
-The primary dataset contains monthly eviction filing counts at the census tract level from January 2020 through November 2025.
+The data was accessed and downloaded from the Eviction Lab, an online database that compiles nationwide eviction filings from court records. For states and major cities, the Eviction Lab provides eviction datasets at two temporal resolutions: weekly and monthly. Both scales were initially examined for their distinct analytical value: weekly data highlight short‑term spikes and localized patterns, while monthly data reveal longer‑term trends and align more closely with policy implementation, as months serve as the standard catchment period for resource allocation and housing interventions.
+
+A summary of the dataset’s dimensions and preview of the first few rows shows that the monthly eviction data provides space-time insights into filing patterns. The dataset is structured into eight columns:
+
+\begin{enumerate}
+  \item Geographic unit of analysis (census tract),
+  \item Standard geographic identifier (census tract number),
+  \item Majority racial identity of the tract,
+  \item Month and year of record,
+  \item Eviction filings from 2020--2022, capturing the impact of the COVID-19 pandemic as an extreme destabilizing event and the subsequent moratorium response,
+  \item Average filings,
+  \item Average filings prior to the pandemic, and
+  \item Last upload date of the dataset.
+\end{enumerate}
 
 ```{r load-monthly-data}
 # Load monthly eviction filings data at census tract level.
@@ -127,7 +144,7 @@ head(df_monthly_raw, 10) %>%
 
 ### Weekly Tract-Level Eviction Data
 
-Weekly data at the census tract level provides higher-frequency observations for understanding short-term volatility and patterns.
+The weekly dataset mirrors the structure of the monthly data set but differs as it contains more rows of data due to its finer granularity and adds additional columns that specific the week relative to the dataset and the calendar date the data was recorded. 
 
 ```{r load-weekly-data}
 # Load weekly eviction filings data for high-frequency analysis.
@@ -149,7 +166,7 @@ head(df_weekly_raw, 10) %>%
 
 ### Claims Data
 
-The claims dataset has monthly resolution showing the financial severity of eviction cases through median claim amounts, adding political and social context.
+The Eviction Lab provides tract‑level data that summarizes historical and contemporary monthly claims statistics, where claims represent the financial compensation sought by landlords in eviction proceedings. In addition to reporting the median claim amount, the dataset includes thresholds that capture the relative burden these claims pose to renters, offering a spectrum of financial severity across space and time. While these measures are not the primary variables used in this analysis, they provide valuable context for understanding eviction dynamics. Exploratory review suggests that approximately 3% of claims fall below $1,000, which may reflect unpaid fees rather than market‑rate rent, though in some cases it could indicate subsidized public housing rents. Around 6% of claims align with median market rents, while 14% represent unpaid rent for at least six months. These timelines highlight the varied circumstances underlying eviction filings, including the delays introduced by lengthy legal processes. Together, the dataset’s structured measures and exploratory insights illustrate both the quantitative severity of claims and the qualitative complexity of eviction proceedings.
 
 ```{r load-claims-data}
 # Load aggregated monthly claims data showing financial severity.
@@ -173,7 +190,7 @@ This is not used in the dataset, but for exploration behind the scenes of evicti
 
 ### Real Estate Tax Balances
 
-Tax delinquency is a proxy for landlord financial stress at the tract level. Properties with outstanding tax balances may pressure landlords to pursue evictions.
+In our analysis, tax delinquency is treated as a proxy for landlord financial stress; theoretically properties with outstanding tax balances could pressure landlords into pursuing evictions as a means of recovering income or offsetting financial strain. Thus, property tax assessments were explored to determine how financial stress on landlords may shape eviction filings.
 
 ```{r load-tax-data}
 # Load real estate tax balances aggregated by census tract.
@@ -196,7 +213,7 @@ head(df_tax_raw, 10) %>%
 
 ### Philadelphia Census Tract Geometry
 
-Load Pennsylvania census tracts and filter to Philadelphia County (FIPS 42101) for spatial analysis.
+Since all datasets in this analysis are aggregated at the census tract level, a spatial file containing tract boundaries was loaded to access the geographic and geometric attributes of each tract. The inclusion of this file allows for the integration of eviction, claim, property, and other datasets with physical locations for mapping and spatial analysis.
 
 ```{r load-spatial-data}
 # Load Pennsylvania census tracts shapefile.
@@ -214,7 +231,11 @@ cat(sprintf("Coordinate Reference System: %s\n", st_crs(philly_tracts_sf)$input)
 
 ## 3. DATA CLEANING AND FEATURE ENGINEERING
 
+Certain data cleaning and manipulation techniques were applied across all datasets to establish structural uniformity that would streamline joinability with other datasets. These techniques include removing invalid records, turning geographic identifiers into character strings to ensure they aren’t treated as numeric values, and formatting dates. Each dataset was also cleaned and manipulated based on their respective qualities and potential insights.
+
 ### Monthly Eviction Data Preparation
+
+To prepare the monthly eviction data for analysis, raw filings were cleaned and enriched with theoretically motivated features. A categorical variable was created to distinguish pre‑moratorium, moratorium, and post‑moratorium periods, alongside a binary flag for months when the moratorium was active. Months were categorized into seasonal indicators as seasonal patterns in filings can be seen in the figures provided on the Eviction Lab’s website. 
 
 ```{r clean-monthly}
 # Clean and prepare monthly data with temporal and policy features.
@@ -271,6 +292,8 @@ cat("CLEANED MONTHLY DATA SUMMARY\n")
 summary(df_monthly %>% select(filings_count, date, year, moratorium_active))
 ```
 
+To verify the scope of the cleaned dataset, a summary table was generated showing the earliest and latest months covered, the total number of distinct months, the number of census tracts represented, and the overall number of observations. This check confirms that the dataset ranges from January 2020 to November 2025.
+
 ```{r clean-monthly-coverage}
 # Check temporal coverage of cleaned data.
 df_monthly %>%
@@ -287,6 +310,8 @@ df_monthly %>%
 ```
 
 ### Weekly Data Preparation
+
+Weekly data was cleaned and enriched in parallel with the monthly dataset, but adapted to reflect the finer weekly temporal scale. A summary table of temporal coverage reveals that the dataset spans from the final days of December 2019 through the second week of November 2025, offering a more nuanced timeline down to the exact day.
 
 ```{r clean-weekly}
 # Clean and prepare weekly data for finer temporal analysis.
@@ -335,6 +360,8 @@ df_weekly %>%
 
 ### Claims Data Preparation
 
+Monthly eviction claims data was mutated to include a new column, claims ratio, that was calculated to represent median claim values relative to pre‑pandemic baselines. 
+
 ```{r clean-claims}
 # Clean claims data showing financial severity of evictions.
 df_claims <- df_claims_raw %>%
@@ -355,6 +382,8 @@ summary(df_claims %>% select(median_claim, median_claim_baseline, claim_ratio))
 ```
 
 ### Tax Delinquency Data Preparation
+
+We defined delinquency in the property tax dataset as properties that received penalties rather than properties that just have overdue balances. Due to the marginal frequency observed in the dataset’s summary statistics (only 8 properties identified as overdue with no penalties), overdue properties were removed. For each tract, counts of delinquent properties, total balances, and average balances per property were calculated, along with log transformations of balances and delinquency age in years. Summary statistics were generated to report mean and median property counts, balances, and average balances across tracts, providing a tract‑level profile of tax delinquency severity.
 
 ```{r clean-tax-data}
 # Clean and prepare tax data with delinquency separation.
@@ -438,9 +467,9 @@ tax_summary %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-Usually, delinquent properties are not considered delinquent if they have overdue payments, it is only for properties where penalties are assessed, and because it is just a marginal 8 properties that were overdue rather than delinquent they were removed.
-
 ### Sealed Tract Assessment
+
+Monthly eviction filings were assessed for sealed census tracts, where GEOIDs are suppressed for privacy protection. These tracts accounted for a small share of observations but exhibited unusually high filing counts. Because sealed tracts cannot be geographically mapped, they were excluded from spatial modeling to preserve tract‑level specificity. While this exclusion reduces the ability to design geographically actionable policies and outreach, the sealed tracts nonetheless represent legitimate evictions and highlight systematic vulnerabilities that cannot be directly addressed in this analysis.
 
 ```{r sealed-tracts}
 # Identify sealed census tracts where GEOID is hidden for privacy protection.
@@ -500,6 +529,10 @@ The sealed tracts are outliers and are legitimate evictions that reflect the cur
 ## 4. EXPLORATORY DATA ANALYSIS
 
 ### Distribution Analysis: Zero-Inflation Assessment
+
+Understanding the distribution of eviction filings is critical for selecting the appropriate modeling approach. Because eviction filings are discrete, non‑continuous count values, they require models such as Poisson and Negative Binomial regression specifically designed to handle count data. A major difference between the two approaches is their ability to handle overdispersion, with the Poisson model assuming equal mean and variance while the Negative Binomial model allows the variance to exceed the mean, making it more flexible for data with excess variability and zeros. Zero-inflation statistics were calculated and visualized to assess the distribution of monthly eviction filings. The summary statistics report reveals substantial zero-inflation and variance that exceeded the mean, yielding a dispersion ratio well over 1, indicating that the negative binomial model as a more appropriate modeling approach for our data.
+
+A histogram of raw counts of evictions further highlights the prevalence of zeros and the data's skewed distribution, while a log‑transformed histogram provides a clearer view of variation. 
 
 ```{r monthly-distribution}
 # Calculate zero-inflation stats for monthly data.
@@ -587,9 +620,9 @@ monthly_plot_raw + monthly_plot_log +
   )
 ```
 
-The dispersion ratio exceeds 1, indicating overdispersion that violates the Poisson assumption of equal mean and variance. This justifies the use of Negative Binomial regression over Poisson regression. There are also 37% zero filings, so perhaps in the future a Zero Inflated Negative Binomial regression could potentially perform better even though Negative Binomial itself can handle zeros.
-
 ### Weekly Filing Distribution
+
+Weekly eviction filings were also assessed for zero-inflation and overdispersion; the distribution was highly zero-inflated, making even standard Negative Binomial models unsuitable. However, the data structure is compatible with Zero-Inflated Negative Binomial models, which may be explored in future work. In this analysis we chose to proceed with the monthly eviction data to preserve the performance of the Negative Binomial model.
 
 ```{r weekly-distribution}
 #| fig-dpi: 300
@@ -669,9 +702,9 @@ plot_weekly_raw + plot_weekly_log +
   )
 ```
 
-Weekly distribution is severely zero-inflated at 70.1%, so it would not be a methodologically sound choice to use Negative Binomial with the current toolkit. While it would be more useful and actionable to provide more granular weekly predictions, this is more doable with the Zero-Inflated Negative Binomial regression in a future study.
-
 ### Tax Delinquency Distribution
+
+The histogram of average delinquent balances per property across census tracts is highly right-skewed, with most tracts showing low balances and a few exhibiting extreme outliers revealing that a small number of tracts carry disproportionately high tax burdens. A histogram of  log transformed tax balances normalizes this skew, producing a more symmetric, bell-shaped distribution suitable for statistical modeling. 
 
 ```{r tax-distribution-histogram}
 #| fig-dpi: 300
@@ -719,6 +752,8 @@ plot_tax_raw + plot_tax_log +
 
 ### Quantile Analysis
 
+To further assess the tail-behavior of monthly eviction filings, statistice for quantiles thresholds were calculated. This included the minimum, 1st, 5th, 25th, 50th (median), 75th, 95th, and 99th percentiles, as well as the maximum. These statistics provide a clear view of the heavy right tail of the distribution, complementing the zero‑inflation and over‑dispersion diagnostics as well as indicating the need to create a variable the addresses abnormal spikes.
+
 ```{r quantile-analysis}
 # Calculate quantiles for positive filings to understand tail behavior.
 quantile_stats_monthly <- df_monthly %>%
@@ -743,11 +778,11 @@ quantile_stats_monthly %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-Another indication that the quantiles are very inflated at 0 as median is 3, then 5 for 75th percentile, a jump to 10 at 95th percentile, another jump to 16 at the 99th percentile, and a whopping 694 jump to the max.
-
 ## 5. TEMPORAL ANALYSIS: SYSTEM-WIDE TRENDS
 
 ### Monthly Aggregate Trend with Policy Markers
+
+The plot and summary statistics of monthly evictions overtime show a clear policy-linked trajectory from 2020 to 2025 as filings dropped sharply at the onset of the eviction moratorium, remained suppressed throughout its duration, and rose after the moratorium ended. This pattern underscores the impact of policy interventions as well as highlights the need for temporal controls in modeling.
 
 ```{r monthly-system-trend-plot}
 #| fig-dpi: 300
@@ -818,6 +853,8 @@ monthly_aggregate %>%
 ```
 
 ### Seasonality Analysis
+
+The box plot of post moratorium evictions by season and month show elevated filings in winter and summer as well as monthly alternating patterns of elevation in the winter to early spring months. Summary statistics of both plots illustrates that evictions typically remained stable across seasons and months but do possess slightly higher numbers consistent with the visual patterns.
 
 ```{r seasonality-boxplot}
 #| fig-dpi: 300
@@ -912,6 +949,8 @@ monthly_data %>%
 
 ### Claims Severity Over Time
 
+A temporal plot shows that median eviction claim amounts rose sharply at the onset of the pandemic, peaking in 2021–2022 before gradually declining and stabilizing near the pre-pandemic baseline, suggesting a temporary inflation in claim severity during the moratorium and immediate post-moratorium periods.
+
 ```{r claims-trend}
 #| fig-dpi: 300
 #| fig-height: 7
@@ -949,6 +988,8 @@ claims_plot
 ## 6. RACIAL DISPARITY ANALYSIS
 
 ### Filing Burden by Racial Majority
+
+Summary statistics and plots reveal stark disparities across tract racial majorities:  51.9% of filings occurred in Black-majority tracts, despite these tracts representing a smaller share of the city overall. In contrast, White-majority tracts accounted for just 22.1% of filings, though they comprised 36.0% of the comparison group. Hispanic-majority tracts showed near parity, while “Other” tracts had slightly lower filing rates than their representation. These patterns suggest disproportionate eviction exposure in Black communities, underscoring the need for equity-based analysis of our model’s performance.
 
 ```{r racial-disparity}
 #| fig-dpi: 300
@@ -1020,11 +1061,11 @@ racial_disparity_plot <- racial_comparison %>%
 racial_disparity_plot
 ```
 
-Black-majority tracts bear disproportionate filing burden relative to tract share.
-
 ## 7. GEOGRAPHIC ANALYSIS
 
 ### High-Risk Tract Identification
+
+High‑risk tracts were identified by calculating cumulative eviction filings across the study period to pinpoint neighborhoods with disproportionate concentrations of cases. The analysis shows that the top 20 census tracts alone accounted for 16.6% of all filings.
 
 ```{r high-risk-tracts}
 # Calculate total filings by tract across full study period.
@@ -1068,6 +1109,8 @@ cat(sprintf("Top 20 Tracts Account For: %.1f%% of all filings\n", top_20_pct))
 
 ### Spatial Mapping of Eviction Burden
 
+The choropleth plot showing the spatial distribution of evictions reveals regional concentration of census tracts with high filing levels in North, Upper North, and West Philadelphia.
+
 ```{r spatial-eviction-map}
 #| fig-dpi: 300
 #| fig-height: 10
@@ -1104,6 +1147,8 @@ eviction_map
 ```
 
 ### Spatial Mapping of Tax Delinquency
+
+The choropleth plot showing the spatial distribution of average property tax balances reveals distinct pocket of high tax burdens in Center City as well as South, North, Upper North, and Northeast Philadelphia.
 
 ```{r spatial-tax-map}
 #| fig-dpi: 300
@@ -1143,6 +1188,8 @@ tax_map
 ## 8. PRE-PANDEMIC BASELINE COMPARISON
 
 ### Monthly Filings vs Baseline Ratio
+
+The plot and summary statistics shows that the Covid-19 pandemic posed a mass disruption to eviction trends as filings drop well below the pre-pandemic baseline before gradually increasing through 2021 and 2022.  By 2024 and 2025, filings stabilized near the pre-pandemic average, indicating a return to normative patterns. This trajectory emphasizes the need to capture immediate post-moratorium dynamics.
 
 ```{r monthly-baseline-ratio-plot}
 #| fig-dpi: 300
@@ -1213,7 +1260,7 @@ monthly_baseline_ratio %>%
 
 ### Creating Temporal Lag Variables
 
-Temporal lags capture the momentum or inertia in eviction filing patterns. A tract with high filings last month is likely to have elevated filings this month.
+Temporal lag variables show how eviction filings carry over from one month to the next. If a tract had high filings last month, it is more likely to have high filings this month too. The one-, two-, and three-month lags capture short-term momentum, while the three-month rolling average smooths out short-term patterns.
 
 ```{r lagged-variables}
 # Create lagged features.
@@ -1256,6 +1303,10 @@ lag_coverage %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
+### Creating Inactivity Flag
+
+About 37% of monthly tract observations have zero filings thus these flags are intended to help the model separate active periods from months with no eviction activity. This matters because it can potentially address problematic zero-inflation in the data and highlight longer stretches of inactivity that may reflect structural differences across tracts.
+
 ```{r add-zero-flags}
 # There are around 37% zeros, so add zero flags for last month and consecutive.
 df_model_prep <- df_model_prep %>%
@@ -1284,6 +1335,8 @@ zero_coverage %>%
 ```
 
 ### Merging Claims Severity Data
+
+The following represents various merges that integrate claims severity, tax delinquency, and American Community Survey (ACS) socioeconomic indicators into the tract-level eviction panel.
 
 ```{r merge-claims}
 # Create year-month key for joining claims data to tract-level data.
@@ -1340,7 +1393,7 @@ cat(sprintf("Observations with tax data: %s (%.1f%%)\n",
 
 ### Integrating ACS Socioeconomic Data
 
-American Community Survey data provides tract-level socioeconomic indicators that capture structural vulnerability to eviction. Variables chosen are related to housing, income, and demographic composition.
+American Community Survey data provides tract-level socioeconomic indicators that capture structural vulnerability to eviction. Variables chosen pose theoretical relevance to eviction data as they related to housing, income, and demographic composition. ACS data was further engineered to allow for meaningful interpretation and comparison with other variables.
 
 ```{r acs-data-retrieval}
 # Retrieve ACS 5-year estimates for Philadelphia County tracts.
@@ -1448,6 +1501,8 @@ df_acs <- acs_data %>%
   )
 ```
 
+Single mothers and those who experience severe rent burdens may be more theoretically linked to eviction filings as their means are limited.
+
 ```{r acs-summary-stats}
 # Calculate summary stats for ACS features.
 acs_summary <- df_acs %>%
@@ -1487,6 +1542,8 @@ cat(sprintf("Observations with ACS data: %s (%.1f%%)\n",
             comma(acs_merge_stats$has_acs), 
             acs_merge_stats$pct_with_acs))
 ```
+
+Creating a spatial weights matrix for our model is motivated by the maps predicting the spatial distribution of eviction filings across Philadelphia; eviction activity tends to not be isolated to specific tracts and emerge as part of broader neighborhood-level patterns. The spatial weights matrix allows the model to capture these localized spillovers, ensuring that predictions reflect the reality that housing instability is often similar in adjacent communities rather than occurring in isolation.
 
 ```{r spatial-weights}
 # Filter spatial data to only tracts present in eviction data.
@@ -1544,7 +1601,10 @@ df_model_prep <- df_model_prep %>%
 cat(sprintf("Observations with spatial lag: %s\n", 
             comma(sum(!is.na(df_model_prep$spatial_lag_filings)))))
 ```
-First month has no spatial lag because of no prior month data!
+
+### Creating Neighborhood Fixed-Effects
+
+Neighborhoods provide a broader geographic context for understanding eviction filings. By linking tracts to neighborhood boundaries, we can test whether neighborhood characteristics are associated with filing rates. 
 
 ```{r neighborhood-boundaries}
 # Load boundaries.
@@ -1598,6 +1658,8 @@ df_model_prep$neighborhood <- as.factor(df_model_prep$neighborhood)
 df_model_prep$neighborhood <- relevel(df_model_prep$neighborhood, ref = "East Falls")
 ```
 
+A binary flag was set to identify high concentrations of filings. This helps separate routine variation from extreme events and allows the model to account for rare but impactful spikes without letting them distort patterns in the broader dataset.
+
 ```{r cap-threshold}
 # Define threshold for capping target variable in training set.
 cap_threshold = 20
@@ -1606,6 +1668,8 @@ cap_threshold = 20
 df_model_prep <- df_model_prep %>%
   mutate(is_extreme_spike = ifelse(filings_count > cap_threshold, 1, 0))
 ```
+
+We generated a correlation matrix for all numeric variables to identify redundancy and guide model specification. Because poverty rate and logged median income captured similar socioeconomic conditions, we retained poverty rate due to its stronger theoretical link to eviction risk. We selected delinquent property count over logged delinquent balance because it showed a stronger empirical correlation with eviction filings. Finally, we used the three-month rolling spatial lag  rather than the one- or two-month lags, as the rolling measure captured short-term fluctuations while reducing redundancy. This process ensured that the final predictors were theoretically relevant and minimally collinear.
 
 ```{r correlation-matrix}
 #| fig-dpi: 300
@@ -1637,14 +1701,6 @@ corrplot(correlation_matrix,
          col = color_vector
          )
 ```
-
-Modeling Notes:
-
-- Likely use `poverty_rate` over `log_median_income`, they measure the same concept, but poverty rate has a stronger theoretical link to evictions.
-
-- Use `delinquent_prop_count` over `log_delinquent_balance` it has a stronger correlation to the target.
-
-- Likely use filings_ma3 (3-month rolling average) over `filings_lag1` and `filings_lag2`, it captures both of them so it makes it redundant.
 
 ## 2. TRAIN/TEST SPLIT STRATEGY
 
@@ -1720,6 +1776,7 @@ train_test_comparison %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
+To prevent mass displacement events from destabilizing the Negative Binomial model, we capped the target variable at the ~99th percentile with 20 filings in the training set only. However, we retained the raw, uncapped values in the test set to validate the model's performance against real-world unpredictability.
 
 ## 3. NEGATIVE BINOMIAL REGRESSION MODEL
 
@@ -1808,6 +1865,8 @@ model_comparison %>%
         col.names = c("Model", "AIC", "Theta", "Log Likelihood", "AIC Change", "Rank")) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+The addition of the policy interaction term `(racial_majority * moratorium_active)` resulted in the lowest AIC, making it the best-fitting model. However, for deployment, the 3rd model is best with lower MAE and a more simple model to interpret. `filings_ma3` is a strong predicting for past filing volume and reinforcing that eviction risk is persistent. `is_extreme_spike` is significant showcasing tracts with a history of mass-eviction events face a structurally higher baseline risk at a whopping 5.8 IRR. `spatial_lag_filings` is positive and significant, showing that there is spatial spillover of eviction risk. `delinquent_prop_count` is also significant, and this reinforces the link between landlord financial instability and pressure to pursue eviction filings. The interaction terms also reveal a nuanced policy impact. While the moratorium reduced filings universally, the interaction coefficients indicate that the benefit was not uniform across racial groups, as what was expected.
 
 ## 4. MODEL VALIDATION AND DIAGNOSTICS
 
@@ -2034,12 +2093,7 @@ overfitting_check %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-As a guide ...
-MAE/RMSE degradation < 20%: Good generalization.
-MAE/RMSE degradation 20-50%: Moderate overfitting.
-MAE/RMSE degradation > 50%: Severe overfitting.
-
-Worst MAE degradation across models is 19.44%, so good generalization. Looks like the test MAE for the best model, which is the ACCS one, is off by 1.77 filings and accounts for 57% of variation. This is a good start and quite good considering we are essentially measuring a response variable that is very tied to human behavior.
+The worst MAE degradation across models is 19.44%, so there is good generalization. In addition, the test MAE for the best model, the ACS addition, is off by 1.77 filings and accounts for 57% of variation. This is a good, foundational start considering this study is measuring a response variable that is very tied to human behavior.
 
 ### Select Best Model for Further Analysis
 
@@ -2117,6 +2171,8 @@ test_metrics_by_race %>%
         col.names = c("Racial Majority", "Number", "MAE", "RMSE", "Mean Observed", "Mean Predicted", "Mean Error")) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+The model, mirroring real-life eviction biases, also has a larger MAE for Black communities, with white communities having the lowest MAE.
 
 ### Residual Analysis
 
@@ -2419,6 +2475,8 @@ operational_output <- df_test_pred %>%
 operational_output
 ```
 
+By integrating temporal, spatial, and socioeconomic indicators, the best model achieves a prediction error of < 2 filings per tract, outperforming the baseline model. Also, the model successfully identifies the "Highest Risk" tracts that account for the vast majority of displacement. This tool offers the City of Philadelphia a concrete mechanism to shift from reactive to proactive, targeting aid to the specific blocks where it is needed most and ideally before any landlord-tenant tensions escalate into expensive legal battles.
+
 # III. EQUITY ASSESSMENT
 
 ## 1. Impact Analysis
@@ -2477,8 +2535,6 @@ equity_plot <- equity_metrics %>%
 # Display equity plot.
 equity_plot
 ```
-
-Model does not perform as well for tracts with higher Black populations when it comes to predicting eviction filings as opposed to other tracts, with white tracts having the least MAE. Future modifications need to be made to account for Black communities who account for the majority of Philadelphia's population.
 
 ## 2. Prediction Calibration by Race
 
@@ -2594,6 +2650,8 @@ equity_plot <- equity_metrics %>%
 # Display equity plot.
 equity_plot
 ```
+
+Future modifications need to be made to account for Black communities who account for the majority of Philadelphia's population, despite predicting Black communities to be at more risk, there is the simultaneous higher MAE, meaning that this tool is fit as long as there is human oversight and it is not used for absolute decision-making. It struggles to capture the full issues that come from structural racism, so going into detail with the resource allocation it should be legal aid or cash assistance supportive survices, never property or police enforcement.
 
 # SESSION INFORMATION
 
