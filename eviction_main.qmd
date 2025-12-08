@@ -36,9 +36,9 @@ editor:
 
 Eviction is both a cause and consequence of poverty that destabilizes entire neighborhoods. Currently, city responses to eviction are reactive, with resources like legal aid and rental assistance deployed *after* filing volumes become a crisis. This project develops a Real-Time Operational Tool for the Philadelphia Office of Homeless Services and the Fair Housing Commission. By shifting from reactive to predictive analysis, we enable the city to allocate limited staff to specific census tracts predicted to experience elevated eviction filings in the coming month.
 
-Our Negative Binomial regression model leverages temporal momentum, spatial spillover effects, policy intervention effects, property tax delinquency stress, and American Community Survey socioeconomic indicators to forecast monthly eviction filing counts at the census tract level. Key ACS variables include renter percentage, poverty rate, severe rent burden, and unemployment rate to capture structural vulnerability.
+Our Negative Binomial regression model leverages temporal momentum, spatial spillover effects, policy intervention effects, property tax delinquency stress, and American Community Survey socioeconomic indicators to forecast monthly eviction filing counts at the census tract level.
 
-The model demonstrates strong predictive performance with meaningful improvement over base forecasting benchmarks. Using a robust temporal validation strategy (training through 2023, testing on 2024-2025), we confirm the model generalizes well to future periods without overfitting. We identify stark racial disparities in eviction burden, with Black-majority tracts accounting for disproportionate shares of filings. These findings underscore the need for equity-centered implementation safeguards to prevent perpetuating existing disparities through algorithmic resource allocation.
+The model demonstrates strong performance with meaningful improvement, and sets the foundation for building up to a practical and usable tool down the line. Using a robust temporal validation strategy (training through 2023, testing on 2024-2025), the model generalizes well to future periods without overfitting. Also stark racial disparities in eviction burden was identified, with Black-majority tracts accounting for disproportionate shares of filings. These findings emphasize the need for equity-centered implementation safeguards to prevent perpetuating existing disparities through algorithmic resource allocation.
 
 # I. EXPLORATORY DATA ANALYSIS (EDA)
 
@@ -72,9 +72,6 @@ library(knitr)
 # Override masking.
 select <- dplyr::select
 filter <- dplyr::filter
-
-# API Key.
-Sys.getenv("CENSUS_API_KEY")
 
 # Disable scientific notation.
 options(scipen = 999)
@@ -306,6 +303,12 @@ df_weekly <- df_weekly_raw %>%
     )
   )
 
+# Display summary of cleaned monthly data.
+cat("CLEANED WEEKLY DATA SUMMARY\n")
+summary(df_weekly %>% select(filings_count, date, year, moratorium_active))
+```
+
+```{r clean-weekly-coverage}
 # Check weekly temporal coverage.
 df_weekly %>%
   summarize(
@@ -1289,7 +1292,6 @@ claims_merge_stats <- df_model_prep %>%
     pct_with_claims = has_claims / total_obs * 100
   )
 
-cat("CLAIMS DATA MERGE STATISTICS\n")
 cat(sprintf("Observations with claims data: %s (%.1f%%)\n", 
             comma(claims_merge_stats$has_claims), 
             claims_merge_stats$pct_with_claims))
@@ -1317,7 +1319,6 @@ tax_merge_stats <- df_model_prep %>%
     pct_with_tax = has_tax_data / total_obs * 100
   )
 
-cat("TAX DATA MERGE STATISTICS\n")
 cat(sprintf("Observations with tax data: %s (%.1f%%)\n", 
             comma(tax_merge_stats$has_tax_data), 
             tax_merge_stats$pct_with_tax))
@@ -1385,7 +1386,6 @@ acs_data <- get_acs(
   geometry = FALSE
 )
 
-cat("ACS DATA RETRIEVED\n")
 cat(sprintf("Tracts with ACS data: %d\n", nrow(acs_data)))
 ```
 
@@ -1468,7 +1468,6 @@ acs_merge_stats <- df_model_prep %>%
     pct_with_acs = has_acs / total_obs * 100
   )
 
-cat("ACS DATA MERGE STATISTICS\n")
 cat(sprintf("Observations with ACS data: %s (%.1f%%)\n", 
             comma(acs_merge_stats$has_acs), 
             acs_merge_stats$pct_with_acs))
@@ -1487,7 +1486,6 @@ neighbors_queen <- poly2nb(philly_model_sf, queen = TRUE)
 # Convert to spatial weights matrix.
 weights_matrix <- nb2listw(neighbors_queen, style = "W", zero.policy = TRUE)
 
-cat("SPATIAL WEIGHTS MATRIX CREATED\n")
 cat(sprintf("Number of tracts in spatial analysis: %d\n", length(neighbors_queen)))
 cat(sprintf("Average number of neighbors per tract: %.1f\n", 
             mean(card(neighbors_queen))))
@@ -1559,6 +1557,58 @@ cat(sprintf("First month has NA spatial lag because of no prior month data: %s o
             comma(sum(is.na(df_model_prep$spatial_lag_filings)))))
 ```
 
+```{r neighborhood-boundaries}
+# Load boundaries.
+neighborhoods <- st_read("data/philadelphia-neighborhoods/philadelphia-neighborhoods.shp")
+
+# Make valid for duplicate vertex error.
+neighborhoods <- st_make_valid(neighborhoods)
+
+# Change CRS.
+neighborhoods <- st_transform(neighborhoods, st_crs(philly_model_sf))
+
+# Select only GEOID and geometry from tracts.
+tracts_sf_subset <- philly_model_sf %>% select(GEOID, geometry)
+
+# Select only neighborhood name and geometry from neighborhoods.
+neighborhoods_sf_subset <- neighborhoods %>% select(MAPNAME, geometry) %>% rename(neighborhood = MAPNAME)
+
+# Spatial join. Keep tracts even if they don't perfectly intersect a neighborhood.
+tracts_with_neighborhood <- st_join(
+    tracts_sf_subset,
+    neighborhoods_sf_subset,
+    join = st_intersects,
+    left = TRUE
+) %>%
+    # Drop geometry.
+    st_drop_geometry()
+
+# Select only GEOID and neighborhood.
+df_neighborhood_join <- tracts_with_neighborhood %>%
+    select(GEOID, neighborhood)
+
+# Choose first match if multiple.
+df_neighborhood_join <- df_neighborhood_join %>%
+    group_by(GEOID) %>%
+    slice(1) %>%
+    ungroup()
+
+# Merge.
+df_model_prep <- df_model_prep %>%
+    left_join(df_neighborhood_join, by = "GEOID")
+
+# Check merge.
+cat(sprintf("Total observations: %s\n", comma(nrow(df_model_prep))))
+cat(sprintf("Observations with neighborhood data: %s\n",
+            comma(sum(!is.na(df_model_prep$neighborhood)))))
+
+# Convert new column to factor for FE.
+df_model_prep$neighborhood <- as.factor(df_model_prep$neighborhood)
+
+# Change reference.
+df_model_prep$neighborhood <- relevel(df_model_prep$neighborhood, ref = "East Falls")
+```
+
 ```{r cap-threshold}
 # Define threshold for capping target variable in training set.
 cap_threshold = 20
@@ -1566,6 +1616,37 @@ cap_threshold = 20
 # Create spike binary flag for all data to identify structural risk.
 df_model_prep <- df_model_prep %>%
   mutate(is_extreme_spike = ifelse(filings_count > cap_threshold, 1, 0))
+```
+
+```{r correlation-matrix}
+#| fig-dpi: 300
+#| fig-height: 20
+#| fig-width: 20
+#| message: FALSE
+#| warning: FALSE
+
+# Custom colors.
+custom_colors <- colorRampPalette(c("#f03e37", "white", "#189ace")) 
+
+color_vector <- custom_colors(200)
+
+# Select and apply numeric columns only.
+df_model_prep_correlation <- df_model_prep[, sapply(df_model_prep, is.numeric)]
+
+# Correlation matrix.
+correlation_matrix <- cor(df_model_prep_correlation, use = "pairwise.complete.obs")
+
+# Display matrix.
+corrplot(correlation_matrix,
+         method = "square",
+         order = "FPC", 
+         type = "lower",
+         diag = TRUE,
+         tl.col = "black",
+         cl.pos = "n",
+         addCoef.col = "black",
+         col = color_vector
+         )
 ```
 
 Modeling Notes:
@@ -1598,7 +1679,8 @@ df_filtered <- df_model_prep %>%
     !is.na(severe_rent_burden),
     !is.na(pct_single_mother),
     !is.na(racial_majority),
-    !is.na(moratorium_active)
+    !is.na(moratorium_active),
+    !is.na(neighborhood)
   )
 
 # Apply the cap only to training target variable to make it stable.
@@ -1659,7 +1741,7 @@ Because of overdispersion, Negative Binomial regression is preferred over Poisso
 
 ```{r model-1}
 # Fit baseline Negative Binomial model with core time, policy, and monthly predictors.
-model_nb_1 <- glm.nb(filings_count_capped ~ filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike,
+model_nb_1 <- glm.nb(filings_count_capped ~ filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike + neighborhood,
                      data = df_train)
 
 # Display 1st model summary.
@@ -1671,7 +1753,7 @@ summary(model_nb_1)
 
 ```{r model-2}
 model_nb_2 <- glm.nb(filings_count_capped ~
-                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike + neighborhood +
                        # Added spatial lag and delinquent properties because they're more actionable.
                        spatial_lag_filings + delinquent_prop_count,
                      data = df_train)
@@ -1686,7 +1768,7 @@ summary(model_nb_2)
 ```{r model-3}
 model_nb_3 <- glm.nb(filings_count_capped ~
                        # 1st model.
-                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike + neighborhood +
                        # 2nd model.
                        spatial_lag_filings + delinquent_prop_count +
                        # Add demographics.
@@ -1704,7 +1786,7 @@ summary(model_nb_3)
 ```{r model-4}
 model_nb_4 <- glm.nb(filings_count_capped ~
                        # 1st model.
-                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike +
+                       filings_ma3 + moratorium_active + factor(month_num) + is_extreme_spike + neighborhood +
                        # 2nd model.
                        spatial_lag_filings + delinquent_prop_count +
                        # 3rd model.
@@ -2458,3 +2540,13 @@ equity_plot
 # R session info.
 sessionInfo()
 ```
+
+# DATA DOWNLOADS
+
+
+
+# AI USAGE
+
+**Free version of Claude Sonnet 4.5 used for debugging code, especially the final panel data portion.**
+
+Several code chunks provided by Dr. Delmelle with adjustments from previous labs and lectures.
