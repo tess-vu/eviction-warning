@@ -18,20 +18,6 @@ format:
     center: true
 ---
 
-### Contents
-
-<span style="font-size: 1.55em; line-height: 1.9;">
-
-**1.** The Crisis and Policy Context  
-**2.** Data Pipeline and Methodology  
-**3.** Model Performance and Validation  
-**4.** Equity and Critical Analysis  
-**5.** Operational Recommendations
-
-</span>
-
----
-
 ### Research Question
 
 <br>
@@ -49,8 +35,6 @@ format:
 331,415 Philadelphia households are renters, who face a volatile landscape.
 
 * **Eviction Timeline:** As short as **10 days** for non-payment, 15 days for a lease less than a year, and 30 days for a lease greater than a year.
-
-![](eviction_figures/TotalEvictionFilingsCensusTract.png){width="150%" fig-align="center"}
 
 ---
 
@@ -111,10 +95,10 @@ Eviction data is zero-inflated and overdispersed.
 
 ### Methodology: Spatio-Temporal Modeling
 
-Negative Binomial Model that predicts filings ($Y_t$) using:
+Negative Binomial Model that predicts filings using:
 
-1.  **Momentum:** Lagged filings from $t-1$ (inertia).
-2.  **Contagion:** Average filings of *neighboring* tracts (spatial lag).
+1.  **Momentum:** Filings from month before.
+2.  **Contagion:** Average filings of *neighboring* tracts.
 3.  **Structure:** Neighborhoods, Poverty, Tax Delinquency, and Demographics.
 4.  **Policy:** Moratorium active/inactive status.
 
@@ -159,7 +143,7 @@ Negative Binomial Model that predicts filings ($Y_t$) using:
 
 ![](final_figures/risk-by-race-1.png){fig-align="center"}
 
-* Tracts flagged as **"Critical Risk"** saw **5x more actual evictions** than those flagged as "Low Risk."
+* Tracts flagged as "Critical Risk" saw **5x more actual evictions** than those flagged as "Low Risk."
 * Model works as a **Triage Tool** for resource allocation.
 
 ---
@@ -168,7 +152,7 @@ Negative Binomial Model that predicts filings ($Y_t$) using:
 
 ![](final_figures/racial-disparity-plot-1.png){fig-align="center"}
 
-**Finding:** Black-majority tracts face a structurally higher baseline risk.
+Black-majority tracts face higher risk.
 
 ---
 
@@ -176,9 +160,7 @@ Negative Binomial Model that predicts filings ($Y_t$) using:
 
 Model reproduces structural bias to identify communities most at risk.
 
-![](final_figures/calibration-analysis-1.png){fig-align="center"}
-
-![](final_figures/risk-by-race-1.png){fig-align="center"}
+![](final_figures/calibration-analysis-1.png){fig-width="85%" fig-align="center"}
 
 ---
 
@@ -186,21 +168,21 @@ Model reproduces structural bias to identify communities most at risk.
 
 ---
 
-## Limitations
+### Limitations
 
-1.  **Mass Events:** Cannot predict a specific landlord's decision to evict 600 people on a random day.
-2.  **Data Lag:** ACS data is static (2022); it misses real-time gentrification shifts.
-3.  **Sealed Tracts:** Privacy rules hide some of the most vulnerable hotspots from the spatial model.
+1.  **Mass Events**
+2.  **Stale Data**
+3.  **Sealed Tracts**
+4.  **Variability**
 
 ---
 
-## Recommendations for Implementation
+### Recommendations for Implementation
 
-**The "Triage Dashboard" Strategy**
+**Triage Dashboard**
 
 1.  **Run Monthly:** Input new filing data on the 1st of the month.
-2.  **Generate List:** Output the **Top 50 "Critical Risk" Tracts**.
+2.  **Generate List:** Output **Top 50 "Critical Risk" Tracts**.
 3.  **Targeted Intervention:**
-    * **Canvassing:** Deploy teams to these 50 tracts *before* court dates.
-    * **Legal Aid:** Position pop-up clinics in these specific zip codes.
-4.  **Safeguard:** Use this tool strictly for **Resource Addition**, never for automated decision-making or policing.
+    * **Canvassing / Legal Aid:** Deploy teams, allocate resources.
+4.  **Safeguard:** Tool strictly for adding resources, never for automated decision-making.
