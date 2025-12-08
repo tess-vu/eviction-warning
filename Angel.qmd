@@ -1197,6 +1197,12 @@ cat(sprintf("Top 20 Tracts Account For: %.1f%% of all filings\n", top_20_pct))
 
 ### Spatial Mapping of Eviction Burden
 
+<br>
+
+The choropleth plot showing the spatial distribution of evictions reveals regional concentration of census tracts with high filing levels in North, Upper North, and West Philadelphia.
+
+<br>
+
 ```{r spatial-eviction-map}
 #| fig-dpi: 300
 #| fig-height: 10
@@ -1214,7 +1220,8 @@ eviction_map <- ggplot(philly_eviction_sf) +
     trans = "log1p",
     labels = comma,
     na.value = "gray50",
-    breaks = c(0, 10, 20, 50, 100, 200, 400, 800)
+    breaks = c(0, 10, 20, 50, 100, 200, 400, 800),
+    direction = -1
   ) +
   labs(
     title = "Total Eviction Filings by Census Tract (2020-2025)",
@@ -1234,6 +1241,12 @@ eviction_map
 
 ### Spatial Mapping of Tax Delinquency
 
+<br>
+
+The choropleth plot showing the spatial distribution of average property tax balances reveals distinct pocket of high tax burdens in Center City as well as South, North, Upper North, and Northeast Philadelphia.
+
+<br>
+
 ```{r spatial-tax-map}
 #| fig-dpi: 300
 #| fig-height: 10
@@ -1247,11 +1260,12 @@ philly_tax_sf <- philly_tracts_sf %>%
 tax_map <- ggplot(philly_tax_sf) +
   geom_sf(aes(fill = avg_balance), color = NA) +
   scale_fill_viridis_c(
-    option = "plasma",
+    option = "inferno",
     trans = "log1p",
     labels = dollar_format(),
     na.value = "gray50",
-    breaks = c(15000, 30000, 60000, 90000)
+    breaks = c(15000, 30000, 60000, 90000),
+    direction = -1
   ) +
   labs(
     title = "Average Property Tax Delinquency by Census Tract",
@@ -1273,6 +1287,12 @@ tax_map
 ## 8. PRE-PANDEMIC BASELINE COMPARISON
 
 ### Monthly Filings vs Baseline Ratio
+
+<br>
+
+The plot and summary statistics shows that the Covid-19 pandemic posed a mass disruption to eviction trends as filings drop well below the pre-pandemic baseline before gradually increasing through 2021 and 2022.  By 2024 and 2025, filings stabilized near the pre-pandemic average, indicating a return to normative patterns. This trajectory emphasizes the need to capture immediate post-moratorium dynamics.
+
+<br>
 
 ```{r monthly-baseline-ratio-plot}
 #| fig-dpi: 300
@@ -1343,7 +1363,7 @@ monthly_baseline_ratio %>%
 
 ### Creating Temporal Lag Variables
 
-Temporal lags capture the momentum or inertia in eviction filing patterns. A tract with high filings last month is likely to have elevated filings this month.
+Temporal lag variables show how eviction filings carry over from one month to the next. If a tract had high filings last month, it is more likely to have high filings this month too. The one-, two-, and three-month lags capture short-term momentum, while the three-month rolling average smooths out short-term patterns.
 
 ```{r lagged-variables}
 # Create lagged features.
@@ -1379,12 +1399,16 @@ lag_coverage <- df_model_prep %>%
     pct_missing_ma3 = missing_ma3 / total_obs * 100
   )
 
-# Display lag coverage stats.
-lag_coverage %>%
-  kable(digits = 1, caption = "Lagged Variable Coverage Stats",
-        col.names = c("Observations", "Missing Lag 1", "Missing Lag 2", "Missing Lag 3", "Missing Lag 3-Month Rolling Average", "% Missing Lag 1", "% Missing Lag 2", "% Missing Lag 3", "% Missing Lag 3-Month Rolling Average")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+# Uncomment to display lag coverage stats.
+# lag_coverage %>%
+#   kable(digits = 1, caption = "Lagged Variable Coverage Stats",
+#         col.names = c("Observations", "Missing Lag 1", "Missing Lag 2", "Missing Lag 3", "Missing Lag 3-Month Rolling Average", "% Missing Lag 1", "% Missing Lag 2", "% Missing Lag 3", "% Missing Lag 3-Month Rolling Average")) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
+
+### Creating Inactivity Flag
+
+About 37% of monthly tract observations have zero filings thus these flags are intended to help the model separate active periods from months with no eviction activity. This matters because it can potentially address problematic zero-inflation in the data and highlight longer stretches of inactivity that may reflect structural differences across tracts.
 
 ```{r add-zero-flags}
 # There are around 37% zeros, so add zero flags for last month and consecutive.
@@ -1406,14 +1430,17 @@ zero_coverage <- df_model_prep %>%
     pct_missing_consecutive_zeros = missing_consecutive_zeros / total_obs * 100
   )
 
-# Display zero flag coverage stats.
-zero_coverage %>%
-  kable(digits = 1, caption = "Zero Flag Variable Coverage Stats",
-        col.names = c("Observations", "Missing 0 Last Month", "Missing Consecutive Zeros", "% Missing 0 Last Month", "% Missing Consecutive Zeros")) %>%
-  kable_styling(bootstrap_options = c("striped", "hover"))
+# Uncomment to display zero flag coverage stats.
+# zero_coverage %>%
+#   kable(digits = 1, caption = "Zero Flag Variable Coverage Stats",
+#         col.names = c("Observations", "Missing 0 Last Month", "Missing Consecutive Zeros", "% Missing 0 Last Month", "% Missing Consecutive Zeros")) %>%
+#   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
+
 ### Merging Claims Severity Data
+
+The following represents various merges that integrate claims severity, tax delinquency, and American Community Survey (ACS) socioeconomic indicators into the tract-level eviction panel.
 
 ```{r merge-claims}
 # Create year-month key for joining claims data to tract-level data.
@@ -1441,9 +1468,8 @@ cat(sprintf("Observations with claims data: %s (%.1f%%)\n",
             claims_merge_stats$pct_with_claims))
 ```
 
-### Merging Tax Delinquency Data
 
-Tax delinquency serves as a proxy for landlord financial stress. Properties with outstanding tax balances may have landlords more likely to pursue evictions.
+### Merging Tax Delinquency Data
 
 ```{r merge-tax-data}
 # Prepare tax data for joining.
@@ -1470,7 +1496,7 @@ cat(sprintf("Observations with tax data: %s (%.1f%%)\n",
 
 ### Integrating ACS Socioeconomic Data
 
-American Community Survey data provides tract-level socioeconomic indicators that capture structural vulnerability to eviction. Variables chosen are related to housing, income, and demographic composition.
+American Community Survey data provides tract-level socioeconomic indicators that capture structural vulnerability to eviction. Variables chosen pose theoretical relevance to eviction data as they related to housing, income, and demographic composition. ACS data was further engineered to allow for meaningful interpretation and comparison with other variables.
 
 ```{r acs-data-retrieval}
 # Retrieve ACS 5-year estimates for Philadelphia County tracts.
@@ -1618,6 +1644,11 @@ cat(sprintf("Observations with ACS data: %s (%.1f%%)\n",
             acs_merge_stats$pct_with_acs))
 ```
 
+
+### Creating Spatial Weights Matrix
+
+Creating a spatial weights matrix for our model is motivated by the maps predicting the spatial distribution of eviction filings across Philadelphia; eviction activity tends to not be isolated to specific tracts and emerge as part of broader neighborhood-level patterns. The spatial weights matrix allows the model to capture these localized spillovers, ensuring that predictions reflect the reality that housing instability is often similar in adjacent communities rather than occurring in isolation.
+
 ```{r spatial-weights}
 # Filter spatial data to only tracts present in eviction data.
 tracts_in_data <- unique(df_model_prep$GEOID)
@@ -1674,7 +1705,11 @@ df_model_prep <- df_model_prep %>%
 cat(sprintf("Observations with spatial lag: %s\n", 
             comma(sum(!is.na(df_model_prep$spatial_lag_filings)))))
 ```
-First month has no spatial lag because of no prior month data!
+
+
+### Creating Neighborhood Fixed-Effects
+
+Neighborhoods provide a broader geographic context for understanding eviction filings. By linking tracts to neighborhood boundaries, we can test whether neighborhood characteristics are associated with filing rates. 
 
 ```{r neighborhood-boundaries}
 # Load boundaries.
@@ -1728,6 +1763,11 @@ df_model_prep$neighborhood <- as.factor(df_model_prep$neighborhood)
 df_model_prep$neighborhood <- relevel(df_model_prep$neighborhood, ref = "East Falls")
 ```
 
+
+### Model Specifications
+
+A binary flag was set to identify high concentrations of filings. This helps separate routine variation from extreme events and allows the model to account for rare but impactful spikes without letting them distort patterns in the broader dataset.
+
 ```{r cap-threshold}
 # Define threshold for capping target variable in training set.
 cap_threshold = 20
@@ -1736,6 +1776,9 @@ cap_threshold = 20
 df_model_prep <- df_model_prep %>%
   mutate(is_extreme_spike = ifelse(filings_count > cap_threshold, 1, 0))
 ```
+
+
+We generated a correlation matrix for all numeric variables to identify redundancy and guide model specification. Because poverty rate and logged median income captured similar socioeconomic conditions, we retained poverty rate due to its stronger theoretical link to eviction risk. We selected delinquent property count over logged delinquent balance because it showed a stronger empirical correlation with eviction filings. Finally, we used the three-month rolling spatial lag  rather than the one- or two-month lags, as the rolling measure captured short-term fluctuations while reducing redundancy. This process ensured that the final predictors were theoretically relevant and minimally collinear.
 
 ```{r correlation-matrix}
 #| fig-dpi: 300
@@ -1767,14 +1810,6 @@ corrplot(correlation_matrix,
          col = color_vector
          )
 ```
-
-Modeling Notes:
-
-- Likely use `poverty_rate` over `log_median_income`, they measure the same concept, but poverty rate has a stronger theoretical link to evictions.
-
-- Use `delinquent_prop_count` over `log_delinquent_balance` it has a stronger correlation to the target.
-
-- Likely use filings_ma3 (3-month rolling average) over `filings_lag1` and `filings_lag2`, it captures both of them so it makes it redundant.
 
 ## 2. TRAIN/TEST SPLIT STRATEGY
 
