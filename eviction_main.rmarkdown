@@ -142,8 +142,7 @@ cat(sprintf("Columns: %d\n", ncol(df_weekly_raw)))
 ```{r weekly-data-table}
 # Display sample of weekly data.
 head(df_weekly_raw, 10) %>%
-  kable(caption = "Sample of Raw Weekly Eviction Filing Data",
-    col.names = c("Type", "GEOID", "Racial  Majority", "Week", "Date", "Filings", "Average Filings", "Pre-Pandemic Average Filings", "Last Updated")) %>%
+  kable(caption = "Sample of Raw Weekly Eviction Filing Data") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
@@ -164,8 +163,7 @@ cat(sprintf("Columns: %d\n", ncol(df_claims_raw)))
 ```{r claims-data-table}
 # Display claims data structure.
 head(df_claims_raw, 10) %>%
-  kable(digits = 2, caption = "Sample of Monthly Claims Severity Data",
-    col.names = c("Date", "Median Claim", "Below $1,000", "Below Median Rent", "Over Six Months Rent", "Baseline Median Claim")) %>%
+  kable(digits = 2, caption = "Sample of Monthly Claims Severity Data") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
@@ -189,8 +187,7 @@ cat(sprintf("Variables: %s\n", paste(names(df_tax_raw), collapse = ", ")))
 ```{r tax-data-table}
 # Display sample of tax delinquency data.
 head(df_tax_raw, 10) %>%
-  kable(digits = 2, caption = "Sample of Real Estate Tax Balances by Census Tract",
-    col.names = c("Object ID", "Census Tract", "Properties", "Minimum Period", "Maximum Period", "Principal", "Interest", "Penalty", "Other", "Balance", "Average Balance")) %>%
+  kable(digits = 2, caption = "Sample of Real Estate Tax Balances by Census Tract") %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
@@ -281,8 +278,7 @@ df_monthly %>%
     n_tracts = n_distinct(GEOID),
     total_obs = n()
   ) %>%
-  kable(caption = "Monthly Data Temporal Coverage",
-        col.names = c("Minimum Date", "Maximum Date", "Months", "Tracts", "Observations")) %>%
+  kable(caption = "Monthly Data Temporal Coverage") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -328,8 +324,7 @@ df_weekly %>%
     n_tracts = n_distinct(GEOID),
     total_obs = n()
   ) %>%
-  kable(caption = "Weekly Data Temporal Coverage",
-        col.names = c("Minimum Date", "Maximum Date", "Weeks", "Tracts", "Observations")) %>%
+  kable(caption = "Weekly Data Temporal Coverage") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -433,8 +428,7 @@ tax_summary %>%
   mutate(value = ifelse(str_detect(statistic, "balance"), 
                         paste0("$", comma(round(value, 2))), 
                         comma(round(value, 2)))) %>%
-  kable(caption = "Tax Delinquency Summary Statistics",
-        col.names = c("Statistic", "Value")) %>%
+  kable(caption = "Tax Delinquency Summary Statistics") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -490,8 +484,7 @@ sealed_distribution <- df_monthly %>%
   arrange(desc(filings_count))
 
 head(sealed_distribution, 10) %>%
-  kable(caption = "Highest Filing Counts in Sealed Tracts",
-        col.names = c("Filings", "Frequency")) %>%
+  kable(caption = "Highest Filing Counts in Sealed Tracts") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -738,8 +731,7 @@ quantile_stats_monthly <- df_monthly %>%
 # Display quantile distribution.
 quantile_stats_monthly %>%
   pivot_longer(everything(), names_to = "quantile", values_to = "filings") %>%
-  kable(digits = 1, caption = "Monthly Filing Count Quantiles (Positive Counts Only)",
-        col.names = c("Quantile", "Filings")) %>%
+  kable(digits = 1, caption = "Monthly Filing Count Quantiles (Positive Counts Only)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -812,8 +804,7 @@ monthly_aggregate %>%
     sd_monthly = sd(total_filings),
     .groups = "drop"
   ) %>%
-  kable(digits = 0, caption = "Monthly Filing Statistics by Policy Period",
-        col.names = c("Period", "Months", "Monthly Mean", "Monthly Median", "Monthly Minimum", "Monthly Maximum", "Monthly Standard Deviation")) %>%
+  kable(digits = 0, caption = "Monthly Filing Statistics by Policy Period") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -897,16 +888,14 @@ seasonality_boxplot + monthly_boxplot +
 ```{r seasonality-table}
 # Display seasonality statistics table.
 seasonality_data %>%
-  kable(digits = 2, caption = "Seasonal Stats (Post-Moratorium Period)",
-        col.names = c("Season", "Mean Filings", "Median Filings", "Standard Deviation Filings")) %>%
+  kable(digits = 2, caption = "Seasonal Stats (Post-Moratorium Period)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 ```{r monthly-table}
 # Display seasonality statistics table.
 monthly_data %>%
-  kable(digits = 2, caption = "Monthly Stats (Post-Moratorium Period)",
-        col.names = c("Month", "Month Number", "Mean Filings", "Median Filings", "Standard Deviation Filings")) %>%
+  kable(digits = 2, caption = "Monthly Stats (Post-Moratorium Period)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -976,8 +965,7 @@ racial_stats <- df_monthly %>%
 
 # Display racial disparity statistics.
 racial_stats %>%
-  kable(digits = 2, caption = "Eviction Filing Statistics by Tract Racial Majority",
-        col.names = c("Racial Majority", "Observations", "Tracts", "Filings", "Mean Filings", "Median Filings", "Standard Deviation Filings", "% Zero", "% Total Filings", "% Tracts")) %>%
+  kable(digits = 2, caption = "Eviction Filing Statistics by Tract Racial Majority") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1036,7 +1024,6 @@ tract_totals <- df_monthly %>%
     mean_monthly = mean(filings_count, na.rm = TRUE),
     median_monthly = median(filings_count, na.rm = TRUE),
     sd_monthly = sd(filings_count, na.rm = TRUE),
-    # Standardized measure of dispersion. Helps compare volatility. The higher the more volatile.
     cv = ifelse(mean_monthly > 0, sd_monthly / mean_monthly, NA),
     months_observed = n(),
     months_with_filings = sum(filings_count > 0),
@@ -1051,8 +1038,7 @@ top_risk_tracts <- tract_totals %>%
 # Display top risk tracts.
 top_risk_tracts %>%
   select(GEOID, racial_majority, total_filings, mean_monthly, cv) %>%
-  kable(digits = 2, caption = "Top 20 Highest-Risk Census Tracts (Total Filings 2020-2025)",
-        col.names = c("GEOID", "Racial Majority", "Filings", "Monthly Mean", "Coefficient of Variation")) %>%
+  kable(digits = 2, caption = "Top 20 Highest-Risk Census Tracts (Total Filings 2020-2025)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1202,8 +1188,7 @@ monthly_baseline_ratio %>%
     median_ratio = median(ratio_to_baseline, na.rm = TRUE),
     .groups = "drop"
   ) %>%
-  kable(digits = 2, caption = "Baseline Ratio Statistics by Policy Period",
-        col.names = c("Period", "Weeks", "Mean Ratio", "Median Ratio")) %>%
+  kable(digits = 2, caption = "Baseline Ratio Statistics by Policy Period") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1251,8 +1236,7 @@ lag_coverage <- df_model_prep %>%
 
 # Display lag coverage stats.
 lag_coverage %>%
-  kable(digits = 1, caption = "Lagged Variable Coverage Stats",
-        col.names = c("Observations", "Missing Lag 1", "Missing Lag 2", "Missing Lag 3", "Missing Lag 3-Month Rolling Average", "% Missing Lag 1", "% Missing Lag 2", "% Missing Lag 3", "% Missing Lag 3-Month Rolling Average")) %>%
+  kable(digits = 1, caption = "Lagged Variable Coverage Stats") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1278,8 +1262,7 @@ zero_coverage <- df_model_prep %>%
 
 # Display zero flag coverage stats.
 zero_coverage %>%
-  kable(digits = 1, caption = "Zero Flag Variable Coverage Stats",
-        col.names = c("Observations", "Missing 0 Last Month", "Missing Consecutive Zeros", "% Missing 0 Last Month", "% Missing Consecutive Zeros")) %>%
+  kable(digits = 1, caption = "Zero Flag Variable Coverage Stats") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1448,6 +1431,8 @@ df_acs <- acs_data %>%
   )
 ```
 
+
+
 ```{r acs-summary-stats}
 # Calculate summary stats for ACS features.
 acs_summary <- df_acs %>%
@@ -1465,8 +1450,7 @@ acs_summary <- df_acs %>%
   )
 
 acs_summary %>%
-  kable(digits = 2, caption = "ACS Feature Summary Stats",
-        col.names = c("Variable", "Mean", "Median", "Standard Deviation", "Minimum", "Maximum", "% Missing")) %>%
+  kable(digits = 2, caption = "ACS Feature Summary Stats") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1715,8 +1699,7 @@ train_test_comparison <- bind_rows(
   )
 
 train_test_comparison %>%
-  kable(digits = 2, caption = "Filing Distribution Comparison: Training vs Test Sets",
-        col.names = c("Set", "Observations", "Mean Filings", "Median Filings", "Standard Deviation Filings", "% Zero")) %>%
+  kable(digits = 2, caption = "Filing Distribution Comparison: Training vs Test Sets") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1804,8 +1787,7 @@ model_comparison <- data.frame(
   )
 
 model_comparison %>%
-  kable(digits = 2, caption = "Model Comparison Statistics (Lower AIC = Better Fit)",
-        col.names = c("Model", "AIC", "Theta", "Log Likelihood", "AIC Change", "Rank")) %>%
+  kable(digits = 2, caption = "Model Comparison Statistics (Lower AIC = Better Fit)") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -1943,8 +1925,7 @@ train_metrics <- bind_rows(train_metrics_1, train_metrics_2, train_metrics_3, tr
 
 # Display training performance.
 train_metrics %>%
-  kable(digits = 3, caption = "Training Set Performance Across Models",
-        col.names = c("Model", "Number", "MAE", "RMSE", "Mean Observed", "Mean Predicted", "Correlation", "Bias")) %>%
+  kable(digits = 3, caption = "Training Set Performance Across Models") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2005,8 +1986,7 @@ test_metrics <- bind_rows(test_metrics_1, test_metrics_2, test_metrics_3, test_m
 
 # Display test performance.
 test_metrics %>%
-  kable(digits = 3, caption = "Test Set Performance Across Models",
-        col.names = c("Model", "Number", "MAE", "RMSE", "Mean Observed", "Mean Predicted", "Correlation", "Bias")) %>%
+  kable(digits = 3, caption = "Test Set Performance Across Models") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2023,14 +2003,13 @@ overfitting_check <- train_metrics %>%
     by = "model"
   ) %>%
   mutate(
-    MAE_change = (MAE_test - MAE_train) / MAE_train * 100,
-    RMSE_change = (RMSE_test - RMSE_train) / RMSE_train * 100,
-    corr_change = (corr_train - corr_test) / corr_train * 100
+    MAE_degradation = (MAE_test - MAE_train) / MAE_train * 100,
+    RMSE_degradation = (RMSE_test - RMSE_train) / RMSE_train * 100,
+    corr_degradation = (corr_train - corr_test) / corr_train * 100
   )
 
 overfitting_check %>%
-  kable(digits = 2, caption = "Train vs Test Performance: Overfitting Assessment",
-        col.names = c("Model", "Training MAE", "Training RMSE", "Training Correlation", "Testing MAE", "Testing RMSE", "Testing Correlation", "MAE Change", "RMSE Change", "Correlation Change")) %>%
+  kable(digits = 2, caption = "Train vs Test Performance: Overfitting Assessment") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2113,8 +2092,7 @@ test_metrics_by_race <- df_test_pred %>%
   )
 
 test_metrics_by_race %>%
-  kable(digits = 2, caption = "Test Set Performance by Tract Racial Majority",
-        col.names = c("Racial Majority", "Number", "MAE", "RMSE", "Mean Observed", "Mean Predicted", "Mean Error")) %>%
+  kable(digits = 2, caption = "Test Set Performance by Tract Racial Majority") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2182,8 +2160,7 @@ risk_validation <- df_test_risk %>%
 
 # Display risk validation table.
 risk_validation %>%
-  kable(digits = 2, caption = "Observed Filings by Predicted Risk Category",
-        col.names = c("Risk Category", "Observations", "Mean Observed", "Median Observed", "Filings", "% Filings")) %>%
+  kable(digits = 2, caption = "Observed Filings by Predicted Risk Category") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2234,8 +2211,7 @@ high_risk_profile <- df_test_risk %>%
   arrange(desc(n_tract_months))
 
 high_risk_profile %>%
-  kable(digits = 1, caption = "Racial Composition of Highest Risk Tract-Months",
-        col.names = c("Racial Majority", "Observations", "% High Risk", "Mean Filings")) %>%
+  kable(digits = 1, caption = "Racial Composition of Highest Risk Tract-Months") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2311,8 +2287,7 @@ acs_contribution <- tidy(model_nb_3) %>%
   select(term, estimate, standard_error, p_value, irr, percent_change, significant)
 
 acs_contribution %>%
-  kable(digits = 3, caption = "ACS Socioeconomic Feature Effects",
-        col.names = c("Term", "Estimate", "Standard Error", "P-Value", "IRR", "% Change", "Significant")) %>%
+  kable(digits = 3, caption = "ACS Socioeconomic Feature Effects") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2334,8 +2309,7 @@ irr_table <- tidy(model_nb_3) %>%
 
 irr_table %>%
   head(15) %>%
-  kable(digits = 3, caption = "Incidence Rate Ratios (IRR) for Key Predictors",
-        col.names = c("Term", "IRR", "IRR Lower Confidence", "IRR Upper Confidence", "% Change", "P-Value")) %>%
+  kable(digits = 3, caption = "Incidence Rate Ratios (IRR) for Key Predictors") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
@@ -2388,8 +2362,7 @@ equity_metrics <- df_test_pred %>%
 
 # Display equity metrics table.
 equity_metrics %>%
-  kable(digits = 2, caption = "Model Performance Metrics by Tract Racial Majority",
-        col.names = c("Racial Majority", "Observations", "Mean Observed", "Mean Predicted", "MAE", "Mean Error", "Under-Prediction Rate")) %>%
+  kable(digits = 2, caption = "Model Performance Metrics by Tract Racial Majority") %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
