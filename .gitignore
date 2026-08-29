@@ -1,11 +1,5 @@
 # Data
-data/DOR_Parcel/
-data/eviction/data_dictionary_*.csv
-data/eviction/opa_properties_assessments.csv
-data/license_inspection/
-data/pa_tracts/
-data/philadelphia-neighborhoods/
-data/septa/
+data/
 
 # Libraries
 draft_slides_files/
