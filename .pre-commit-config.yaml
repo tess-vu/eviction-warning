@@ -1,0 +1,31 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-added-large-files
+        args: ['--maxkb=50000'] # Block commits if any staged geo-asset is over 50MB
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+      - id: nbstripout # Automatically strips map caches/cell logs out of Jupyter Notebooks (.ipynb)
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args:
+          - 'FEAT'
+          - 'FIX'
+          - 'REFACTOR'
+          - 'PERF'
+          - 'STYLE'
+          - 'TEST'
+          - 'DOCS'
+          - 'CHORE'
+          - '--'
+          - '--scopes=python,r,sql,db,postgis,raster,vector,data,viz,leaflet,mapbox,streamlit,repo,deps,ci'
