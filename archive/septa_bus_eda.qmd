@@ -63,54 +63,58 @@ doing and what limitations we face with real-world data! :D
 # Setup and Initial Data Loading
 
 ```{r setup}
-# Load libraries.
+# Spatial
+library(sf)
+
+# Data wrangling
 library(tidyverse)
 library(lubridate)
-library(sf)
+
+# Visualization
 library(scales)
 library(patchwork)
-library(viridis)
 library(kableExtra)
 library(corrplot)
 library(ggridges)
-library(knitr)
 
-# Disable scientific notation.
 options(scipen = 999)
 
-# Consistent theme.
-theme_set(theme_minimal(base_size = 12))
-
-# Download viz when knitting.
-opts_chunk$set(
-  fig.path = "septa_figures/", 
-  dev = "png"
+theme_set(
+  theme_minimal(base_size = 12) +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      strip.text = element_text(face = "bold")
+    )
 )
+
+# Data file paths
+path_bus_ridership <- "../data/septa/Bus_Ridership_by_Census_Tract.csv"
+path_pa_tracts <- "../data/pa_tracts/pa_tracts.shp"
+path_transit_routes <- "../data/septa/Transit_Routes_Spring_2025/Transit_Routes.shp"
+path_stop_summary <- "../data/septa/Fall_2023_Stop_Summary_Bus.csv"
+path_route_ridership <- "../data/septa/Average_Daily_Ridership_By_Route.csv"
+path_mode_ridership <- "../data/septa/Average_Daily_Ridership_By_Mode.csv"
+path_rr_stations <- "../data/septa/Regional_Rail_Station_Summary.csv"
 ```
 
 ```{r data-load-dim}
-# Core panel data for spatio-temporal analysis.
-df_raw <- read.csv("data/septa/Bus_Ridership_by_Census_Tract.csv")
+df_raw <- read_csv(path_bus_ridership, show_col_types = FALSE)
 
-# Initial data structure and dimensions.
 cat("Initial dataset dimensions:\n")
 print(dim(df_raw))
 ```
 
 ```{r data-load-table}
-# First few rows to understand structure.
 head(df_raw) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
 ```
 
 ```{r data-structure}
-# Column types.
 str(df_raw)
 ```
 
 ```{r data-missing-table}
-# Missing values by column.
 colSums(is.na(df_raw)) %>%
   as.data.frame() %>%
   rename("Missing_Count" = ".") %>%
@@ -121,18 +125,14 @@ colSums(is.na(df_raw)) %>%
 # Data Cleaning and Feature Engineering
 
 ```{r data-cleaning}
-# Cleaned dataset with temporal and categorical features.
 df_clean <- df_raw %>%
-  # Numeric year from Season column for time series analysis.
   mutate(Year = as.numeric(str_extract(Season, "\\d{4}"))) %>%
-  # Remove rows with missing ridership counts that mess up aggregations.
   filter(!is.na(On_), !is.na(Off_)) %>%
-  # Binary indicator for weekday vs. weekend patterns.
   mutate(
-    Is_Weekday = ifelse(Day_of_Week == "Weekday", 1, 0),
+    Is_Weekday = if_else(Day_of_Week == "Weekday", 1L, 0L),
     Day_Type = factor(Day_of_Week, levels = c("Weekday", "Weekend", "Sunday"))
   ) %>%
-  # Pandemic period indicator for break analysis.
+  # Pandemic period indicator for structural break analysis.
   mutate(
     Period = case_when(
       Year < 2020 ~ "Pre-Pandemic",
@@ -141,10 +141,8 @@ df_clean <- df_raw %>%
     ),
     Period = factor(Period, levels = c("Pre-Pandemic", "Pandemic", "Post-Pandemic"))
   ) %>%
-  # Convert Census Tract ID to character for joining.
   mutate(Census_Tract_ID = as.character(Census_Tract_ID))
 
-# Summary stats of cleaned data showing key distributions.
 cat("Cleaned dataset dimensions:\n")
 print(dim(df_clean))
 ```
@@ -156,7 +154,6 @@ summary(df_clean) %>%
 ```
 
 ```{r data-quality-temporal-coverage}
-# Check temporal coverage across all years in panel.
 df_clean %>%
   count(Year, name = "Observations") %>%
   kable() %>%
@@ -164,7 +161,7 @@ df_clean %>%
 ```
 
 ```{r data-quality-zero-tracts}
-# Check zero-ridership tracts which may indicate service gaps.
+# Zero-ridership tracts may indicate service gaps or data collection issues.
 zero_ridership <- df_clean %>%
   filter(On_ == 0 & Off_ == 0) %>%
   count(Year, name = "Zero_Ridership_Tracts")
@@ -175,7 +172,6 @@ zero_ridership %>%
 ```
 
 ```{r data-quality-checks}
-# Percentage of zero observations per year.
 total_obs <- df_clean %>%
   count(Year, name = "Total")
 
@@ -190,7 +186,6 @@ zero_pct %>%
 ```
 
 ```{r county-coverage-table}
-# Geographic coverage across five-county SEPTA service area.
 df_clean %>%
   count(County_Name, name = "Tract_Observations") %>%
   arrange(desc(Tract_Observations)) %>%
@@ -199,7 +194,6 @@ df_clean %>%
 ```
 
 ```{r county-coverage-unique}
-# Unique tracts per county to understand spatial extent.
 df_clean %>%
   group_by(County_Name) %>%
   summarize(Unique_Tracts = n_distinct(Census_Tract_ID)) %>%
@@ -217,7 +211,7 @@ df_clean %>%
 #| fig-height: 10
 #| fig-width: 12
 
-# Pivot On_ and Off_ counts into long format for facet.
+# Pivot On_/Off_ into long format for faceted comparison.
 df_long <- df_clean %>%
   select(Census_Tract_ID, Year, Day_of_Week, On_, Off_) %>%
   pivot_longer(
@@ -232,25 +226,22 @@ df_long <- df_clean %>%
     )
   )
 
-# Log transformation column for distribution comparison.
 df_hist_data <- df_long %>%
   mutate(
     Log_Count = log10(Count + 1),
     Scale = factor("Raw Count", levels = c("Raw Count", "log(Count + 1)"))
   )
 
-# Duplicate data with log scale for second column facet.
+# Duplicate with log scale for second facet column.
 df_log_data <- df_hist_data %>%
   mutate(
     Count = Log_Count,
     Scale = factor("log(Count + 1)", levels = c("Raw Count", "log(Count + 1)"))
   )
 
-# Combine raw and log-transformed data for viz.
 df_final_hist <- bind_rows(df_hist_data, df_log_data) %>%
   filter(!is.na(Count))
 
-# 2x2 faceted histogram showing raw and log-transformed distributions.
 dist_plot <- ggplot(df_final_hist, aes(x = Count, fill = Ridership_Type)) +
   geom_histogram(bins = 50, position = "identity", alpha = 0.6) +
   scale_x_continuous(labels = comma) +
@@ -265,21 +256,14 @@ dist_plot <- ggplot(df_final_hist, aes(x = Count, fill = Ridership_Type)) +
     caption = "Data: SEPTA Bus Ridership 2014-2023 | All Census Tracts"
   ) +
   facet_grid(Ridership_Type ~ Scale, scales = "free") +
-  theme_minimal(base_size = 11) +
-  theme(
-    legend.position = "bottom",
-    plot.title = element_text(face = "bold", size = 14),
-    strip.text = element_text(face = "bold")
-  )
+  theme(legend.position = "bottom")
 
-# Distribution plot demonstrating need for count model.
 dist_plot
 ```
 
 ## Overdispersion Statistics
 
 ```{r overdispersion-stats}
-# Mean and variance for boardings to quantify overdispersion.
 overdispersion_stats <- df_clean %>%
   summarize(
     Mean_On = mean(On_, na.rm = TRUE),
@@ -307,7 +291,6 @@ better than Poisson.
 ## Quantile Analysis
 
 ```{r quantile-analysis}
-# Quantiles to understand concentration of ridership.
 quantile_stats <- df_clean %>%
   summarize(
     Min = min(On_),
@@ -321,7 +304,6 @@ quantile_stats <- df_clean %>%
     Max = max(On_)
   )
 
-# Boarding count distribution quantiles.
 quantile_stats %>%
   pivot_longer(everything(), names_to = "Quantile", values_to = "Boardings") %>%
   kable(digits = 1) %>%
@@ -337,7 +319,6 @@ quantile_stats %>%
 #| fig-height: 6
 #| fig-width: 12
 
-# Total boardings per year for macro trend.
 annual_trend <- df_clean %>%
   group_by(Year) %>%
   summarize(
@@ -347,7 +328,6 @@ annual_trend <- df_clean %>%
     .groups = "drop"
   )
 
-# Line plot showing total ridership with pandemic marker.
 annual_plot <- ggplot(annual_trend, aes(x = Year, y = Total_On)) +
   geom_line(color = "#1F77B4", linewidth = 1.5) +
   geom_point(color = "#1F77B4", size = 4) +
@@ -362,18 +342,12 @@ annual_plot <- ggplot(annual_trend, aes(x = Year, y = Total_On)) +
     y = "Total Average Daily Boardings",
     caption = "Data: SEPTA Bus Ridership | Red Line = Fall 2019 Baseline"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    axis.title = element_text(face = "bold")
-  )
+  theme(axis.title = element_text(face = "bold"))
 
-# Trend showing pandemic impact.
 annual_plot
 ```
 
 ```{r annual-system-stats}
-# Recovery stats.
 recovery_pct <- annual_trend %>%
   filter(Year %in% c(2019, 2023)) %>%
   summarize(
@@ -394,12 +368,10 @@ cat(sprintf("Recovery Rate: %.1f%%\n", recovery_pct$Recovery_Pct))
 #| fig-height: 6
 #| fig-width: 12
 
-# Total boardings by year and day type for differential recovery.
 day_type_trend <- df_clean %>%
   group_by(Year, Day_of_Week) %>%
   summarize(Total_On = sum(On_), .groups = "drop")
 
-# Line plot showing divergent recovery patterns by day type.
 day_type_plot <- ggplot(day_type_trend, aes(x = Year, y = Total_On, color = Day_of_Week)) +
   geom_line(linewidth = 1.3) +
   geom_point(size = 3.5) +
@@ -414,13 +386,8 @@ day_type_plot <- ggplot(day_type_trend, aes(x = Year, y = Total_On, color = Day_
     color = "Day Type",
     caption = "Data: SEPTA Bus Ridership 2014-2023"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "bottom"
-  )
+  theme(legend.position = "bottom")
 
-# Day type comparison showing differential recovery.
 day_type_plot
 ```
 
@@ -431,16 +398,14 @@ day_type_plot
 #| fig-height: 6
 #| fig-width: 12
 
-# Year-over-year percentage change in ridership.
 yoy_growth <- annual_trend %>%
   arrange(Year) %>%
   mutate(
     YoY_Change = (Total_On - lag(Total_On)) / lag(Total_On) * 100,
-    Growth_Type = ifelse(YoY_Change >= 0, "Growth", "Decline")
+    Growth_Type = if_else(YoY_Change >= 0, "Growth", "Decline")
   ) %>%
   filter(!is.na(YoY_Change))
 
-# Bar chart showing year-over-year growth rates.
 yoy_plot <- ggplot(yoy_growth, aes(x = factor(Year), y = YoY_Change, fill = Growth_Type)) +
   geom_col(width = 0.7) +
   geom_hline(yintercept = 0, linetype = "solid", color = "black", linewidth = 0.5) +
@@ -453,13 +418,8 @@ yoy_plot <- ggplot(yoy_growth, aes(x = factor(Year), y = YoY_Change, fill = Grow
     fill = "Change Type",
     caption = "Data: SEPTA Bus Ridership"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "bottom"
-  )
+  theme(legend.position = "bottom")
 
-# Display year-over-year growth chart.
 yoy_plot
 ```
 
@@ -468,7 +428,6 @@ yoy_plot
 ## County-Level Recovery Ratios
 
 ```{r county-recovery}
-# Average boardings and recovery ratio for each county.
 county_recovery <- df_clean %>%
   filter(Year %in% c(2019, 2023), Day_of_Week == "Weekday") %>%
   group_by(County_Name, Year) %>%
@@ -490,7 +449,6 @@ county_recovery <- df_clean %>%
   ) %>%
   arrange(desc(Recovery_Ratio))
 
-# County-level recovery analysis (2023 vs. 2019).
 county_recovery %>%
   select(County_Name, Total_On_2019, Total_On_2023, Recovery_Ratio, Pct_Change) %>%
   kable(
@@ -507,10 +465,8 @@ county_recovery %>%
 #| fig-height: 6
 #| fig-width: 12
 
-# Top 10 percent of tracts by ridership for spatial concentration.
 threshold_90pct <- quantile(df_clean$On_, 0.90)
 
-# Concentration statistics showing inequality.
 concentration_stats <- df_clean %>%
   filter(Year == 2023, Day_of_Week == "Weekday") %>%
   mutate(High_Ridership = On_ >= threshold_90pct) %>%
@@ -525,14 +481,12 @@ concentration_stats <- df_clean %>%
     Pct_Ridership = Total_Boardings / sum(Total_Boardings) * 100
   )
 
-# Ridership concentration for top 10% of rracts in 2023.
 concentration_stats %>%
   kable(digits = 1) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 ```{r high-ridership-tracts-ridge}
-# Ridge plot showing distribution evolution over time.
 ridge_data <- df_clean %>%
   filter(Day_of_Week == "Weekday", On_ > 0) %>%
   mutate(Year_Factor = factor(Year))
@@ -548,11 +502,7 @@ ridge_plot <- ggplot(ridge_data, aes(x = log10(On_ + 1), y = Year_Factor, fill =
     fill = "Year",
     caption = "Data: SEPTA Weekday Bus Ridership"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "none"
-  )
+  theme(legend.position = "none")
 
 ridge_plot
 ```
@@ -564,7 +514,6 @@ ridge_plot
 #| fig-height: 6
 #| fig-width: 12
 
-# Tract-level recovery ratios comparing 2023 to 2019.
 tract_recovery <- df_clean %>%
   filter(Year %in% c(2019, 2023), Day_of_Week == "Weekday") %>%
   group_by(Census_Tract_ID, County_Name, Year) %>%
@@ -574,11 +523,10 @@ tract_recovery <- df_clean %>%
   mutate(Recovery_Ratio = Y2023 / Y2019) %>%
   filter(!is.infinite(Recovery_Ratio))
 
-# Histogram showing distribution of recovery ratios.
 recovery_hist <- ggplot(tract_recovery, aes(x = Recovery_Ratio)) +
   geom_histogram(bins = 50, fill = "#3498DB", color = "white", alpha = 0.8) +
   geom_vline(xintercept = 1, linetype = "dashed", color = "red", linewidth = 1) +
-  annotate("text", x = 1, y = Inf, label = "Full Recovery", 
+  annotate("text", x = 1, y = Inf, label = "Full Recovery",
            vjust = 2, hjust = 1.1, color = "red", fontface = "bold") +
   labs(
     title = "Distribution of Tract-Level Recovery Ratios (2023 vs. 2019)",
@@ -586,17 +534,12 @@ recovery_hist <- ggplot(tract_recovery, aes(x = Recovery_Ratio)) +
     x = "Recovery Ratio (2023 / 2019)",
     y = "Number of Census Tracts",
     caption = "Data: SEPTA Weekday Bus Ridership | Ratio > 1 = Exceeds 2019 Baseline"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14)
   )
 
 recovery_hist
 ```
 
 ```{r tract-recovery-heterogeneity}
-# Summary stats for recovery distribution.
 summary(tract_recovery$Recovery_Ratio) %>%
   as.matrix() %>%
   kable(col.names = "Value", digits = 3) %>%
@@ -606,7 +549,7 @@ summary(tract_recovery$Recovery_Ratio) %>%
 ## Top Growth vs. Decline Tracts
 
 ```{r winners-losers-high}
-# Top 20 tracts with highest growth and steepest decline.
+# Minimum 100 boardings in 2019 to avoid ratio distortion from low-volume tracts.
 top_gainers <- tract_recovery %>%
   filter(Y2019 >= 100) %>%
   arrange(desc(Recovery_Ratio)) %>%
@@ -619,10 +562,8 @@ top_decliners <- tract_recovery %>%
   head(20) %>%
   mutate(Type = "Steepest Declines")
 
-# Combine and viz winners vs. losers.
 winners_losers <- bind_rows(top_gainers, top_decliners)
 
-# Top 10 highest growth tracts in 2023 vs. 2019, minimum 100 boardings in 2019.
 top_gainers %>%
   head(10) %>%
   select(Census_Tract_ID, County_Name, Y2019, Y2023, Recovery_Ratio) %>%
@@ -631,7 +572,6 @@ top_gainers %>%
 ```
 
 ```{r winners-losers-steep}
-# Top 10 steepest decline tracts in 2023 vs. 2019, minimum 100 boardings in 2019.
 top_decliners %>%
   head(10) %>%
   select(Census_Tract_ID, County_Name, Y2019, Y2023, Recovery_Ratio) %>%
@@ -644,7 +584,6 @@ top_decliners %>%
 ## Temporal Lag Variable
 
 ```{r temporal-lag-creation}
-# Temporal lag feature for all tracts and years.
 df_with_lag <- df_clean %>%
   filter(Day_of_Week == "Weekday") %>%
   arrange(Census_Tract_ID, Year) %>%
@@ -655,7 +594,7 @@ df_with_lag <- df_clean %>%
   ) %>%
   ungroup()
 
-# Check missing lag values in first year for each tract.
+# First year for each tract will have NA lag — expected.
 lag_missing <- df_with_lag %>%
   summarize(
     Total_Obs = n(),
@@ -665,14 +604,12 @@ lag_missing <- df_with_lag %>%
 ```
 
 ```{r temporal-lag-coverage}
-# Temporal lag variable coverage.
 lag_missing %>%
   kable(digits = 1) %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 ```{r temporal-lag-glimpse}
-# First few rows with lag variable.
 df_with_lag %>%
   select(Census_Tract_ID, Year, On_, On_Lag1) %>%
   head(15) %>%
@@ -683,7 +620,6 @@ df_with_lag %>%
 ## Tract-Level Stats for FE
 
 ```{r tract-statistics}
-# Tract-level summary stats for FE analysis.
 tract_stats <- df_clean %>%
   filter(Day_of_Week == "Weekday") %>%
   group_by(Census_Tract_ID, County_Name) %>%
@@ -698,7 +634,6 @@ tract_stats <- df_clean %>%
   ) %>%
   mutate(Full_Panel = Years_Observed == 10)
 
-# Tract-level panel balance summary.
 tract_stats %>%
   count(Years_Observed, name = "Number_of_Tracts") %>%
   kable() %>%
@@ -706,7 +641,6 @@ tract_stats %>%
 ```
 
 ```{r tract-statistics-structure}
-# Check for balanced panel structure.
 balanced_pct <- sum(tract_stats$Full_Panel) / nrow(tract_stats) * 100
 cat(sprintf("\nPercentage of tracts with complete 10-year panel: %.1f%%\n", balanced_pct))
 ```
@@ -718,8 +652,8 @@ cat(sprintf("\nPercentage of tracts with complete 10-year panel: %.1f%%\n", bala
 #| fig-height: 10
 #| fig-width: 10
 
-# Coefficient of variation to identify stable vs. volatile tracts.
-cv_plot <- ggplot(tract_stats %>% filter(Mean_Boardings > 10), 
+# Higher CV = less predictable ridership; useful for identifying volatile tracts.
+cv_plot <- ggplot(tract_stats %>% filter(Mean_Boardings > 10),
                   aes(x = Mean_Boardings, y = CV_Boardings)) +
   geom_hex(bins = 40) +
   scale_fill_viridis_c(option = "magma", trans = "log10", labels = comma) +
@@ -733,10 +667,6 @@ cv_plot <- ggplot(tract_stats %>% filter(Mean_Boardings > 10),
     y = "Coefficient of Variation (SD / Mean) [Log Scale]",
     fill = "Tract Count",
     caption = "Data: SEPTA Bus Ridership | CV = 1 Ref Line"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14)
   )
 
 cv_plot
@@ -751,9 +681,8 @@ cv_plot
 #| fig-height: 6
 #| fig-width: 12
 
-# Percent of zero-ridership observations by year and county.
 zero_patterns <- df_clean %>%
-  mutate(Is_Zero = ifelse(On_ == 0 & Off_ == 0, 1, 0)) %>%
+  mutate(Is_Zero = if_else(On_ == 0 & Off_ == 0, 1L, 0L)) %>%
   group_by(Year, County_Name) %>%
   summarize(
     Total_Obs = n(),
@@ -762,7 +691,6 @@ zero_patterns <- df_clean %>%
     .groups = "drop"
   )
 
-# Zero-ridership patterns across counties and time.
 zero_heatmap <- ggplot(zero_patterns, aes(x = factor(Year), y = County_Name, fill = Zero_Pct)) +
   geom_tile(color = "white", linewidth = 0.5) +
   scale_fill_gradient2(low = "#2ECC71", mid = "#F39C12", high = "#E74C3C",
@@ -775,11 +703,7 @@ zero_heatmap <- ggplot(zero_patterns, aes(x = factor(Year), y = County_Name, fil
     y = "County",
     caption = "Data: SEPTA Bus Ridership"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 zero_heatmap
 ```
@@ -787,9 +711,8 @@ zero_heatmap
 ## Service Coverage
 
 ```{r service-coverage}
-# Tracts with consistent service vs. sporadic coverage.
 service_coverage <- df_clean %>%
-  mutate(Has_Service = ifelse(On_ > 0 | Off_ > 0, 1, 0)) %>%
+  mutate(Has_Service = if_else(On_ > 0 | Off_ > 0, 1L, 0L)) %>%
   group_by(Census_Tract_ID, County_Name) %>%
   summarize(
     Years_With_Service = sum(Has_Service),
@@ -807,7 +730,6 @@ service_coverage <- df_clean %>%
     )
   )
 
-# Service coverage distribution.
 service_coverage %>%
   count(Coverage_Category, name = "Tract_Count") %>%
   mutate(Percentage = round(Tract_Count / sum(Tract_Count) * 100, 1)) %>%
@@ -824,7 +746,6 @@ service_coverage %>%
 #| fig-height: 6
 #| fig-width: 12
 
-# Violin plot comparing distributions across day types.
 day_violin <- df_clean %>%
   filter(On_ > 0) %>%
   ggplot(aes(x = Day_of_Week, y = log10(On_ + 1), fill = Day_of_Week)) +
@@ -839,11 +760,7 @@ day_violin <- df_clean %>%
     fill = "Day Type",
     caption = "Data: SEPTA Bus Ridership 2014-2023"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "none"
-  )
+  theme(legend.position = "none")
 
 day_violin
 ```
@@ -855,7 +772,6 @@ day_violin
 #| fig-height: 14
 #| fig-width: 12
 
-# Faceted box plots showing ridership distribution by county over time.
 county_box <- df_clean %>%
   filter(Day_of_Week == "Weekday", On_ > 0) %>%
   ggplot(aes(x = factor(Year), y = log10(On_ + 1), fill = County_Name)) +
@@ -869,9 +785,7 @@ county_box <- df_clean %>%
     fill = "County",
     caption = "Data: SEPTA Weekday Bus Ridership"
   ) +
-  theme_minimal(base_size = 11) +
   theme(
-    plot.title = element_text(face = "bold", size = 14),
     axis.text.x = element_text(angle = 45, hjust = 1),
     legend.position = "bottom"
   ) +
@@ -889,10 +803,8 @@ county_box
 #| fig-height: 10
 #| fig-width: 10
 
-# Correlation between boardings and deboardings.
 on_off_cor <- cor(df_clean$On_, df_clean$Off_, use = "complete.obs")
 
-# Scatter plot showing boarding-deboarding relationship.
 on_off_scatter <- df_clean %>%
   filter(Day_of_Week == "Weekday", Year == 2023) %>%
   ggplot(aes(x = On_ + 1, y = Off_ + 1)) +
@@ -911,10 +823,6 @@ on_off_scatter <- df_clean %>%
     y = "Deboardings (Off_) [Log Scale]",
     fill = "Density",
     caption = "Data: SEPTA Weekday Bus Ridership | Diagonal = Perfect Balance"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14)
   )
 
 on_off_scatter
@@ -931,14 +839,12 @@ cat(sprintf("Boardings-Deboardings Correlation: %.4f\n", on_off_cor))
 #| fig-height: 6
 #| fig-width: 6
 
-# Correlation matrix for numeric variables.
+# Is_Weekday excluded — constant after weekday filter, gives SD warning.
 cor_data <- df_clean %>%
   filter(Day_of_Week == "Weekday") %>%
-  # I removed Is_Weekday because It's a dummy variable and gives an SD warning and it bothers me.
   select(On_, Off_, Year) %>%
   cor(use = "complete.obs")
 
-# Correlation matrix with color coding.
 corrplot(cor_data, method = "color", type = "upper",
          addCoef.col = "black", number.cex = 0.8,
          tl.col = "black", tl.srt = 45,
@@ -950,34 +856,28 @@ corrplot(cor_data, method = "color", type = "upper",
 # Potential Train / Test Split Strategy?
 
 ```{r train-test-split}
-# Temporal train-test split for out-of-sample validation.
+# Temporal split avoids data leakage from random sampling.
 train_years <- 2014:2022
 test_year <- 2023
 
-# Training dataset for model development.
 df_train <- df_clean %>%
   filter(Year %in% train_years, Day_of_Week == "Weekday")
 
-# Test dataset for final validation.
 df_test <- df_clean %>%
   filter(Year == test_year, Day_of_Week == "Weekday")
 
-# Train/Test split summary.
 cat(sprintf("Training Period: %d - %d\n", min(train_years), max(train_years)))
 cat(sprintf("Training Observations: %s\n", comma(nrow(df_train))))
 cat(sprintf("\nTest Period: %d\n", test_year))
 cat(sprintf("Test Observations: %s\n", comma(nrow(df_test))))
 cat(sprintf("\nTrain/Test Ratio: %.1f%%\n", nrow(df_train) / nrow(df_clean) * 100))
 
-# Check for data leakage ensuring no overlap.
-cat("\nData Leakage Check:\n")
 overlap <- intersect(
   paste(df_train$Census_Tract_ID, df_train$Year),
   paste(df_test$Census_Tract_ID, df_test$Year)
 )
 
-# Should be 0.
-cat(sprintf("Overlapping Observations: %d\n", length(overlap)))
+cat(sprintf("\nOverlapping Observations: %d (should be 0)\n", length(overlap)))
 ```
 
 # Key Stuff for Modeling
@@ -985,7 +885,6 @@ cat(sprintf("Overlapping Observations: %d\n", length(overlap)))
 ## Summary Stats Table
 
 ```{r summary-stats-table}
-# Summary statistics table for potential features.
 summary_table <- df_clean %>%
   filter(Day_of_Week == "Weekday") %>%
   summarize(
@@ -1000,11 +899,13 @@ summary_table <- df_clean %>%
     Total_Obs = n()
   )
 
-# Summary stats for weekday boardings.
 summary_table %>%
   pivot_longer(everything(), names_to = "Statistic", values_to = "Value") %>%
-  mutate(Value = ifelse(Statistic %in% c("Mean_On", "Median_On", "SD_On", "Min_On", "Max_On"),
-                        round(Value, 1), round(Value, 0))) %>%
+  mutate(Value = if_else(
+    Statistic %in% c("Mean_On", "Median_On", "SD_On", "Min_On", "Max_On"),
+    round(Value, 1),
+    round(Value, 0)
+  )) %>%
   kable() %>%
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
@@ -1012,21 +913,17 @@ summary_table %>%
 # Spatial Analysis
 
 ```{r ridership-tract-on}
-# Load Pennsylvania census tract geometry for spatial visualization.
-tract_geo <- st_read("data/pa_tracts/pa_tracts.shp")
+tract_geo <- st_read(path_pa_tracts)
 
-# Define FIPS codes for Philadelphia and surrounding counties.
+# FIPS codes for SEPTA five-county service area.
 septa_county_fips <- c("017", "029", "045", "091", "101")
-
 # Alternative: Philadelphia only.
 # septa_county_fips <- c("101")
 
-# Transform to WGS84 coordinate system and filter to SEPTA service area.
 final_map_base <- tract_geo %>%
   st_transform(4326) %>%
   filter(COUNTYFP %in% septa_county_fips)
 
-# Calculate total ridership by census tract for Fall 2023.
 current_ridership <- df_clean %>%
   filter(Year == 2023) %>%
   group_by(Census_Tract_ID) %>%
@@ -1036,16 +933,13 @@ current_ridership <- df_clean %>%
   ) %>%
   mutate(Census_Tract_ID = as.character(Census_Tract_ID))
 
-# Join ridership data to geometry for spatial visualization.
 tract_map_data <- final_map_base %>%
   left_join(current_ridership, by = c("GEOID" = "Census_Tract_ID"))
 
-# Filter to only tracts with recorded ridership data.
 tract_map_data_with_ridership <- tract_map_data %>%
   filter(!is.na(Final_On_Count))
 
-# Load SEPTA transit route geometry for network visualization.
-routes <- st_read("data/septa/Transit_Routes_Spring_2025/Transit_Routes.shp")
+routes <- st_read(path_transit_routes)
 ```
 
 ```{r ridership-tract-map}
@@ -1053,7 +947,8 @@ routes <- st_read("data/septa/Transit_Routes_Spring_2025/Transit_Routes.shp")
 #| fig-height: 20
 #| fig-width: 14
 
-# Create choropleth map of boarding counts using log scale transformation.
+map_bg <- "#dedbd4"
+
 spatial_plot_log_on <- ggplot(tract_map_data_with_ridership) +
   geom_sf(aes(fill = Final_On_Count + 1), color = "#ff4100", linewidth = 0.25) +
   scale_fill_viridis_c(
@@ -1069,9 +964,11 @@ spatial_plot_log_on <- ggplot(tract_map_data_with_ridership) +
     subtitle = "Geographic clustering of log(Rider On Count + 1)."
   ) +
   theme_void() +
-  theme(plot.background = element_rect(fill = "#dedbd4", color = "#dedbd4"))
+  theme(
+    plot.background = element_rect(fill = map_bg, color = map_bg),
+    plot.title = element_text(face = "bold", size = 14)
+  )
 
-# Create choropleth map of alighting counts using log scale transformation.
 spatial_plot_log_off <- ggplot(tract_map_data_with_ridership) +
   geom_sf(aes(fill = Final_Off_Count + 1), color = "#ff4100", linewidth = 0.25) +
   scale_fill_viridis_c(
@@ -1087,21 +984,24 @@ spatial_plot_log_off <- ggplot(tract_map_data_with_ridership) +
     subtitle = "Geographic clustering of log(Rider Off Count + 1)."
   ) +
   theme_void() +
-  theme(plot.background = element_rect(fill = "#dedbd4", color = "#dedbd4"))
+  theme(
+    plot.background = element_rect(fill = map_bg, color = map_bg),
+    plot.title = element_text(face = "bold", size = 14)
+  )
 
-# Create map showing complete SEPTA route network over census tracts.
 septa_route_map <- ggplot(tract_map_data_with_ridership) +
   geom_sf(fill = NA, color = "#ff4100", linewidth = 0.25) +
   geom_sf(data = routes, color = "#778ac5", fill = NA, linewidth = 0.5) +
-  scale_color_discrete() +
   labs(
     title = "SEPTA Routes",
     subtitle = "All SEPTA Routes"
   ) +
   theme_void() +
-  theme(plot.background = element_rect(fill = "#dedbd4", color = "#dedbd4"))
+  theme(
+    plot.background = element_rect(fill = map_bg, color = map_bg),
+    plot.title = element_text(face = "bold", size = 14)
+  )
 
-# Combine all three maps vertically with shared legend at bottom.
 (septa_route_map / spatial_plot_log_on / spatial_plot_log_off) +
   plot_layout(guides = "collect") &
   theme(
@@ -1197,14 +1097,12 @@ way that would make me less confused.
 # Session Info
 
 ```{r session-info}
-# R session information for reproducibility.
 sessionInfo()
 ```
 
 # Potential Model Data?
 
 ```{r data-export}
-# Export cleaned data with temporal lags for modeling phase.
 df_model_ready <- df_clean %>%
   filter(Day_of_Week == "Weekday") %>%
   arrange(Census_Tract_ID, Year) %>%
@@ -1215,7 +1113,6 @@ df_model_ready <- df_clean %>%
   ) %>%
   ungroup()
 
-# Save data for modeling.
 # write_csv(df_model_ready, "data/septa_processed_for_modeling.csv")
 
 cat(sprintf("Model observations: %s\n", comma(nrow(df_model_ready))))
@@ -1251,25 +1148,18 @@ micro-interventions, check tract-level patterns with finer ridership.
 ### Load Stop-Level Data
 
 ```{r load-stop-data}
-# Load Fall 2023 bus stop summary with geographic coordinates.
-df_stops <- read.csv("data/septa/Fall_2023_Stop_Summary_Bus.csv")
+df_stops <- read_csv(path_stop_summary, show_col_types = FALSE)
 
-# Clean and prepare stop data with total ridership calculations.
 df_stops_clean <- df_stops %>%
   mutate(
-    # Total boardings across all day types.
     Total_Boardings = Weekday_On + Saturday_O + Sunday_Ons,
     Total_Alightings = Weekday_Of + Saturday_1 + Sunday_Off,
     Total_Activity = Total_Boardings + Total_Alightings,
-    # Dominant day type indicator.
     Weekday_Dominance = Weekday_On / (Weekday_On + Saturday_O + Sunday_Ons + 0.001),
-    # Clean route numbers. Remove non-numeric characters after trying to convert numeric characters.
-    Route_Numeric = as.numeric(ifelse(grepl("^[0-9]+$", Route), Route, NA))
+    Route_Numeric = as.numeric(if_else(grepl("^[0-9]+$", Route), Route, NA_character_))
   ) %>%
-  # Filter stops with no activity.
   filter(Total_Activity > 0)
 
-# Summary stats for stop-level data.
 cat(sprintf("Total Stops: %s\n", comma(n_distinct(df_stops_clean$Stop_Code))))
 cat(sprintf("Total Routes: %s\n", n_distinct(df_stops_clean$Route)))
 cat(sprintf("Mean Weekday Boardings per Stop: %.1f\n", mean(df_stops_clean$Weekday_On)))
@@ -1279,7 +1169,6 @@ cat(sprintf("Median Weekday Boardings per Stop: %.1f\n", median(df_stops_clean$W
 ### Top 50 Highest-Volume Bus Stops
 
 ```{r top-stops-analysis}
-# Top 50 stops by weekday boarding activity (Fall 2023 Weekday Boardings).
 top_stops <- df_stops_clean %>%
   arrange(desc(Weekday_On)) %>%
   head(50) %>%
@@ -1299,17 +1188,18 @@ top_stops %>%
 #| fig-height: 6
 #| fig-width: 12
 
-# Histogram of weekday boardings distribution across all stops.
+median_weekday_on <- median(df_stops_clean$Weekday_On[df_stops_clean$Weekday_On > 0])
+
 stop_dist_plot <- df_stops_clean %>%
   filter(Weekday_On > 0) %>%
   ggplot(aes(x = log10(Weekday_On + 1))) +
   geom_histogram(bins = 50, fill = "#3498DB", color = "white", alpha = 0.8) +
-  geom_vline(xintercept = log10(median(df_stops_clean$Weekday_On[df_stops_clean$Weekday_On > 0]) + 1),
+  geom_vline(xintercept = log10(median_weekday_on + 1),
              linetype = "dashed", color = "#E74C3C", linewidth = 1) +
-  annotate("text", 
-           x = log10(median(df_stops_clean$Weekday_On[df_stops_clean$Weekday_On > 0]) + 1), 
+  annotate("text",
+           x = log10(median_weekday_on + 1),
            y = Inf,
-           label = sprintf("Median = %.0f", median(df_stops_clean$Weekday_On[df_stops_clean$Weekday_On > 0])),
+           label = sprintf("Median = %.0f", median_weekday_on),
            vjust = 2, hjust = 1.1, color = "#E74C3C", fontface = "bold") +
   labs(
     title = "Distribution of Weekday Boardings Across Bus Stops",
@@ -1317,15 +1207,12 @@ stop_dist_plot <- df_stops_clean %>%
     x = "log(Weekday Boardings + 1)",
     y = "Number of Stops",
     caption = "Data: SEPTA Fall 2023 Bus Stop Summary | Positive Boardings Only"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(plot.title = element_text(face = "bold", size = 14))
+  )
 
 stop_dist_plot
 ```
 
 ```{r stop-distribution-stats}
-# Concentration stats.
 total_boardings <- sum(df_stops_clean$Weekday_On)
 top_10pct_threshold <- quantile(df_stops_clean$Weekday_On, 0.90)
 top_10pct_boardings <- sum(df_stops_clean$Weekday_On[df_stops_clean$Weekday_On >= top_10pct_threshold])
@@ -1341,13 +1228,12 @@ cat(sprintf("Top 10%% of stops account for %.1f%% of all weekday boardings\n", c
 #| fig-height: 6
 #| fig-width: 12
 
-# Proportion of activity occurring on weekdays vs. weekends.
 dominance_plot <- df_stops_clean %>%
   filter(Total_Boardings > 10) %>%
   ggplot(aes(x = Weekday_Dominance)) +
   geom_histogram(bins = 50, fill = "#9B59B6", color = "white", alpha = 0.8) +
   geom_vline(xintercept = 0.5, linetype = "dashed", color = "black", linewidth = 1) +
-  annotate("text", x = 0.5, y = Inf, label = "Equal Split", 
+  annotate("text", x = 0.5, y = Inf, label = "Equal Split",
            vjust = 2, hjust = 1.1, fontface = "bold") +
   scale_x_continuous(labels = percent) +
   labs(
@@ -1356,18 +1242,15 @@ dominance_plot <- df_stops_clean %>%
     x = "Proportion of Total Boardings on Weekdays",
     y = "Number of Stops",
     caption = "Data: SEPTA Fall 2023 | Stops with 10+ Total Boardings"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(plot.title = element_text(face = "bold", size = 14))
+  )
 
 dominance_plot
 ```
 
 ```{r weekday-dominance-stats}
-# Weekday dominance stats.
 cat("\nWeekday Dominance Statistics:\n")
 cat(sprintf("Mean Weekday Proportion: %.1f%%\n", mean(df_stops_clean$Weekday_Dominance) * 100))
-cat(sprintf("Stops with >80%% Weekday Activity: %.1f%%\n", 
+cat(sprintf("Stops with >80%% Weekday Activity: %.1f%%\n",
             sum(df_stops_clean$Weekday_Dominance > 0.8) / nrow(df_stops_clean) * 100))
 ```
 
@@ -1378,13 +1261,12 @@ cat(sprintf("Stops with >80%% Weekday Activity: %.1f%%\n",
 #| fig-height: 10
 #| fig-width: 14
 
-# Bounding box.
+# Bounding box from stop coordinates — reused by later spatial plots.
 min_lon <- min(df_stops_clean$Lon, na.rm = TRUE)
 max_lon <- max(df_stops_clean$Lon, na.rm = TRUE)
 min_lat <- min(df_stops_clean$Lat, na.rm = TRUE)
 max_lat <- max(df_stops_clean$Lat, na.rm = TRUE)
 
-# Spatial point map showing high-volume stops.
 stop_spatial_plot <- df_stops_clean %>%
   filter(Total_Boardings > 0) %>%
   ggplot() +
@@ -1392,7 +1274,7 @@ stop_spatial_plot <- df_stops_clean %>%
   geom_point(
     aes(x = Lon, y = Lat, size = Weekday_On, color = log10(Weekday_On + 1)),
     alpha = 0.6
-    ) +
+  ) +
   scale_size_continuous(range = c(0.5, 8), labels = comma, name = "Weekday Boardings") +
   scale_color_viridis_c(option = "plasma", direction = -1, labels = comma, name = "log(Boardings)") +
   labs(
@@ -1401,15 +1283,13 @@ stop_spatial_plot <- df_stops_clean %>%
     x = "Longitude",
     y = "Latitude",
     caption = "Data: SEPTA Bus Stop Summary Fall 2023"
-    ) +
-  theme_minimal(base_size = 12) +
+  ) +
   theme(
-    plot.title = element_text(face = "bold", size = 14),
     legend.position = "right",
     panel.grid = element_line(color = "gray90")
-    ) +
+  ) +
   coord_sf(
-    xlim = c(min_lon, max_lon), 
+    xlim = c(min_lon, max_lon),
     ylim = c(min_lat, max_lat)
   )
 
@@ -1423,7 +1303,6 @@ stop_spatial_plot
 #| fig-height: 8
 #| fig-width: 12
 
-# Route-level statistics from stop data.
 route_stop_stats <- df_stops_clean %>%
   filter(!is.na(Route_Numeric)) %>%
   group_by(Route) %>%
@@ -1438,9 +1317,8 @@ route_stop_stats <- df_stops_clean %>%
   arrange(desc(Total_Weekday_Boardings)) %>%
   head(20)
 
-# Top 20 routes by total weekday boardings.
-route_bar_plot <- ggplot(route_stop_stats, 
-                         aes(x = reorder(Route, Total_Weekday_Boardings), 
+route_bar_plot <- ggplot(route_stop_stats,
+                         aes(x = reorder(Route, Total_Weekday_Boardings),
                              y = Total_Weekday_Boardings)) +
   geom_col(aes(fill = Total_Weekday_Boardings), width = 0.7) +
   coord_flip() +
@@ -1454,11 +1332,7 @@ route_bar_plot <- ggplot(route_stop_stats,
     fill = "Total Boardings",
     caption = "Data: SEPTA Fall 2023 Stop Summary"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "right"
-  )
+  theme(legend.position = "right")
 
 route_bar_plot
 ```
@@ -1468,10 +1342,8 @@ route_bar_plot
 ### Load Route Performance Data
 
 ```{r load-route-data}
-# Load average daily ridership by route for temporal analysis.
-df_route <- read.csv("data/septa/Average_Daily_Ridership_By_Route.csv")
+df_route <- read_csv(path_route_ridership, show_col_types = FALSE)
 
-# Clean and prepare route data.
 df_route_clean <- df_route %>%
   mutate(
     Date = make_date(Calendar_Year, Calendar_Month),
@@ -1481,7 +1353,6 @@ df_route_clean <- df_route %>%
   ) %>%
   filter(!is.na(Date), !is.na(Average_Daily_Ridership))
 
-# Summary of route data coverage.
 cat(sprintf("Date Range: %s to %s\n", min(df_route_clean$Date), max(df_route_clean$Date)))
 cat(sprintf("Unique Routes: %s\n", n_distinct(df_route_clean$Route)))
 cat(sprintf("Total Observations: %s\n", comma(nrow(df_route_clean))))
@@ -1490,7 +1361,6 @@ cat(sprintf("Total Observations: %s\n", comma(nrow(df_route_clean))))
 ### Top Routes Recovery Analysis
 
 ```{r route-recovery}
-# Recovery ratio for each route comparing 2023 to 2019.
 route_recovery <- df_route_clean %>%
   filter(Month %in% c(9, 10, 11), Year %in% c(2019, 2023)) %>%
   group_by(Route, Year) %>%
@@ -1522,7 +1392,6 @@ route_recovery %>%
 #| fig-height: 7
 #| fig-width: 12
 
-# Top 15 recovering routes.
 top_recovery_plot <- route_recovery %>%
   head(15) %>%
   ggplot(aes(x = reorder(Route, Recovery_Ratio), y = Recovery_Ratio, fill = Recovery_Category)) +
@@ -1543,11 +1412,7 @@ top_recovery_plot <- route_recovery %>%
     fill = "Recovery Category",
     caption = "Data: SEPTA Average Daily Ridership | Minimum 100 Riders in 2019"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "bottom"
-  )
+  theme(legend.position = "bottom")
 
 top_recovery_plot
 ```
@@ -1559,16 +1424,15 @@ top_recovery_plot
 #| fig-height: 6
 #| fig-width: 12
 
-# Histogram showing distribution of recovery ratios.
 recovery_dist_plot <- ggplot(route_recovery, aes(x = Recovery_Ratio)) +
   geom_histogram(bins = 40, fill = "#3498DB", color = "white", alpha = 0.8) +
   geom_vline(xintercept = 1.0, linetype = "dashed", color = "#E74C3C", linewidth = 1) +
-  geom_vline(xintercept = median(route_recovery$Recovery_Ratio), 
+  geom_vline(xintercept = median(route_recovery$Recovery_Ratio),
              linetype = "dashed", color = "gray30", linewidth = 1) +
-  annotate("text", x = 1.0, y = Inf, label = "Full Recovery", 
+  annotate("text", x = 1.0, y = Inf, label = "Full Recovery",
            vjust = 2, hjust = 1.1, color = "#E74C3C", fontface = "bold") +
-  annotate("text", x = median(route_recovery$Recovery_Ratio), y = Inf, 
-           label = sprintf("Median = %.2f", median(route_recovery$Recovery_Ratio)), 
+  annotate("text", x = median(route_recovery$Recovery_Ratio), y = Inf,
+           label = sprintf("Median = %.2f", median(route_recovery$Recovery_Ratio)),
            vjust = 2, hjust = -0.1, color = "gray30", fontface = "bold") +
   scale_x_continuous(breaks = seq(0, 2, 0.2)) +
   labs(
@@ -1577,9 +1441,7 @@ recovery_dist_plot <- ggplot(route_recovery, aes(x = Recovery_Ratio)) +
     x = "Recovery Ratio (Fall 2023 / Fall 2019)",
     y = "Number of Routes",
     caption = "Data: SEPTA Average Daily Ridership | Routes with 100+ Riders in 2019"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(plot.title = element_text(face = "bold", size = 14))
+  )
 
 recovery_dist_plot
 ```
@@ -1591,7 +1453,6 @@ recovery_dist_plot
 #| fig-height: 8
 #| fig-width: 14
 
-# Top 5 routes by 2019 ridership for detailed temporal analysis.
 top5_routes_2019 <- df_route_clean %>%
   filter(Year == 2019) %>%
   group_by(Route) %>%
@@ -1600,14 +1461,12 @@ top5_routes_2019 <- df_route_clean %>%
   head(5) %>%
   pull(Route)
 
-# Filter data for top 5 routes.
 df_route_top5 <- df_route_clean %>%
   filter(Route %in% top5_routes_2019)
 
-# Faceted time series plot.
 route_ts_plot <- ggplot(df_route_top5, aes(x = Date, y = Average_Daily_Ridership)) +
   geom_line(color = "#2980B9", linewidth = 0.8) +
-  geom_vline(xintercept = as.Date("2020-03-01"), 
+  geom_vline(xintercept = as.Date("2020-03-01"),
              linetype = "dashed", color = "#E74C3C", alpha = 0.7) +
   facet_wrap(~Route, scales = "free_y", ncol = 2) +
   scale_y_continuous(labels = comma) +
@@ -1617,11 +1476,6 @@ route_ts_plot <- ggplot(df_route_top5, aes(x = Date, y = Average_Daily_Ridership
     x = "Date (Month)",
     y = "Average Daily Ridership",
     caption = "Data: SEPTA Average Daily Ridership By Route"
-  ) +
-  theme_minimal(base_size = 11) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    strip.text = element_text(face = "bold", size = 12)
   )
 
 route_ts_plot
@@ -1632,10 +1486,8 @@ route_ts_plot
 ### Load Modal Data
 
 ```{r load-modal-data}
-# Load average daily ridership by mode for cross-modal analysis.
-df_mode <- read.csv("data/septa/Average_Daily_Ridership_By_Mode.csv")
+df_mode <- read_csv(path_mode_ridership, show_col_types = FALSE)
 
-# Clean and prepare modal data.
 df_mode_clean <- df_mode %>%
   mutate(
     Date = make_date(Calendar_Year, Calendar_Month),
@@ -1645,7 +1497,6 @@ df_mode_clean <- df_mode %>%
   filter(!is.na(Date), !is.na(Average_Daily_Ridership)) %>%
   filter(Mode %in% c("Bus", "Regional Rail", "Heavy Rail"))
 
-# Summary of modal data.
 df_mode_clean %>%
   group_by(Mode) %>%
   summarize(
@@ -1665,7 +1516,6 @@ df_mode_clean %>%
 #| fig-height: 7
 #| fig-width: 14
 
-# Recovery index relative to 2019 baseline for each mode.
 df_mode_index <- df_mode_clean %>%
   group_by(Mode) %>%
   mutate(Baseline_2019 = mean(Average_Daily_Ridership[Year == 2019], na.rm = TRUE)) %>%
@@ -1673,13 +1523,12 @@ df_mode_index <- df_mode_clean %>%
   mutate(Recovery_Index = (Average_Daily_Ridership / Baseline_2019) * 100) %>%
   filter(Year >= 2019, Year <= 2024)
 
-# Recovery index plot.
 recovery_index_plot <- ggplot(df_mode_index, aes(x = Date, y = Recovery_Index, color = Mode)) +
   geom_line(linewidth = 1.3, alpha = 0.9) +
   geom_hline(yintercept = 100, linetype = "dashed", color = "gray30", linewidth = 0.8) +
-  annotate("text", x = min(df_mode_index$Date), y = 105, 
+  annotate("text", x = min(df_mode_index$Date), y = 105,
            label = "Pre-Pandemic Baseline (100)", hjust = 0, fontface = "bold") +
-  geom_vline(xintercept = as.Date("2020-03-01"), 
+  geom_vline(xintercept = as.Date("2020-03-01"),
              linetype = "dotted", color = "gray50", alpha = 0.7) +
   scale_color_manual(values = c("Bus" = "#E74C3C", "Regional Rail" = "#3498DB", "Heavy Rail" = "#9B59B6")) +
   scale_y_continuous(labels = comma) +
@@ -1691,17 +1540,12 @@ recovery_index_plot <- ggplot(df_mode_index, aes(x = Date, y = Recovery_Index, c
     color = "Mode",
     caption = "Data: SEPTA Average Daily Ridership By Mode"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "bottom"
-  )
+  theme(legend.position = "bottom")
 
 recovery_index_plot
 ```
 
 ```{r modal-recovery-index-table}
-# Current recovery percentages in most recent month.
 df_mode_index %>%
   filter(Date == max(Date)) %>%
   select(Mode, Recovery_Index) %>%
@@ -1718,7 +1562,6 @@ df_mode_index %>%
 #| fig-height: 6
 #| fig-width: 14
 
-# Modal share percentages over time.
 df_mode_share <- df_mode_clean %>%
   group_by(Date) %>%
   mutate(
@@ -1728,7 +1571,6 @@ df_mode_share <- df_mode_clean %>%
   ungroup() %>%
   filter(Year >= 2019)
 
-# Stacked area chart showing modal composition.
 modal_share_plot <- ggplot(df_mode_share, aes(x = Date, y = Modal_Share, fill = Mode)) +
   geom_area(alpha = 0.8, color = "white", linewidth = 0.5) +
   scale_fill_manual(values = c("Bus" = "#E74C3C", "Regional Rail" = "#3498DB", "Heavy Rail" = "#9B59B6")) +
@@ -1741,11 +1583,7 @@ modal_share_plot <- ggplot(df_mode_share, aes(x = Date, y = Modal_Share, fill = 
     fill = "Mode",
     caption = "Data: SEPTA Average Daily Ridership By Mode"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "bottom"
-  )
+  theme(legend.position = "bottom")
 
 modal_share_plot
 ```
@@ -1757,24 +1595,21 @@ modal_share_plot
 #| fig-height: 6
 #| fig-width: 12
 
-# Pivot data for bus vs. rail comparison.
 df_mode_pivot <- df_mode_clean %>%
   filter(Mode %in% c("Bus", "Regional Rail")) %>%
   select(Date, Mode, Average_Daily_Ridership) %>%
   pivot_wider(names_from = Mode, values_from = Average_Daily_Ridership) %>%
   filter(!is.na(Bus) & !is.na(`Regional Rail`))
 
-# Calculate correlation.
 bus_rail_cor <- cor(df_mode_pivot$Bus, df_mode_pivot$`Regional Rail`, use = "complete.obs")
 
-# Scatter plot showing relationship.
 bus_rail_scatter <- ggplot(df_mode_pivot, aes(x = `Regional Rail`, y = Bus)) +
   geom_point(aes(color = year(Date)), size = 3, alpha = 0.7) +
   geom_smooth(method = "lm", se = TRUE, color = "#E74C3C", linewidth = 1.2) +
   scale_color_viridis_c(option = "turbo", name = "Year") +
   scale_x_continuous(labels = comma) +
   scale_y_continuous(labels = comma) +
-  annotate("text", x = min(df_mode_pivot$`Regional Rail`) * 1.05, 
+  annotate("text", x = min(df_mode_pivot$`Regional Rail`) * 1.05,
            y = max(df_mode_pivot$Bus) * 0.95,
            label = sprintf("Correlation: %.3f", bus_rail_cor),
            size = 5, fontface = "bold", hjust = 0) +
@@ -1784,9 +1619,7 @@ bus_rail_scatter <- ggplot(df_mode_pivot, aes(x = `Regional Rail`, y = Bus)) +
     x = "Regional Rail Average Daily Ridership",
     y = "Bus Average Daily Ridership",
     caption = "Data: SEPTA Average Daily Ridership 2019-2024"
-  ) +
-  theme_minimal(base_size = 12) +
-  theme(plot.title = element_text(face = "bold", size = 14))
+  )
 
 bus_rail_scatter
 ```
@@ -1796,10 +1629,8 @@ bus_rail_scatter
 ### Load Regional Rail Data
 
 ```{r load-regional-rail}
-# Load regional rail station summary for spatial rail-bus interaction.
-df_rr <- read.csv("data/septa/Regional_Rail_Station_Summary.csv")
+df_rr <- read_csv(path_rr_stations, show_col_types = FALSE)
 
-# Clean and prepare regional rail data.
 df_rr_clean <- df_rr %>%
   filter(!is.na(Boards), !is.na(Leaves)) %>%
   mutate(
@@ -1807,7 +1638,6 @@ df_rr_clean <- df_rr %>%
     Station_Line = paste0(Station, " (", Line, ")")
   )
 
-# Summary stats.
 cat(sprintf("Unique Stations: %s\n", n_distinct(df_rr_clean$Station)))
 cat(sprintf("Unique Lines: %s\n", n_distinct(df_rr_clean$Line)))
 cat(sprintf("Years Covered: %s to %s\n", min(df_rr_clean$Year), max(df_rr_clean$Year)))
@@ -1816,7 +1646,7 @@ cat(sprintf("Years Covered: %s to %s\n", min(df_rr_clean$Year), max(df_rr_clean$
 ### Station Commuter Score
 
 ```{r station-commuter-score}
-# Commuter score based on weekday vs. weekend balance.
+# Commuter score: ratio of weekday-weekend imbalance, higher = more commuter-oriented.
 rr_station_balance <- df_rr_clean %>%
   filter(Year == 2023) %>%
   group_by(Station, Line, Service_Ty, Latitude, Longitude) %>%
@@ -1833,7 +1663,6 @@ rr_station_balance <- df_rr_clean %>%
   ) %>%
   filter(Weekday + Weekend_Activity > 100)
 
-# Regional rail station commuter classification (2023).
 rr_station_balance %>%
   count(Station_Type, name = "N_Stations") %>%
   mutate(Pct = N_Stations / sum(N_Stations) * 100) %>%
@@ -1848,9 +1677,8 @@ rr_station_balance %>%
 #| fig-height: 8
 #| fig-width: 12
 
-# Scatter plot showing weekday vs. weekend activity.
-station_balance_plot <- ggplot(rr_station_balance, 
-                               aes(x = Weekday + 1, y = Weekend_Activity + 1, 
+station_balance_plot <- ggplot(rr_station_balance,
+                               aes(x = Weekday + 1, y = Weekend_Activity + 1,
                                    color = Commuter_Score)) +
   geom_point(size = 4, alpha = 0.7) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray30", linewidth = 0.8) +
@@ -1861,7 +1689,7 @@ station_balance_plot <- ggplot(rr_station_balance,
   ) +
   scale_x_log10(labels = comma) +
   scale_y_log10(labels = comma) +
-  annotate("text", x = 500, y = 850, label = "All-Day Stations (Weekday = Weekend)", 
+  annotate("text", x = 500, y = 850, label = "All-Day Stations (Weekday = Weekend)",
            hjust = 0.5, vjust = -0.5, fontface = "bold", color = "gray30") +
   labs(
     title = "Regional Rail Station Role: Weekday vs. Weekend Activity (2023)",
@@ -1870,11 +1698,7 @@ station_balance_plot <- ggplot(rr_station_balance,
     y = "Weekend Total Activity (Saturday) [Log Scale]",
     caption = "Data: SEPTA Regional Rail Station Summary | Stations with 100+ Total Activity"
   ) +
-  theme_minimal(base_size = 12) +
-  theme(
-    plot.title = element_text(face = "bold", size = 14),
-    legend.position = "right"
-  )
+  theme(legend.position = "right")
 
 station_balance_plot
 ```
@@ -1882,7 +1706,6 @@ station_balance_plot
 ### Top Regional Rail Stations
 
 ```{r top-rr-stations}
-# Top 20 regional rail stations by weekday activity.
 top_rr_stations <- rr_station_balance %>%
   arrange(desc(Weekday)) %>%
   head(20)
@@ -1900,36 +1723,33 @@ top_rr_stations %>%
 #| fig-height: 10
 #| fig-width: 14
 
-# Spatial map of regional rail stations.
 rr_spatial_plot <- rr_station_balance %>%
   ggplot() +
   geom_sf(data = tract_map_data, fill = NA, color = "gray60", linewidth = 0.25) +
   geom_point(
     aes(x = Longitude, y = Latitude, size = Weekday, color = Station_Type),
     alpha = 0.7
-    ) +
+  ) +
   scale_size_continuous(range = c(2, 10), labels = comma, name = "Weekday Activity") +
   scale_color_manual(
     values = c("Strong Commuter" = "#E74C3C", "Mixed Use" = "#F39C12", "All-Day/Leisure" = "#27AE60"),
     name = "Station Type"
-    ) +
+  ) +
   labs(
     title = "Regional Rail Station Distribution and Activity (2023)",
     subtitle = "Point size indicates weekday activity level | Color shows commuter orientation.",
     x = "Longitude",
     y = "Latitude",
     caption = "Data: SEPTA Regional Rail Station Summary"
-    ) +
-  theme_minimal(base_size = 12) +
+  ) +
   theme(
-    plot.title = element_text(face = "bold", size = 14),
     legend.position = "right",
     panel.grid = element_line(color = "gray90")
-    ) +
+  ) +
   coord_sf(
     xlim = c(min_lon, max_lon),
     ylim = c(min_lat, max_lat)
-    )
+  )
 
 rr_spatial_plot
 ```
