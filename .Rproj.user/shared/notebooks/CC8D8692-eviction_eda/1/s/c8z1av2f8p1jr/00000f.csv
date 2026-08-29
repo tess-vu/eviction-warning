@@ -1,7 +1,0 @@
-"0","# Calculate concentration statistics."
-"0","total_system_filings <- sum(tract_totals$Total_Filings)"
-"0","top_20_pct <- sum(top_risk_tracts$Total_Filings) / total_system_filings * 100"
-"0",""
-"0","cat(sprintf(""Concentration: Top 20 tracts account for %.1f%% of all filings\n"", top_20_pct))"
-"1","Concentration: Top 20 tracts account for 17.3% of all filings
-"
