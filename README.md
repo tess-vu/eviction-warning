@@ -1,9 +1,3 @@
----
-editor: 
-  markdown: 
-    wrap: sentence
----
-
 # Philadelphia Eviction Early Warning System
 
 **Authors:** Angel Rutherford, Ixchel Ramirez, Tess Vu

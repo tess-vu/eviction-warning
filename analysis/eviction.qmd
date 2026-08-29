@@ -27,8 +27,8 @@ format:
 execute:
   warning: false
   message: false
-editor: 
-  markdown: 
+editor:
+  markdown:
     wrap: 72
 ---
 
@@ -144,7 +144,7 @@ head(df_monthly_raw, 10) %>%
 
 ### Weekly Tract-Level Eviction Data
 
-The weekly dataset mirrors the structure of the monthly data set but differs as it contains more rows of data due to its finer granularity and adds additional columns that specific the week relative to the dataset and the calendar date the data was recorded. 
+The weekly dataset mirrors the structure of the monthly data set but differs as it contains more rows of data due to its finer granularity and adds additional columns that specific the week relative to the dataset and the calendar date the data was recorded.
 
 ```{r load-weekly-data}
 # Load weekly eviction filings data for high-frequency analysis.
@@ -235,7 +235,7 @@ Certain data cleaning and manipulation techniques were applied across all datase
 
 ### Monthly Eviction Data Preparation
 
-To prepare the monthly eviction data for analysis, raw filings were cleaned and enriched with theoretically motivated features. A categorical variable was created to distinguish pre‑moratorium, moratorium, and post‑moratorium periods, alongside a binary flag for months when the moratorium was active. Months were categorized into seasonal indicators as seasonal patterns in filings can be seen in the figures provided on the Eviction Lab’s website. 
+To prepare the monthly eviction data for analysis, raw filings were cleaned and enriched with theoretically motivated features. A categorical variable was created to distinguish pre‑moratorium, moratorium, and post‑moratorium periods, alongside a binary flag for months when the moratorium was active. Months were categorized into seasonal indicators as seasonal patterns in filings can be seen in the figures provided on the Eviction Lab’s website.
 
 ```{r clean-monthly}
 # Clean and prepare monthly data with temporal and policy features.
@@ -360,7 +360,7 @@ df_weekly %>%
 
 ### Claims Data Preparation
 
-Monthly eviction claims data was mutated to include a new column, claims ratio, that was calculated to represent median claim values relative to pre‑pandemic baselines. 
+Monthly eviction claims data was mutated to include a new column, claims ratio, that was calculated to represent median claim values relative to pre‑pandemic baselines.
 
 ```{r clean-claims}
 # Clean claims data showing financial severity of evictions.
@@ -398,11 +398,11 @@ df_tax <- df_tax_raw %>%
     delinquent_prop_count = ifelse(has_penalty, num_props, 0),
     delinquent_balance = ifelse(has_penalty, balance, 0),
     avg_delinquent_balance = ifelse(has_penalty, balance / num_props, 0),
-    
+
     # Overdue-only indicators, based on it being the current year.
     overdue_only_props = ifelse(!has_penalty, num_props, 0),
     overdue_only_balance = ifelse(!has_penalty, balance, 0),
-    
+
     # Transformations for modeling.
     log_delinquent_balance = log1p(delinquent_balance),
     log_overdue_balance = log1p(overdue_only_balance)
@@ -413,7 +413,7 @@ df_tax <- df_tax_raw %>%
 cat("TAX DELINQUENCY DATA SUMMARY\n")
 cat(sprintf("Tracts with Tax Data: %d\n", nrow(df_tax)))
 cat(sprintf("Total Properties with Any Tax Balance: %s\n", comma(sum(df_tax$num_props))))
-cat(sprintf("Delinquent Properties (Penalty > 0): %s (%.1f%%)\n", 
+cat(sprintf("Delinquent Properties (Penalty > 0): %s (%.1f%%)\n",
             comma(sum(df_tax$delinquent_prop_count)),
             sum(df_tax$delinquent_prop_count) / sum(df_tax$num_props) * 100))
 cat(sprintf("Overdue Properties (No Penalty): %s (%.1f%%)\n",
@@ -459,8 +459,8 @@ tax_summary <- df_tax %>%
 
 tax_summary %>%
   pivot_longer(everything(), names_to = "statistic", values_to = "value") %>%
-  mutate(value = ifelse(str_detect(statistic, "balance"), 
-                        paste0("$", comma(round(value, 2))), 
+  mutate(value = ifelse(str_detect(statistic, "balance"),
+                        paste0("$", comma(round(value, 2))),
                         comma(round(value, 2)))) %>%
   kable(caption = "Tax Delinquency Summary Statistics",
         col.names = c("Statistic", "Value")) %>%
@@ -532,7 +532,7 @@ The sealed tracts are outliers and are legitimate evictions that reflect the cur
 
 Understanding the distribution of eviction filings is critical for selecting the appropriate modeling approach. Because eviction filings are discrete, non‑continuous count values, they require models such as Poisson and Negative Binomial regression specifically designed to handle count data. A major difference between the two approaches is their ability to handle overdispersion, with the Poisson model assuming equal mean and variance while the Negative Binomial model allows the variance to exceed the mean, making it more flexible for data with excess variability and zeros. Zero-inflation statistics were calculated and visualized to assess the distribution of monthly eviction filings. The summary statistics report reveals substantial zero-inflation and variance that exceeded the mean, yielding a dispersion ratio well over 1, indicating that the negative binomial model as a more appropriate modeling approach for our data.
 
-A histogram of raw counts of evictions further highlights the prevalence of zeros and the data's skewed distribution, while a log‑transformed histogram provides a clearer view of variation. 
+A histogram of raw counts of evictions further highlights the prevalence of zeros and the data's skewed distribution, while a log‑transformed histogram provides a clearer view of variation.
 
 ```{r monthly-distribution}
 # Calculate zero-inflation stats for monthly data.
@@ -552,11 +552,11 @@ zero_stats_monthly <- df_monthly %>%
 # Display zero-inflation stats.
 cat("MONTHLY ZERO-INFLATION STATS\n")
 cat(sprintf("Total Observations: %s\n", comma(zero_stats_monthly$total_obs)))
-cat(sprintf("Zero Filings: %s (%.1f%%)\n", 
-            comma(zero_stats_monthly$zero_count), 
+cat(sprintf("Zero Filings: %s (%.1f%%)\n",
+            comma(zero_stats_monthly$zero_count),
             zero_stats_monthly$zero_pct))
-cat(sprintf("Positive Filings: %s (%.1f%%)\n", 
-            comma(zero_stats_monthly$positive_count), 
+cat(sprintf("Positive Filings: %s (%.1f%%)\n",
+            comma(zero_stats_monthly$positive_count),
             100 - zero_stats_monthly$zero_pct))
 cat(sprintf("Mean (all observations): %.2f\n", zero_stats_monthly$mean_all))
 cat(sprintf("Mean (positive only): %.2f\n", zero_stats_monthly$mean_positive))
@@ -608,7 +608,7 @@ monthly_plot_log <- df_monthly %>%
 monthly_plot_raw + monthly_plot_log +
   plot_annotation(
     title = "Distribution of Monthly Eviction Filings by Census Tract",
-    subtitle = sprintf("%.1f%% Zeros | Dispersion Ratio = %.1f", 
+    subtitle = sprintf("%.1f%% Zeros | Dispersion Ratio = %.1f",
                        zero_stats_monthly$zero_pct,
                        zero_stats_monthly$dispersion_ratio),
     caption = "Data: Philadelphia Eviction Filings 2020-2025 via Eviction Lab",
@@ -642,8 +642,8 @@ zero_stats_weekly <- df_weekly %>%
 
 cat("WEEKLY ZERO-INFLATION STATS\n")
 cat(sprintf("Total Observations: %s\n", comma(zero_stats_weekly$total_obs)))
-cat(sprintf("Zero Filings: %s (%.1f%%)\n", 
-            comma(zero_stats_weekly$zero_count), 
+cat(sprintf("Zero Filings: %s (%.1f%%)\n",
+            comma(zero_stats_weekly$zero_count),
             zero_stats_weekly$zero_pct))
 cat(sprintf("Mean: %.2f\n", zero_stats_weekly$mean_all))
 cat(sprintf("Dispersion Ratio: %.2f\n", zero_stats_weekly$dispersion_ratio))
@@ -693,7 +693,7 @@ plot_weekly_log <- df_weekly %>%
 plot_weekly_raw + plot_weekly_log +
   plot_annotation(
     title = "Distribution of Weekly Eviction Filings by Census Tract",
-    subtitle = sprintf("%.1f%% Zeros | Dispersion Ratio = %.1f", 
+    subtitle = sprintf("%.1f%% Zeros | Dispersion Ratio = %.1f",
                        zero_stats_weekly$zero_pct,
                        zero_stats_weekly$dispersion_ratio),
     caption = "Data: Philadelphia Eviction Filings via Eviction Lab",
@@ -704,7 +704,7 @@ plot_weekly_raw + plot_weekly_log +
 
 ### Tax Delinquency Distribution
 
-The histogram of average delinquent balances per property across census tracts is highly right-skewed, with most tracts showing low balances and a few exhibiting extreme outliers revealing that a small number of tracts carry disproportionately high tax burdens. A histogram of  log transformed tax balances normalizes this skew, producing a more symmetric, bell-shaped distribution suitable for statistical modeling. 
+The histogram of average delinquent balances per property across census tracts is highly right-skewed, with most tracts showing low balances and a few exhibiting extreme outliers revealing that a small number of tracts carry disproportionately high tax burdens. A histogram of  log transformed tax balances normalizes this skew, producing a more symmetric, bell-shaped distribution suitable for statistical modeling.
 
 ```{r tax-distribution-histogram}
 #| fig-dpi: 300
@@ -805,12 +805,12 @@ monthly_trend_plot <- ggplot(monthly_aggregate, aes(x = date, y = total_filings)
   geom_line(color = "#C0392B", linewidth = 1.5) +
   geom_point(aes(color = period), size = 4) +
   # Mark start of eviction moratorium.
-  geom_vline(xintercept = as.Date("2020-03-01"), 
+  geom_vline(xintercept = as.Date("2020-03-01"),
              linetype = "dashed", color = "#27AE60", linewidth = 1) +
   annotate("text", x = as.Date("2020-03-01"), y = max(monthly_aggregate$total_filings) * 0.95,
            label = "Moratorium\nStarts", hjust = -0.1, color = "#27AE60", size = 4, fontface = "bold") +
   # Mark end of eviction moratorium.
-  geom_vline(xintercept = as.Date("2021-09-30"), 
+  geom_vline(xintercept = as.Date("2021-09-30"),
              linetype = "dashed", color = "#E67E22", linewidth = 1) +
   annotate("text", x = as.Date("2021-09-30"), y = max(monthly_aggregate$total_filings) * 0.85,
            label = "Moratorium\nEnds", hjust = 1.1, color = "#E67E22", size = 4, fontface = "bold") +
@@ -957,19 +957,19 @@ A temporal plot shows that median eviction claim amounts rose sharply at the ons
 #| fig-width: 14
 
 # Create median claim amount trend showing financial severity evolution.
-claims_plot <- ggplot(df_claims %>% filter(!is.na(median_claim)), 
+claims_plot <- ggplot(df_claims %>% filter(!is.na(median_claim)),
                       aes(x = date, y = median_claim)) +
   geom_line(color = "#27AE60", linewidth = 1.5) +
   geom_point(color = "#27AE60", size = 3) +
-  geom_hline(aes(yintercept = median_claim_baseline), 
+  geom_hline(aes(yintercept = median_claim_baseline),
              linetype = "dashed", color = "#E74C3C", linewidth = 1) +
   annotate("text", x = min(df_claims$date - 100), y = df_claims$median_claim_baseline[1] + 200,
-           label = sprintf("Pre-Pandemic Baseline: $%s", 
+           label = sprintf("Pre-Pandemic Baseline: $%s",
                           comma(df_claims$median_claim_baseline[1])),
            hjust = 0, color = "#E74C3C", fontface = "bold") +
-  geom_vline(xintercept = as.Date("2020-03-01"), 
+  geom_vline(xintercept = as.Date("2020-03-01"),
              linetype = "dotted", color = "#27AE60", alpha = 1, linewidth = 1) +
-  geom_vline(xintercept = as.Date("2021-09-30"), 
+  geom_vline(xintercept = as.Date("2021-09-30"),
              linetype = "dotted", color = "#E67E22", alpha = 1, linewidth = 1) +
   scale_y_continuous(labels = dollar_format()) +
   labs(
@@ -1040,7 +1040,7 @@ racial_comparison <- racial_stats %>%
 racial_disparity_plot <- racial_comparison %>%
   ggplot(aes(x = racial_majority, y = percentage, fill = metric)) +
   geom_col(position = "dodge", width = 0.7) +
-  geom_text(aes(label = sprintf("%.1f%%", percentage)), 
+  geom_text(aes(label = sprintf("%.1f%%", percentage)),
             position = position_dodge(width = 0.7), vjust = -0.5, size = 3.5) +
   scale_fill_manual(values = c("Share of Tracts" = "#3498DB", "Share of Filings" = "#E74C3C")) +
   scale_y_continuous(labels = percent_format(scale = 1), expand = expansion(mult = c(0, 0.15))) +
@@ -1217,9 +1217,9 @@ baseline_ratio_plot <- ggplot(monthly_baseline_ratio, aes(x = date, y = ratio_to
   geom_hline(yintercept = 1, linetype = "dashed", color = "black", linewidth = 1) +
   annotate("text", x = min(monthly_baseline_ratio$date + 100), y = 1.08,
            label = "Pre-Pandemic Average", hjust = 0, fontface = "bold") +
-  geom_vline(xintercept = as.Date("2020-03-01"), 
+  geom_vline(xintercept = as.Date("2020-03-01"),
              linetype = "dotted", color = "#27AE60", alpha = 1, linewidth = 1) +
-  geom_vline(xintercept = as.Date("2021-09-30"), 
+  geom_vline(xintercept = as.Date("2021-09-30"),
              linetype = "dotted", color = "#E67E22", alpha = 1, linewidth = 1) +
   labs(
     title = "Monthly Filings Normalized to Pre-Pandemic Baseline",
@@ -1359,8 +1359,8 @@ claims_merge_stats <- df_model_prep %>%
     pct_with_claims = has_claims / total_obs * 100
   )
 
-cat(sprintf("Observations with claims data: %s (%.1f%%)\n", 
-            comma(claims_merge_stats$has_claims), 
+cat(sprintf("Observations with claims data: %s (%.1f%%)\n",
+            comma(claims_merge_stats$has_claims),
             claims_merge_stats$pct_with_claims))
 ```
 
@@ -1371,7 +1371,7 @@ Tax delinquency serves as a proxy for landlord financial stress. Properties with
 ```{r merge-tax-data}
 # Prepare tax data for joining.
 df_tax_join <- df_tax %>%
-  select(GEOID, num_props, balance, avg_balance, log_delinquent_balance, 
+  select(GEOID, num_props, balance, avg_balance, log_delinquent_balance,
                 delinquent_prop_count, delinquency_age_years)
 
 # Merge tax delinquency data to tract-level panel.
@@ -1386,8 +1386,8 @@ tax_merge_stats <- df_model_prep %>%
     pct_with_tax = has_tax_data / total_obs * 100
   )
 
-cat(sprintf("Observations with tax data: %s (%.1f%%)\n", 
-            comma(tax_merge_stats$has_tax_data), 
+cat(sprintf("Observations with tax data: %s (%.1f%%)\n",
+            comma(tax_merge_stats$has_tax_data),
             tax_merge_stats$pct_with_tax))
 ```
 
@@ -1407,32 +1407,32 @@ acs_vars <- c(
   "B25064_001",  # median gross rent
   "B25071_001",  # median gross rent as % of income
   "B25077_001",  # median home value
-  
+
 
   # Income and poverty.
   "B19013_001",  # median household income
   "B17001_001",  # total population for poverty status
   "B17001_002",  # population below poverty level
-  
+
   # Employment.
   "B23025_001",  # total population 16+ in labor force
   "B23025_005",  # unemployed population
-  
+
   # Education.
   "B15003_001",  # total population 25+ for education
   "B15003_017",  # high school diploma
   "B15003_022",  # bachelor's degree
   "B15003_023",  # master's degree
   "B15003_025",  # doctorate degree
-  
+
   # Demographics.
   "B01003_001",  # total population
   "B01002_001",  # median age
-  
+
   # Household composition.
   "B11001_001",  # total households
   "B11001_006",  # female householder no spouse with children
-  
+
   # Housing cost burden.
   "B25070_001",  # total renter households for rent burden
   "B25070_007",  # renters paying 30-34.9% income on rent
@@ -1463,42 +1463,42 @@ cat(sprintf("Tracts with ACS data: %d\n", nrow(acs_data)))
 df_acs <- acs_data %>%
   transmute(
     GEOID = GEOID,
-    
+
     # Renter percentage.
     pct_renter = ifelse(B25003_001E > 0, B25003_003E / B25003_001E * 100, NA),
-    
+
     # Median gross rent.
     median_rent = B25064_001E,
-    
+
     # Rent burden (rent as % of income).
     rent_burden_pct = B25071_001E,
-    
+
     # Median household income (log transform for modeling).
     median_income = B19013_001E,
     log_median_income = log1p(B19013_001E),
-    
+
     # Poverty rate.
     poverty_rate = ifelse(B17001_001E > 0, B17001_002E / B17001_001E * 100, NA),
-    
+
     # Unemployment rate.
     unemployment_rate = ifelse(B23025_001E > 0, B23025_005E / B23025_001E * 100, NA),
-    
+
     # Educational attainment (% with at least bachelor's).
-    pct_college = ifelse(B15003_001E > 0, 
+    pct_college = ifelse(B15003_001E > 0,
                          (B15003_022E + B15003_023E + B15003_025E) / B15003_001E * 100, NA),
-    
+
     # Total population.
     total_pop = B01003_001E,
     log_pop = log1p(B01003_001E),
-    
+
     # Median age.
     median_age = B01002_001E,
-    
+
     # Single mother households (% total households).
     pct_single_mother = ifelse(B11001_001E > 0, B11001_006E / B11001_001E * 100, NA),
-    
+
     # Severe rent burden (% renters paying 35%+ income on rent).
-    severe_rent_burden = ifelse(B25070_001E > 0, 
+    severe_rent_burden = ifelse(B25070_001E > 0,
                                 (B25070_008E + B25070_009E + B25070_010E) / B25070_001E * 100, NA)
   )
 ```
@@ -1540,8 +1540,8 @@ acs_merge_stats <- df_model_prep %>%
     pct_with_acs = has_acs / total_obs * 100
   )
 
-cat(sprintf("Observations with ACS data: %s (%.1f%%)\n", 
-            comma(acs_merge_stats$has_acs), 
+cat(sprintf("Observations with ACS data: %s (%.1f%%)\n",
+            comma(acs_merge_stats$has_acs),
             acs_merge_stats$pct_with_acs))
 ```
 
@@ -1561,7 +1561,7 @@ neighbors_queen <- poly2nb(philly_model_sf, queen = TRUE)
 weights_matrix <- nb2listw(neighbors_queen, style = "W", zero.policy = TRUE)
 
 cat(sprintf("Number of tracts in spatial analysis: %d\n", length(neighbors_queen)))
-cat(sprintf("Average number of neighbors per tract: %.1f\n", 
+cat(sprintf("Average number of neighbors per tract: %.1f\n",
             mean(card(neighbors_queen))))
 ```
 
@@ -1589,24 +1589,24 @@ df_model_prep <- df_model_prep %>%
     spatial_lag_filings = {
       sf_matched <- philly_model_sf %>%
         left_join(
-          cur_data() %>% select(GEOID, filings_count_lag1), 
+          cur_data() %>% select(GEOID, filings_count_lag1),
           by = "GEOID"
         ) %>%
         mutate(filings_count_lag1 = ifelse(is.na(filings_count_lag1), 0, filings_count_lag1))
-      
+
       # Calculate weighted average of neighbors' lagged filings.
       lag.listw(weights_matrix, sf_matched$filings_count_lag1, zero.policy = TRUE)
     }
   ) %>%
   ungroup()
 
-cat(sprintf("Observations with spatial lag: %s\n", 
+cat(sprintf("Observations with spatial lag: %s\n",
             comma(sum(!is.na(df_model_prep$spatial_lag_filings)))))
 ```
 
 ### Creating Neighborhood Fixed-Effects
 
-Neighborhoods provide a broader geographic context for understanding eviction filings. By linking tracts to neighborhood boundaries, we can test whether neighborhood characteristics are associated with filing rates. 
+Neighborhoods provide a broader geographic context for understanding eviction filings. By linking tracts to neighborhood boundaries, we can test whether neighborhood characteristics are associated with filing rates.
 
 ```{r neighborhood-boundaries}
 # Load boundaries.
@@ -1681,7 +1681,7 @@ We generated a correlation matrix for all numeric variables to identify redundan
 #| warning: FALSE
 
 # Custom colors.
-custom_colors <- colorRampPalette(c("#f03e37", "white", "#189ace")) 
+custom_colors <- colorRampPalette(c("#f03e37", "white", "#189ace"))
 
 color_vector <- custom_colors(200)
 
@@ -1694,7 +1694,7 @@ correlation_matrix <- cor(df_model_prep_correlation, use = "pairwise.complete.ob
 # Display matrix.
 corrplot(correlation_matrix,
          method = "square",
-         order = "FPC", 
+         order = "FPC",
          type = "lower",
          diag = TRUE,
          tl.col = "black",
@@ -2133,8 +2133,8 @@ pred_obs_plot <- df_test_pred %>%
   labs(
     title = "Predicted vs Observed Eviction Filings (Test Set | Model 3)",
     subtitle = sprintf("MAE = %.2f | RMSE = %.2f | Correlation = %.3f",
-                       selected_test_metrics$MAE, 
-                       selected_test_metrics$RMSE, 
+                       selected_test_metrics$MAE,
+                       selected_test_metrics$RMSE,
                        selected_test_metrics$correlation),
     x = "Predicted Filings",
     y = "Observed Filings",
@@ -2221,8 +2221,8 @@ df_test_risk <- df_test_pred %>%
       risk_quintile == 4 ~ "High Risk",
       risk_quintile == 5 ~ "Highest Risk"
     ),
-    risk_category = factor(risk_category, 
-                          levels = c("Lowest Risk", "Low Risk", "Moderate Risk", 
+    risk_category = factor(risk_category,
+                          levels = c("Lowest Risk", "Low Risk", "Moderate Risk",
                                     "High Risk", "Highest Risk"))
   )
 
@@ -2254,7 +2254,7 @@ risk_validation %>%
 risk_bar_plot <- risk_validation %>%
   ggplot(aes(x = risk_category, y = mean_observed, fill = risk_category)) +
   geom_col(width = 0.7) +
-  geom_text(aes(label = sprintf("%.1f%%", pct_total_filings)), 
+  geom_text(aes(label = sprintf("%.1f%%", pct_total_filings)),
             vjust = -0.5, size = 4) +
   scale_fill_viridis_d(option = "plasma", direction = -1) +
   scale_y_continuous(labels = comma, expand = expansion(mult = c(0, 0.15))) +
@@ -2629,7 +2629,7 @@ risk_race_plot
 
 # Create equity comparison plot.
 equity_plot <- equity_metrics %>%
-  pivot_longer(cols = c(mean_observed, mean_predicted), 
+  pivot_longer(cols = c(mean_observed, mean_predicted),
                names_to = "type", values_to = "value") %>%
   mutate(type = ifelse(type == "mean_observed", "Observed", "Predicted")) %>%
   ggplot(aes(x = racial_majority, y = value, fill = type)) +
