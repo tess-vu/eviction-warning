@@ -8,6 +8,7 @@ slides/libs/revealjs/
 # R
 .RData
 .RDataTmp
+.RDataTmp*
 .Renviron
 .Rhistory
 .Rproj.user
