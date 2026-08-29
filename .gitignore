@@ -1,16 +1,25 @@
-data/DOR_Parcel/DOR_Parcel.cpg
-data/DOR_Parcel/DOR_Parcel.dbf
-data/DOR_Parcel/DOR_Parcel.prj
-data/DOR_Parcel/DOR_Parcel.shp
-data/DOR_Parcel/DOR_Parcel.shx
-data/DOR_Parcel/DOR_Parcel.xml
-septa_spatial_rail_analysis.qmd
-*.RData
-OLD_eviction_main.qmd
-eviction_early_warning_eda_comprehensive.qmd
-.RDataTmp*
-*.Rhistory
+# Data
+data/DOR_Parcel/
+data/eviction/data_dictionary_*.csv
+data/eviction/opa_properties_assessments.csv
+data/license_inspection/
+data/pa_tracts/
+data/philadelphia-neighborhoods/
+data/septa/
+
+# Libraries
+draft_slides_files/libs/revealjs/
+
+# R
+.RData
+.RDataTmp
+.Renviron
 .Rhistory
-.Rhistory
-.Rhistory
-.Rhistory
+.Rproj.user
+
+# Rendered files
+*.html
+
+# Other
+Angel.qmd
+eviction_main_reworked.qmd

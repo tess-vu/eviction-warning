@@ -1,6 +1,0 @@
-"0","# Print seasonal statistics."
-"0","# Seasonal pattern statistics"
-"0","seasonality_data %>%"
-"0","  select(month_name, Mean_Filings, Median_Filings, SD_Filings) %>%"
-"0","  kable(digits = 2, col.names = c(""Month"", ""Mean"", ""Median"", ""SD"")) %>%"
-"0","  kable_styling(bootstrap_options = c(""striped"", ""hover""))"
