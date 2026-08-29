@@ -6,7 +6,7 @@ author:
   - name: Angel Rutherford
   - name: Ixchel Ramirez
   - name: Tess Vu
-format: 
+format:
   revealjs:
     theme: simple
     slide-number: true
