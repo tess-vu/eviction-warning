@@ -70,7 +70,7 @@ Like Iron Chef's mystery ingredient, you must choose ONE of the following as you
 
 3. **Be Predictive**
 
-   - Must forecast or predict an outcome 
+   - Must forecast or predict an outcome
    - Must demonstrate clear out-of-sample prediction accuracy
    - Must use appropriate train/test splits or cross-validation
 
@@ -78,24 +78,24 @@ Like Iron Chef's mystery ingredient, you must choose ONE of the following as you
 
    Your toolbox includes (and is limited to):
 
-   - **Regression methods:** 
-   
+   - **Regression methods:**
+
      - Linear regression (OLS)
      - Logistic regression
-     - Count models (Poisson/negative binomial) 
+     - Count models (Poisson/negative binomial)
      - Space Time Models
-     
+
    - **Feature engineering:**
-   
+
      - Categorical variables and interactions
      - Polynomial terms
      - Spatial features (buffers, kNN, distance to amenities)
      - Neighborhood fixed effects
      - Local Hotspots & Cold Spots (+ Distance to them)
      - k-means
-     
+
    - **Model evaluation:**
-   
+
      - Train/test splits
      - Cross-validation (k-fold, LOOCV, spatial CV)
      - Appropriate accuracy metrics (MAE, RMSE, confusion matrices, etc.)
@@ -158,7 +158,7 @@ Your presentation should answer:
 ### 1. In-Class Presentation (December 8th)
 
 - **Duration:** 7 minutes max to present + 3 minutes for Q&A from the sharks
-- **Format:** Slide deck with visualizations 
+- **Format:** Slide deck with visualizations
 - **Content:**
 
   - Problem statement and policy context (What are you predicting and why?)
@@ -167,7 +167,7 @@ Your presentation should answer:
   - Results and model performance (How accurate? How did you validate?)
   - Limitations and bias considerations (What could go wrong? Who could be harmed?)
   - Recommendations for implementation (How would the city actually use this?)
-  
+
 - **Audience:** Assume your judges are smart city officials who understand policy but may need technical concepts explained clearly
 
 ### 2. Quarto Document + GitHub Repository
@@ -183,7 +183,7 @@ Your presentation should answer:
   - Model validation and performance assessment
   - Limitations and ethical considerations
   - Data sources and integration methods clearly documented
-  
+
 - **Style:** Professional portfolio piece (remember, potential employers will see this!)
 - **Repository must include:**
 
@@ -198,7 +198,7 @@ Your presentation should answer:
 
 Your project will be evaluated on:
 
-### Technical Rigor 
+### Technical Rigor
 
 - Appropriate method selection for the problem
 - Correct implementation of techniques
@@ -212,14 +212,14 @@ Your project will be evaluated on:
 - Considers implementation feasibility
 - Connects predictions to decisions
 
-### Critical Analysis 
+### Critical Analysis
 
 - Acknowledges limitations honestly
 - Considers potential for bias and harm
 - Discusses ethical implications
 - Proposes appropriate safeguards
 
-### Communication 
+### Communication
 
 - Clear, compelling presentation
 - Effective visualizations
