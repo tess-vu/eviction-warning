@@ -8,7 +8,8 @@ data/philadelphia-neighborhoods/
 data/septa/
 
 # Libraries
-draft_slides_files/libs/revealjs/
+draft_slides_files/
+slides/libs/revealjs/
 
 # R
 .RData
@@ -18,6 +19,7 @@ draft_slides_files/libs/revealjs/
 .Rproj.user
 
 # Rendered files
+draft_slides.qmd
 *.html
 
 # Other
