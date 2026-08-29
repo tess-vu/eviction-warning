@@ -2479,6 +2479,108 @@ operational_output
 
 By integrating temporal, spatial, and socioeconomic indicators, the best model achieves a prediction error of < 2 filings per tract, outperforming the baseline model. Also, the model successfully identifies the "Highest Risk" tracts that account for the vast majority of displacement. This tool offers the City of Philadelphia a concrete mechanism to shift from reactive to proactive, targeting aid to the specific blocks where it is needed most and ideally before any landlord-tenant tensions escalate into expensive legal battles.
 
+### Output Export
+
+```{r export-predictions}
+#| results: hide
+#| message: false
+#| warning: false
+
+# Write model_predictions.csv
+city_median_delinquent <- median(df_tax$delinquent_prop_count, na.rm = TRUE)
+
+model_predictions <- df_test_risk %>%
+  mutate(
+    action_tier = case_when(
+      predicted >= 12 ~ "Deploy canvassers",
+      predicted >= 8  ~ "Direct mail",
+      predicted >= 5  ~ "Legal aid pop-up",
+      TRUE            ~ "Monitor"
+    ),
+    spatial_lag_tier = case_when(
+      is.na(spatial_lag_filings) ~ "N/A",
+      spatial_lag_filings > 5   ~ "High",
+      spatial_lag_filings >= 2  ~ "Moderate",
+      TRUE                      ~ "Low"
+    ),
+    tax_stress = if_else(
+      !is.na(delinquent_prop_count) & delinquent_prop_count > city_median_delinquent,
+      "Yes",
+      "No"
+    ),
+    bias = predicted - filings_count
+  ) %>%
+  select(
+    GEOID,
+    date,
+    neighborhood,
+    racial_majority,
+    filings_count,
+    predicted,
+    residual,
+    abs_error,
+    bias,
+    risk_quintile,
+    risk_category,
+    action_tier,
+    spatial_lag_tier,
+    spatial_lag_filings,
+    tax_stress,
+    delinquent_prop_count,
+    pct_renter,
+    poverty_rate,
+    severe_rent_burden,
+    pct_single_mother,
+    median_income,
+    moratorium_active,
+    is_extreme_spike,
+    filings_ma3
+  )
+
+required_cols <- c(
+  "GEOID", "date", "racial_majority",
+  "filings_count", "predicted", "neighborhood"
+)
+
+missing_cols <- setdiff(required_cols, names(model_predictions))
+
+if (length(missing_cols) > 0) {
+  stop(sprintf(
+    "export-predictions: missing required columns: %s",
+    paste(missing_cols, collapse = ", ")
+  ))
+}
+
+output_dir <- "../outputs"
+output_path <- file.path(output_dir, "model_predictions.csv")
+
+if (!dir.exists(output_dir)) {
+  dir.create(output_dir, recursive = TRUE)
+}
+
+write_csv(model_predictions, output_path)
+
+cat(sprintf(
+  "export-predictions: wrote %d rows × %d cols to %s\n",
+  nrow(model_predictions),
+  ncol(model_predictions),
+  output_path
+))
+cat(sprintf(
+  "  Date Range: %s → %s\n",
+  format(min(model_predictions$date), "%Y-%m-%d"),
+  format(max(model_predictions$date), "%Y-%m-%d")
+))
+cat(sprintf(
+  "  Racial Groups: %s\n",
+  paste(sort(unique(model_predictions$racial_majority)), collapse = ", ")
+))
+cat(sprintf(
+  "  Critical-risk tracts (predicted >= 12): %d\n",
+  sum(model_predictions$predicted >= 12, na.rm = TRUE)
+))
+```
+
 # III. EQUITY ASSESSMENT
 
 ## 1. Impact Analysis
