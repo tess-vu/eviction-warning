@@ -1,16 +1,21 @@
-data/DOR_Parcel/DOR_Parcel.cpg
-data/DOR_Parcel/DOR_Parcel.dbf
-data/DOR_Parcel/DOR_Parcel.prj
-data/DOR_Parcel/DOR_Parcel.shp
-data/DOR_Parcel/DOR_Parcel.shx
-data/DOR_Parcel/DOR_Parcel.xml
-septa_spatial_rail_analysis.qmd
-*.RData
-OLD_eviction_main.qmd
-eviction_early_warning_eda_comprehensive.qmd
-.RDataTmp*
-*.Rhistory
+# Data
+data/
+
+# Libraries
+draft_slides_files/
+slides/libs/revealjs/
+
+# R
+.RData
+.RDataTmp
+.Renviron
 .Rhistory
-.Rhistory
-.Rhistory
-.Rhistory
+.Rproj.user
+
+# Rendered files
+draft_slides.qmd
+*.html
+
+# Other
+Angel.qmd
+eviction_main_reworked.qmd
