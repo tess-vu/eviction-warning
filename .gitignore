@@ -1,5 +1,6 @@
 # Data
 data/
+outputs/
 *.csv
 
 # Libraries
@@ -21,3 +22,6 @@ draft_slides.qmd
 # Other
 Angel.qmd
 eviction_main_reworked.qmd
+python/__pycache__
+python/fairness/__pycache__
+python/.ruff_cache
