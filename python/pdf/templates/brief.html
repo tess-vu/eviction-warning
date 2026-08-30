@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Eviction Early Warning System: {{ forecast_month }} Triage Brief</title>
+<style>
+  @page {
+    size: letter;
+    margin: 0.75in;
+    @bottom-left {
+      content: "Generated {{ generated_at }}";
+      font-size: 8px;
+      color: #6a7585;
+      font-family: "Source Sans Pro", sans-serif;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-size: 8px;
+      color: #6a7585;
+      font-family: "Source Sans Pro", sans-serif;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: "Ben Franklin", "Source Sans Pro", sans-serif;
+    color: #0f1a2e;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 600;
+    border-left: 4px solid #2176D2;
+    padding-left: 8px;
+    margin: 20px 0 10px;
+  }
+
+  .header-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #2176D2;
+    padding-bottom: 10px;
+    margin-bottom: 6px;
+  }
+
+  .header-bar img { height: 48px; }
+
+  .header-right {
+    text-align: right;
+    font-size: 10px;
+    color: #4a5568;
+  }
+
+  .report-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .meta-line {
+    font-size: 10px;
+    color: #4a5568;
+    margin-bottom: 8px;
+  }
+
+  .status-banner {
+    padding: 8px 14px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 14px;
+    font-size: 10px;
+  }
+
+  th, td {
+    border: 1px solid #c5d1de;
+    padding: 5px 7px;
+    text-align: left;
+  }
+
+  th {
+    background: #2176D2;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  tr.alt { background: #F0F7FF; }
+
+  .summary-table td {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 10px;
+  }
+
+  .summary-label {
+    font-size: 9px;
+    font-weight: 400;
+    color: #4a5568;
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  .safeguard {
+    border-left: 4px solid #F3A738;
+    background: #FFF8EC;
+    padding: 12px 16px;
+    margin: 18px 0;
+    font-size: 10.5px;
+  }
+
+  .safeguard strong { display: block; margin-bottom: 4px; }
+
+  .footer-sources td, .footer-sources th {
+    font-size: 9px;
+  }
+
+  .footer-sources th {
+    background: #edf1f7;
+    color: #0f1a2e;
+  }
+
+  .model-version {
+    margin-top: 8px;
+    font-size: 9px;
+    color: #6a7585;
+  }
+
+  p { margin-bottom: 8px; }
+  ul { margin: 6px 0 6px 18px; }
+  li { margin-bottom: 3px; }
+
+  .safeguard, .header-bar { page-break-inside: avoid; }
+  tr { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- SECTION 1: HEADER -->
+<div class="header-bar">
+  <div {% if not has_logo %}role="img" aria-label="City of Philadelphia"{% endif %}>
+    {% if has_logo %}
+    <img src="philly_logo.png" alt="City of Philadelphia">
+    {% endif %}
+  </div>
+  <div class="header-right">
+    Office of Homeless Services<br>
+    Fair Housing Commission
+  </div>
+</div>
+
+<div class="report-title">Eviction Early Warning System: {{ forecast_month }} Triage Brief</div>
+<div class="meta-line">
+  Forecast Month: {{ forecast_month }} &nbsp;|&nbsp;
+  Generated: {{ generated_at }} &nbsp;|&nbsp;
+  Model MAE: {{ model_mae }}
+</div>
+
+<div class="status-banner" role="alert" aria-live="polite" style="background: {{ banner_color }};">
+  {{ banner_text }}
+</div>
+
+<!-- SECTION 2: ETHICAL SAFEGUARD -->
+<div class="safeguard" role="note">
+  <strong>ETHICAL SAFEGUARD</strong>
+  This tool is FOR PROACTIVE RESOURCE ALLOCATION ONLY. It MUST NOT BE USED FOR ENFORCEMENT,
+  PUNITIVE ACTION, OR AUTOMATED DECISION-MAKING OF ANY KIND. Any use outside resource
+  allocation requires prior review by the Fair Housing Commission.
+</div>
+
+<!-- SECTION 3: SYSTEM STATUS -->
+<h2>System Status</h2>
+<table class="summary-table">
+  <caption>System Status Summary for {{ forecast_month }}</caption>
+  <tr>
+    <td><span class="summary-label">Critical-Risk Tracts</span>{{ n_critical }}</td>
+    <td><span class="summary-label">Predicted Filings (Top {{ top_n }})</span>{{ predicted_filings_top_n }}</td>
+    <td><span class="summary-label">Model MAE</span>{{ model_mae }}</td>
+    <td><span class="summary-label">Tax Delinquency Overlap</span>{{ tax_delinquency_overlap }}%</td>
+  </tr>
+</table>
+
+<!-- SECTION 4: TOP N CRITICAL TRACTS -->
+<h2>Top {{ top_n }} Critical Tracts</h2>
+<table>
+  <caption>Top {{ top_n }} Critical Tracts by Predicted Filings</caption>
+  <thead>
+    <tr>
+      <th scope="col">Rank</th>
+      <th scope="col">GEOID</th>
+      <th scope="col">Neighborhood</th>
+      <th scope="col">Predicted Filings</th>
+      <th scope="col">Spatial Lag Tier</th>
+      <th scope="col">Tax Stress</th>
+      <th scope="col">Racial Majority</th>
+      <th scope="col">Action Tier</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for t in tracts %}
+    <tr{% if loop.index is even %} class="alt"{% endif %}>
+      <td>{{ t.rank }}</td>
+      <td>{{ t.geoid }}</td>
+      <td>{{ t.neighborhood }}</td>
+      <td>{{ t.predicted }}</td>
+      <td>{{ t.spatial_lag_tier }}</td>
+      <td>{{ t.tax_stress }}</td>
+      <td>{{ t.racial_majority }}</td>
+      <td>{{ t.action_tier }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<!-- SECTION 5: EQUITY MONITORING -->
+<h2>Equity Monitoring</h2>
+<table>
+  <caption>Equity Metrics by Racial Majority Group</caption>
+  <thead>
+    <tr>
+      <th scope="col">Group</th>
+      <th scope="col">MAE</th>
+      <th scope="col">Bias</th>
+      <th scope="col">Mean Observed</th>
+      <th scope="col">Mean Predicted</th>
+      <th scope="col">Equity Flag</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for g in equity_groups %}
+    <tr{% if loop.index is even %} class="alt"{% endif %}>
+      <td>{{ g.group }}</td>
+      <td>{{ g.mae }}</td>
+      <td>{{ g.bias }}</td>
+      <td>{{ g.mean_observed }}</td>
+      <td>{{ g.mean_predicted }}</td>
+      <td>{{ g.equity_flag }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p>{{ equity_summary }}</p>
+
+<!-- SECTION 6: MODEL CONTEXT -->
+<h2>Model Context</h2>
+<p><strong>Features Used:</strong></p>
+<ul>
+  <li>Monthly eviction filing counts (Eviction Lab)</li>
+  <li>Tract-level demographics: renter share, poverty rate, severe rent burden, single-mother households, median income (ACS)</li>
+  <li>Spatial lag of neighboring tract filings</li>
+  <li>Real estate tax delinquency counts (OPA / Revenue)</li>
+  <li>Moratorium status indicator</li>
+  <li>3-month moving average of filings</li>
+</ul>
+
+<p><strong>What the model does not account for:</strong></p>
+<ul>
+  <li>Sealed or expunged filing records</li>
+  <li>Same-month economic shocks (job losses, plant closures)</li>
+  <li>Informal evictions and lease non-renewals</li>
+  <li>Landlord-specific behavior or portfolio changes</li>
+</ul>
+
+<p><strong>Validation:</strong> Trained on 2020–2023 monthly panel. Tested on 2024 hold-out.
+Model MAE on Test Set: {{ model_mae }}.</p>
+
+<!-- SECTION 7: ETHICAL SAFEGUARD -->
+<div class="safeguard" role="note">
+  <strong>ETHICAL SAFEGUARD</strong>
+  This tool is FOR PROACTIVE RESOURCE ALLOCATION ONLY. It MUST NOT BE USED FOR ENFORCEMENT,
+  PUNITIVE ACTION, OR AUTOMATED DECISION-MAKING OF ANY KIND. Any use outside resource
+  allocation requires prior review by the Fair Housing Commission.
+</div>
+
+<!-- SECTION 8: FOOTER -->
+<h2>Data Sources</h2>
+<table class="footer-sources">
+  <caption>Data Sources and Update Schedules</caption>
+  <thead>
+    <tr><th scope="col">Source</th><th scope="col">Dataset</th><th scope="col">Update Frequency</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Eviction Lab</td><td>Philadelphia weekly/monthly filing counts</td><td>Monthly</td></tr>
+    <tr class="alt"><td>OpenDataPhilly</td><td>OPA assessments, tax balances, 311 requests</td><td>Quarterly</td></tr>
+    <tr><td>U.S. Census Bureau</td><td>ACS 5-year estimates (tract-level demographics)</td><td>Annual</td></tr>
+  </tbody>
+</table>
+
+<div class="model-version">Model Version: {{ model_version }} &nbsp;|&nbsp; Generated: {{ generated_at }}</div>
+
+</body>
+</html>
