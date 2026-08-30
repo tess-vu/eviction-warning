@@ -18,11 +18,15 @@ slides/libs/revealjs/
 
 # Rendered files
 draft_slides.qmd
-*.html
+analysis/*.html
+archive/*.html
+slides/*.html
 
 # Other
 Angel.qmd
 eviction_main_reworked.qmd
 python/__pycache__
 python/fairness/__pycache__
+python/pdf/__pycache__
 python/.ruff_cache
+.pytest_cache/
