@@ -13,6 +13,7 @@ slides/libs/revealjs/
 .RDataTmp*
 .Renviron
 .Rhistory
+.Rprofile
 .Rproj.user
 
 # Rendered files
