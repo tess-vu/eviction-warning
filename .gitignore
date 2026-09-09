@@ -6,6 +6,7 @@ outputs/
 # Libraries
 draft_slides_files/
 slides/libs/revealjs/
+frontend/node_modules/
 
 # R
 .RData
