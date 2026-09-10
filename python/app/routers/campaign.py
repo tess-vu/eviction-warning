@@ -22,9 +22,9 @@ def _run_campaign(predictions_path: str, subscribers_path: str,
             mock_outbound=mock_outbound,
         )
     except ImportError:
-        log.warning("Mail module not yet available (Chunk 5). Campaign skipped.")
+        log.warning("Mail module not yet available. Campaign skipped.")
     except Exception:
-        log.exception("Campaign failed")
+        log.exception("Campaign failed.")
 
 @router.post("/campaign", status_code=HTTP_202_ACCEPTED, response_model=CampaignAccepted)
 def start_campaign(body: CampaignRequest, tasks: BackgroundTasks):
