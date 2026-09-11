@@ -6,6 +6,7 @@ outputs/
 # Libraries
 draft_slides_files/
 slides/libs/revealjs/
+frontend/node_modules/
 
 # R
 .RData
@@ -28,5 +29,7 @@ eviction_main_reworked.qmd
 python/__pycache__
 python/fairness/__pycache__
 python/pdf/__pycache__
+python/app/__pycache__
+python/app/routers/__pycache__
 python/.ruff_cache
 .pytest_cache/
