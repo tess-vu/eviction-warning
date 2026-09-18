@@ -5,7 +5,7 @@ from ..schemas import TractsResponse, TractRecord, KPISummary
 
 router = APIRouter()
 
-ACTION_TIERS = [(12, "Deploy canvassers"), (8, "Direct mail"), (5, "Legal aid pop-up")]
+ACTION_TIERS = [(12, "Deploy Canvassers"), (8, "Direct Mail"), (5, "Legal Aid Pop-Up")]
 
 def _action_tier(predicted: float) -> str:
     for threshold, label in ACTION_TIERS:

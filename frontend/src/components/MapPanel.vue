@@ -83,7 +83,7 @@ onMounted(() => {
   position: absolute;
   bottom: 20px;
   right: 10px;
-  z-index: 1;
+  z-index: 3;
   pointer-events: none;
 }
 
