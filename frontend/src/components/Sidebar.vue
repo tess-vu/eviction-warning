@@ -87,6 +87,22 @@ const store = useForecastStore()
 .sidebar select:focus { outline: 2px solid var(--philly-blue); outline-offset: 0; }
 .help-text { font-size: 11px; color: var(--philly-mid); margin-top: 2px; }
 
+.safeguard-notice-top {
+  background: #FEF5E4;
+  border-left: 4px solid var(--philly-yellow);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--philly-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  margin: 12px 0 8px 0;
+}
+
+.safeguard-top-icon { font-size: 18px; line-height: 1; }
+.safeguard-text { flex: 1; }
+
 .btn-primary {
   background: var(--philly-blue);
   color: var(--philly-white);
