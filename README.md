@@ -80,4 +80,14 @@ This model's future would be best used as a monthly **Triage Dashboard**:
     * **Direct Mail:** Send "Know Your Rights" flyers to all rental units within zip codes.
     * **Legal Aid Pop-Ups:** Establish temporary clinics in these specific zones.
 
+## Running System
+
+The pipeline runs in five steps from the repository root.
+
+```bash
+python -m python.fairness.audit --predictions model_predictions.csv --output equity_audit.json
+python -m python.pdf.generator --predictions model_predictions.csv --equity-audit equity_audit.json --output outputs/brief_2026_01.pdf
+uvicorn python.app.main:app --reload --port 8000
+```
+
 **Ethical Safeguard:** This tool must be used strictly for providing resources, never for automated decision-making or punitive enforcement.
