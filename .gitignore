@@ -33,3 +33,4 @@ python/app/__pycache__
 python/app/routers/__pycache__
 python/.ruff_cache
 .pytest_cache/
+python/mail/__pycache__
