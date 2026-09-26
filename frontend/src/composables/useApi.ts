@@ -1,6 +1,9 @@
 import type { TractsResponse, EquityResponse, CampaignAccepted } from '@/types'
 
-const BASE = ''
+// Static mode reads pre-exported JSON (GitHub Pages) otherwise FastAPI serves the routes.
+export const STATIC_MODE = import.meta.env.VITE_STATIC === 'true'
+
+const BASE = import.meta.env.BASE_URL.replace(/\/$/, '')
 
 async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE}${url}`, init)
@@ -12,16 +15,25 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 
 export function useApi() {
   return {
-    fetchMonths: () => request<{ available_months: string[] }>('/api/months'),
+    fetchMonths: () =>
+      request<{ available_months: string[] }>(
+        STATIC_MODE ? '/api/months.json' : '/api/months',
+      ),
 
     fetchTracts: (month: string, topN: number) =>
-      request<TractsResponse>(`/api/tracts?month=${month}&top_n=${topN}`),
+      request<TractsResponse>(
+        STATIC_MODE
+          ? `/api/tracts/${month}/${topN}.json`
+          : `/api/tracts?month=${month}&top_n=${topN}`,
+      ),
 
     fetchEquity: (month: string) =>
-      request<EquityResponse>(`/api/equity?month=${month}`),
+      request<EquityResponse>(
+        STATIC_MODE ? `/api/equity/${month}.json` : `/api/equity?month=${month}`,
+      ),
 
     downloadBrief: (month: string, topN: number) => {
-      window.open(`/api/brief?month=${month}&top_n=${topN}`, '_blank')
+      window.open(`${BASE}/api/brief?month=${month}&top_n=${topN}`, '_blank')
     },
 
     sendCampaign: (month: string, topN: number) =>

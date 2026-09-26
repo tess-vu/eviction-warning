@@ -1,0 +1,124 @@
+{
+  "month": "2025-03",
+  "top_n": 10,
+  "kpi": {
+    "critical_tracts": 10,
+    "predicted_filings_top_n": 165.2,
+    "model_mae": 1.766,
+    "equity_passed": true,
+    "equity_label": "\u2713 Passed",
+    "top_n": 10
+  },
+  "tracts": [
+    {
+      "rank": 1,
+      "geoid": "42101030100",
+      "neighborhood": "Northwood",
+      "predicted": 26.9,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 2,
+      "geoid": "42101025200",
+      "neighborhood": "East Mount Airy",
+      "predicted": 26.7,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 3,
+      "geoid": "42101024000",
+      "neighborhood": "East Falls",
+      "predicted": 16.7,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 4,
+      "geoid": "42101008500",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 15.6,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 5,
+      "geoid": "42101011900",
+      "neighborhood": "West Parkside",
+      "predicted": 13.9,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 6,
+      "geoid": "42101037700",
+      "neighborhood": "Stanton",
+      "predicted": 13.7,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 7,
+      "geoid": "42101023900",
+      "neighborhood": "East Falls",
+      "predicted": 13.7,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 8,
+      "geoid": "42101008302",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 12.9,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 9,
+      "geoid": "42101015200",
+      "neighborhood": "Stanton",
+      "predicted": 12.6,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 10,
+      "geoid": "42101036201",
+      "neighborhood": "Modena",
+      "predicted": 12.5,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useForecastStore } from '@/stores/forecast'
-import { useApi } from '@/composables/useApi'
+import { useApi, STATIC_MODE } from '@/composables/useApi'
 
 const store = useForecastStore()
 const api = useApi()
@@ -37,7 +37,7 @@ async function sendCampaign() {
       <div class="footer-left">
         Office of Homeless Services · Fair Housing Commission
       </div>
-      <div class="footer-right">
+      <div v-if="!STATIC_MODE" class="footer-right">
         <button id="generate-pdf-btn" class="btn-outline" @click="downloadPdf">
           Generate PDF Brief
         </button>
@@ -49,6 +49,9 @@ async function sendCampaign() {
         >
           {{ campaignSending ? 'Sending …' : 'Send Monthly Campaign (Mock)' }}
         </button>
+      </div>
+      <div v-else class="footer-right footer-note">
+        Static Demo. PDF briefs and mail campaigns require the FastAPI backend.
       </div>
     </div>
     <div
@@ -107,6 +110,8 @@ footer[role="contentinfo"] {
 
 .btn-outline:hover { background: rgba(255, 255, 255, 0.1); }
 .btn-outline:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.footer-note { font-size: 12px; opacity: 0.75; }
 
 #campaign-status {
   max-width: 1200px;

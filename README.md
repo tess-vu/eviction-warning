@@ -80,14 +80,69 @@ This model's future would be best used as a monthly **Triage Dashboard**:
     * **Direct Mail:** Send "Know Your Rights" flyers to all rental units within zip codes.
     * **Legal Aid Pop-Ups:** Establish temporary clinics in these specific zones.
 
-## Running System
+## Repository Structure
 
-The pipeline runs in five steps from the repository root.
+```
+analysis/      Quarto modeling notebooks (EDA and final model)
+slides/        Quarto presentation
+python/        Fairness audit, PDF brief generator, mail campaign, FastAPI service
+frontend/      Vue 3 + Vite dashboard (MapLibre, Pinia)
+outputs/       Model predictions, equity audit, generated briefs (not tracked)
+data/          Source datasets (not tracked)
+```
+
+## Running Full System Locally
+
+Run from the repository root. Requires Python 3.12+ and Node 20+.
 
 ```bash
-python -m python.fairness.audit --predictions model_predictions.csv --output equity_audit.json
-python -m python.pdf.generator --predictions model_predictions.csv --equity-audit equity_audit.json --output outputs/brief_2026_01.pdf
+pip install -r python/requirements.txt
+
+# 1. Audit model predictions for disparate impact.
+python -m python.fairness.audit --predictions outputs/model_predictions.csv --output outputs/equity_audit.json
+
+# 2. Generate a monthly PDF brief.
+python -m python.pdf.generator --predictions outputs/model_predictions.csv --equity-audit outputs/equity_audit.json --output outputs/brief_2026_01.pdf
+
+# 3. Serve API.
 uvicorn python.app.main:app --reload --port 8000
 ```
+
+In a second terminal, start the dashboard:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The dev server proxies `/api` and `/health` to the FastAPI service on port 8000.
+
+## Live Dashboard (GitHub Pages)
+
+The dashboard is also published as a static site, which runs without a backend by reading pre-exported JSON instead of calling the API. PDF brief generation and the mail campaign are hidden in this mode since both require the Python service.
+
+**Deploy Setup (Once):** in the repository settings under **Pages**, set **Source** to **GitHub Actions**. The workflow in [.github/workflows/deploy-pages.yml](.github/workflows/deploy-pages.yml) builds and publishes on every push to `main`.
+
+**Refreshing Published Data:** Static payloads are in `frontend/public/api/` and are committed to the repository, because `outputs/` is gitignored and unavailable to CI. Regenerate them whenever the model outputs change:
+
+```bash
+python -m python.export_static
+git add frontend/public/api
+```
+
+This writes one JSON file per month and per Top-N option, mirroring the `/api/months`, `/api/tracts`, and `/api/equity` responses.
+
+**Build Locally:**
+
+```bash
+cd frontend
+npm run build:pages # builds with VITE_STATIC=true and the /eviction-warning/ base path
+npm run preview -- --mode pages
+```
+
+The base path is set in [frontend/.env.pages](frontend/.env.pages) and must match the repository name. If the repository is renamed, or if this is moved to a `<user>.github.io` user site (where the base path is `/`), update `VITE_BASE_PATH` there.
+
+The Quarto report and slides are intentionally excluded from the published site, only the dashboard is deployed.
 
 **Ethical Safeguard:** This tool must be used strictly for providing resources, never for automated decision-making or punitive enforcement.

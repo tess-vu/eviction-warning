@@ -1,0 +1,124 @@
+{
+  "month": "2024-04",
+  "top_n": 10,
+  "kpi": {
+    "critical_tracts": 0,
+    "predicted_filings_top_n": 53.6,
+    "model_mae": 1.766,
+    "equity_passed": true,
+    "equity_label": "\u2713 Passed",
+    "top_n": 10
+  },
+  "tracts": [
+    {
+      "rank": 1,
+      "geoid": "42101036100",
+      "neighborhood": "Somerton",
+      "predicted": 6.2,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 2,
+      "geoid": "42101010700",
+      "neighborhood": "Belmont",
+      "predicted": 5.8,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 3,
+      "geoid": "42101027600",
+      "neighborhood": "Olney",
+      "predicted": 5.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 4,
+      "geoid": "42101003300",
+      "neighborhood": "Grays Ferry",
+      "predicted": 5.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 5,
+      "geoid": "42101017800",
+      "neighborhood": "Richmond",
+      "predicted": 5.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 6,
+      "geoid": "42101008500",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 5.3,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 7,
+      "geoid": "42101023800",
+      "neighborhood": "East Mount Airy",
+      "predicted": 5.3,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 8,
+      "geoid": "42101024000",
+      "neighborhood": "East Falls",
+      "predicted": 4.9,
+      "action_tier": "Monitor",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 9,
+      "geoid": "42101006700",
+      "neighborhood": "Industrial",
+      "predicted": 4.9,
+      "action_tier": "Monitor",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 10,
+      "geoid": "42101008302",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 4.9,
+      "action_tier": "Monitor",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    }
+  ]
+}

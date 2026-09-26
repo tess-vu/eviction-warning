@@ -1,0 +1,40 @@
+{
+  "month": "2024-11",
+  "passed": true,
+  "equity_gap_mae": 0.904,
+  "narrative": "All groups show acceptable bias. No group is systematically under-predicted.",
+  "groups": [
+    {
+      "group": "Black",
+      "mae": 2.215,
+      "bias": 0.309,
+      "mean_observed": 3.63,
+      "mean_predicted": 3.94,
+      "equity_flag": "\u2713"
+    },
+    {
+      "group": "Hispanic",
+      "mae": 1.571,
+      "bias": 0.266,
+      "mean_observed": 2.51,
+      "mean_predicted": 2.77,
+      "equity_flag": "\u2713"
+    },
+    {
+      "group": "Other",
+      "mae": 1.861,
+      "bias": 0.301,
+      "mean_observed": 2.77,
+      "mean_predicted": 3.07,
+      "equity_flag": "\u2713"
+    },
+    {
+      "group": "White",
+      "mae": 1.312,
+      "bias": 0.026,
+      "mean_observed": 1.62,
+      "mean_predicted": 1.65,
+      "equity_flag": "\u2713"
+    }
+  ]
+}

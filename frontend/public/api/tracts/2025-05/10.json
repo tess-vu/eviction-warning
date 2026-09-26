@@ -1,0 +1,124 @@
+{
+  "month": "2025-05",
+  "top_n": 10,
+  "kpi": {
+    "critical_tracts": 1,
+    "predicted_filings_top_n": 88.6,
+    "model_mae": 1.766,
+    "equity_passed": true,
+    "equity_label": "\u2713 Passed",
+    "top_n": 10
+  },
+  "tracts": [
+    {
+      "rank": 1,
+      "geoid": "42101037700",
+      "neighborhood": "Stanton",
+      "predicted": 14.8,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 2,
+      "geoid": "42101023900",
+      "neighborhood": "East Falls",
+      "predicted": 10.6,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 3,
+      "geoid": "42101025200",
+      "neighborhood": "East Mount Airy",
+      "predicted": 9.2,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 4,
+      "geoid": "42101023800",
+      "neighborhood": "East Mount Airy",
+      "predicted": 9.2,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 5,
+      "geoid": "42101015200",
+      "neighborhood": "Stanton",
+      "predicted": 8.8,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 6,
+      "geoid": "42101030100",
+      "neighborhood": "Northwood",
+      "predicted": 7.8,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 7,
+      "geoid": "42101024300",
+      "neighborhood": "East Falls",
+      "predicted": 7.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 8,
+      "geoid": "42101024000",
+      "neighborhood": "East Falls",
+      "predicted": 7.3,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 9,
+      "geoid": "42101020600",
+      "neighborhood": "East Falls",
+      "predicted": 6.9,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 10,
+      "geoid": "42101015102",
+      "neighborhood": "Stanton",
+      "predicted": 6.6,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    }
+  ]
+}
