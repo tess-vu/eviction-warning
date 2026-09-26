@@ -9,6 +9,7 @@ import EquityPanel from '@/components/EquityPanel.vue'
 import Footer from '@/components/Footer.vue'
 
 const store = useForecastStore()
+const baseUrl = import.meta.env.BASE_URL
 
 onMounted(async () => {
   await store.loadMonths()
@@ -23,7 +24,7 @@ onMounted(async () => {
     <div class="header-inner">
       <div class="header-left">
         <svg role="img" aria-label="City of Philadelphia" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <image href="/public/favicon.ico" width="32" height="32" />
+          <image :href="`${baseUrl}favicon.ico`" width="32" height="32" />
         </svg>
         <span class="wordmark">City of Philadelphia</span>
       </div>

@@ -1,0 +1,289 @@
+{
+  "month": "2025-02",
+  "top_n": 25,
+  "kpi": {
+    "critical_tracts": 5,
+    "predicted_filings_top_n": 268.1,
+    "model_mae": 1.766,
+    "equity_passed": true,
+    "equity_label": "\u2713 Passed",
+    "top_n": 25
+  },
+  "tracts": [
+    {
+      "rank": 1,
+      "geoid": "42101037700",
+      "neighborhood": "Stanton",
+      "predicted": 32.0,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 2,
+      "geoid": "42101025200",
+      "neighborhood": "East Mount Airy",
+      "predicted": 21.3,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 3,
+      "geoid": "42101030100",
+      "neighborhood": "Northwood",
+      "predicted": 20.7,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 4,
+      "geoid": "42101008500",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 13.7,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 5,
+      "geoid": "42101036100",
+      "neighborhood": "Somerton",
+      "predicted": 13.4,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 6,
+      "geoid": "42101024000",
+      "neighborhood": "East Falls",
+      "predicted": 11.7,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 7,
+      "geoid": "42101008302",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 11.5,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 8,
+      "geoid": "42101010800",
+      "neighborhood": "West Powelton",
+      "predicted": 10.4,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 9,
+      "geoid": "42101036201",
+      "neighborhood": "Modena",
+      "predicted": 9.2,
+      "action_tier": "Direct Mail",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 10,
+      "geoid": "42101030000",
+      "neighborhood": "Frankford",
+      "predicted": 9.1,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 11,
+      "geoid": "42101014000",
+      "neighborhood": "Sharswood",
+      "predicted": 9.0,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 12,
+      "geoid": "42101010700",
+      "neighborhood": "Belmont",
+      "predicted": 8.8,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 13,
+      "geoid": "42101019200",
+      "neighborhood": "Juniata Park",
+      "predicted": 8.7,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Hispanic",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 14,
+      "geoid": "42101026800",
+      "neighborhood": "West Oak Lane",
+      "predicted": 8.4,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 15,
+      "geoid": "42101011900",
+      "neighborhood": "West Parkside",
+      "predicted": 8.3,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 16,
+      "geoid": "42101023900",
+      "neighborhood": "East Falls",
+      "predicted": 8.0,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 17,
+      "geoid": "42101015200",
+      "neighborhood": "Stanton",
+      "predicted": 7.7,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 18,
+      "geoid": "42101017800",
+      "neighborhood": "Richmond",
+      "predicted": 7.6,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Other",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 19,
+      "geoid": "42101006700",
+      "neighborhood": "Industrial",
+      "predicted": 7.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 20,
+      "geoid": "42101024500",
+      "neighborhood": "East Germantown",
+      "predicted": 7.3,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 21,
+      "geoid": "42101020101",
+      "neighborhood": "Tioga",
+      "predicted": 7.2,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 22,
+      "geoid": "42101021800",
+      "neighborhood": "Wissahickon Park",
+      "predicted": 7.0,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    },
+    {
+      "rank": 23,
+      "geoid": "42101007300",
+      "neighborhood": "Kingsessing",
+      "predicted": 6.7,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 24,
+      "geoid": "42101015102",
+      "neighborhood": "Stanton",
+      "predicted": 6.6,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 25,
+      "geoid": "42101028200",
+      "neighborhood": "Olney",
+      "predicted": 6.6,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    }
+  ]
+}

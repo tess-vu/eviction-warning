@@ -1,0 +1,124 @@
+{
+  "month": "2024-05",
+  "top_n": 10,
+  "kpi": {
+    "critical_tracts": 1,
+    "predicted_filings_top_n": 113.0,
+    "model_mae": 1.766,
+    "equity_passed": true,
+    "equity_label": "\u2713 Passed",
+    "top_n": 10
+  },
+  "tracts": [
+    {
+      "rank": 1,
+      "geoid": "42101021800",
+      "neighborhood": "Wissahickon Park",
+      "predicted": 48.2,
+      "action_tier": "Deploy Canvassers",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 2,
+      "geoid": "42101023800",
+      "neighborhood": "East Mount Airy",
+      "predicted": 8.9,
+      "action_tier": "Direct Mail",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 3,
+      "geoid": "42101036100",
+      "neighborhood": "Somerton",
+      "predicted": 8.0,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "White",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 4,
+      "geoid": "42101023900",
+      "neighborhood": "East Falls",
+      "predicted": 7.6,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "No",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 5,
+      "geoid": "42101008500",
+      "neighborhood": "Cobbs Creek",
+      "predicted": 7.2,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 6,
+      "geoid": "42101024000",
+      "neighborhood": "East Falls",
+      "predicted": 7.0,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 7,
+      "geoid": "42101015200",
+      "neighborhood": "Stanton",
+      "predicted": 6.9,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 8,
+      "geoid": "42101027800",
+      "neighborhood": "West Oak Lane",
+      "predicted": 6.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Low"
+    },
+    {
+      "rank": 9,
+      "geoid": "42101025200",
+      "neighborhood": "East Mount Airy",
+      "predicted": 6.4,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "Moderate"
+    },
+    {
+      "rank": 10,
+      "geoid": "42101030000",
+      "neighborhood": "Frankford",
+      "predicted": 6.3,
+      "action_tier": "Legal Aid Pop-Up",
+      "racial_majority": "Black",
+      "tax_stress": "Yes",
+      "risk_quintile": 5,
+      "spatial_lag_tier": "High"
+    }
+  ]
+}
